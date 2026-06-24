@@ -131,14 +131,29 @@ export function StockDetailDialog({
             </div>
           </section>
 
-          {/* 入场 / 风险说明 */}
+          {/* 入场 / 退出计划 / 风险说明 */}
           <section className="space-y-2">
             <div className="rounded-md border border-finance-blue/15 bg-finance-blue-soft/50 p-3">
-              <div className="mb-1 text-sm text-finance-blue">入场时机说明</div>
+              <div className="mb-1 text-sm font-medium text-finance-blue">入场时机说明</div>
               <p className="text-sm text-foreground/90">{stock.entryNote}</p>
             </div>
+            
+            {stock.exitStrategy && (
+              <div className="rounded-md border border-purple-500/20 bg-purple-500/5 p-3">
+                <div className="mb-2 text-sm font-medium text-purple-600 dark:text-purple-400">建议卖出时机 ({stock.exitStrategy})</div>
+                <div className="mb-2 grid grid-cols-2 gap-2 sm:grid-cols-4">
+                  <Metric label="计划持有" value={`${stock.plannedHoldingDays}日`} />
+                  <Metric label="建议止损" value={stock.stopLossPrice?.toFixed(2) ?? "—"} />
+                  <Metric label="第一止盈" value={stock.takeProfit1Price?.toFixed(2) ?? "—"} />
+                  <Metric label="移动减仓/止损" value={stock.trailingStopPrice?.toFixed(2) ?? "—"} />
+                </div>
+                <p className="text-sm text-foreground/90">{stock.exitSignal}</p>
+                <p className="mt-1 text-[11px] text-neutral/80">{stock.exitNote}</p>
+              </div>
+            )}
+            
             <div className="rounded-md border border-risk/15 bg-risk-soft/50 p-3">
-              <div className="mb-1 text-sm text-risk">风险说明</div>
+              <div className="mb-1 text-sm font-medium text-risk">风险说明</div>
               <p className="text-sm text-foreground/90">{stock.riskNote}</p>
             </div>
           </section>

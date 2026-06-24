@@ -62,6 +62,12 @@ function StockCard({ stock, onClick }: { stock: Stock; onClick: () => void }) {
           <NoRiskTag />
         )}
       </div>
+
+      {stock.exitStrategy && (
+        <div className="rounded-md bg-neutral-soft/60 px-2 py-1.5 text-xs text-neutral">
+          卖出计划：持{stock.plannedHoldingDays}日 · 止损{stock.stopLossPrice?.toFixed(2) ?? "-"} · 第一止盈{stock.takeProfit1Price?.toFixed(2) ?? "-"}
+        </div>
+      )}
     </Card>
   );
 }
@@ -90,7 +96,7 @@ export function StockList({
               <TableRow className="bg-neutral-soft/60 hover:bg-neutral-soft/60">
                 {[
                   "#", "名称", "代码", "现价", "涨跌幅", "总分", "趋势", "量能",
-                  "DMI", "MACD", "EXPMA", "资金", "板块", "入场", "风险",
+                  "DMI", "MACD", "EXPMA", "资金", "板块", "入场", "卖出计划", "风险",
                 ].map((h) => (
                   <TableHead
                     key={h}
@@ -123,6 +129,11 @@ export function StockList({
                   <TableCell className="tabular-nums text-neutral">{s.moneyFlowScore}</TableCell>
                   <TableCell className="tabular-nums text-neutral">{s.sectorScore}</TableCell>
                   <TableCell><EntryTag timing={s.entryTiming} /></TableCell>
+                  <TableCell className="whitespace-nowrap text-xs text-neutral">
+                    {s.exitStrategy
+                      ? `持${s.plannedHoldingDays}日 / 损${s.stopLossPrice?.toFixed(2) ?? "-"} / 止盈${s.takeProfit1Price?.toFixed(2) ?? "-"}`
+                      : "-"}
+                  </TableCell>
                   <TableCell className="whitespace-nowrap">
                     {s.risks.length > 0 ? (
                       <span className="text-xs text-risk">{s.risks[0].label}{s.risks.length > 1 ? ` +${s.risks.length - 1}` : ""}</span>

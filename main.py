@@ -200,6 +200,10 @@ def save_results(df, trade_date=None):
         "amount_ok", "fund_ok", "sector_hot", "leading_stock",
         "consecutive_up", "consecutive_down",
         "entry_label",
+        "planned_holding_days", "stop_loss_price",
+        "take_profit_1_price", "take_profit_2_price",
+        "trailing_stop_price", "risk_reward_ratio",
+        "exit_strategy", "exit_signal", "exit_note",
     ]
     available = [c for c in save_cols if c in df.columns]
     result_df = df[available].copy()

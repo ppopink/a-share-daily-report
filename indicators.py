@@ -583,6 +583,21 @@ def calc_volume_ma(df: pd.DataFrame) -> pd.DataFrame:
     return df
 
 
+def calc_atr(df: pd.DataFrame, period: int = 14) -> pd.DataFrame:
+    """计算 ATR，用于退出计划中的波动止损/止盈。"""
+    prev_close = df["close"].shift(1)
+    tr = pd.concat(
+        [
+            df["high"] - df["low"],
+            (df["high"] - prev_close).abs(),
+            (df["low"] - prev_close).abs(),
+        ],
+        axis=1,
+    ).max(axis=1)
+    df[f"ATR{period}"] = tr.rolling(window=period).mean()
+    return df
+
+
 def check_volume_condition(df: pd.DataFrame) -> Tuple[bool, float]:
     """
     检查成交量条件: 当日成交量 > 前5日均量 × 1.3
@@ -626,7 +641,107 @@ def calculate_all_indicators(df: pd.DataFrame) -> pd.DataFrame:
     df = calc_expma(df)
     df = calc_macd(df)
     df = calc_volume_ma(df)
+    df = calc_atr(df)
     return df
+
+
+def analyze_exit_plan(df: pd.DataFrame) -> dict:
+    """
+    基于信号日收盘后的已知数据生成退出计划。
+
+    注意：这是交易纪律/风控计划，不是收益承诺。默认假设 T 日收盘后出信号，
+    T+1 观察买入，后续按止损、止盈、均线破位和时间退出执行。
+    """
+    if len(df) < 25:
+        return {
+            "planned_holding_days": 5,
+            "stop_loss_price": 0.0,
+            "take_profit_1_price": 0.0,
+            "take_profit_2_price": 0.0,
+            "trailing_stop_price": 0.0,
+            "risk_reward_ratio": 0.0,
+            "exit_strategy": "数据不足，轻仓观察",
+            "exit_signal": "数据不足：优先等回测/次日确认",
+            "exit_note": "K线数据不足，无法生成完整止盈止损计划。",
+        }
+
+    latest = df.iloc[-1]
+    close = _num(latest.get("close", 0))
+    ma5 = _num(latest.get("MA5", close), close)
+    ma20 = _num(latest.get("MA20", close), close)
+    ma21 = _num(latest.get("MA21", close), close)
+    atr = _num(latest.get("ATR14", 0), 0)
+    adx = _num(latest.get("ADX", 0), 0)
+    close_ma20_ratio = _num(latest.get("CLOSE_MA20_RATIO", 1), 1)
+    entry = analyze_entry_timing(df)
+    consecutive_up = int(entry.get("consecutive_up", 0) or 0)
+    overextended = bool(entry.get("overextended", False))
+
+    if close <= 0:
+        return {
+            "planned_holding_days": 5,
+            "stop_loss_price": 0.0,
+            "take_profit_1_price": 0.0,
+            "take_profit_2_price": 0.0,
+            "trailing_stop_price": 0.0,
+            "risk_reward_ratio": 0.0,
+            "exit_strategy": "价格异常，暂不交易",
+            "exit_signal": "价格异常：不建议执行",
+            "exit_note": "最新价格无效，无法生成退出计划。",
+        }
+
+    if atr <= 0:
+        atr = max(close * 0.025, abs(close - ma5), 0.01)
+
+    # 越追高，计划持有期越短；趋势越稳，允许多给一些时间。
+    if overextended or close_ma20_ratio >= 1.15 or consecutive_up >= 3:
+        holding_days = 3
+        strategy = "追高风险，快进快出"
+    elif adx >= 35 and close > ma5 > ma20:
+        holding_days = 10
+        strategy = "趋势持有，跌破短均减仓"
+    else:
+        holding_days = 5
+        strategy = "标准波段，按纪律退出"
+
+    stop_candidates = [
+        close - 1.8 * atr,
+        ma20 * 0.985 if ma20 > 0 else close * 0.93,
+        ma21 * 0.985 if ma21 > 0 else close * 0.93,
+        close * 0.93,
+    ]
+    valid_stops = [x for x in stop_candidates if 0 < x < close]
+    stop_loss = max(valid_stops) if valid_stops else close * 0.93
+    risk = max(close - stop_loss, close * 0.02)
+
+    take_profit_1 = close + max(1.5 * atr, 1.6 * risk, close * 0.05)
+    take_profit_2 = close + max(3.0 * atr, 2.6 * risk, close * 0.10)
+    trailing_stop = max(ma5 * 0.98 if ma5 > 0 else 0, close - 1.2 * atr)
+    if trailing_stop >= close:
+        trailing_stop = close - 0.8 * atr
+    trailing_stop = max(trailing_stop, stop_loss)
+
+    rr = (take_profit_1 - close) / risk if risk > 0 else 0
+    exit_signal = (
+        f"{holding_days}日计划；跌破{stop_loss:.2f}止损；"
+        f"上冲{take_profit_1:.2f}先止盈；破MA5/移动止盈{trailing_stop:.2f}减仓"
+    )
+    exit_note = (
+        f"参考信号日收盘价{close:.2f}，若T+1买入价明显高于该价，"
+        "止损/止盈需按实际成交价等比例上移；若放量跌破MA20，应优先退出。"
+    )
+
+    return {
+        "planned_holding_days": holding_days,
+        "stop_loss_price": round(stop_loss, 2),
+        "take_profit_1_price": round(take_profit_1, 2),
+        "take_profit_2_price": round(take_profit_2, 2),
+        "trailing_stop_price": round(trailing_stop, 2),
+        "risk_reward_ratio": round(rr, 2),
+        "exit_strategy": strategy,
+        "exit_signal": exit_signal,
+        "exit_note": exit_note,
+    }
 
 
 # ============================================================
@@ -804,6 +919,7 @@ def check_all_conditions(df: pd.DataFrame) -> dict:
         "macd_dea": 0.0,
         "macd_hist": 0.0,
         "entry_timing": {},  # 入场时机分析
+        "exit_plan": {},     # 退出计划：止损/止盈/持有天数
         "trend_quality_pass": False,
         "trend_quality_score": 0.0,
         "above_ma20_days_20": 0,
@@ -891,6 +1007,7 @@ def check_all_conditions(df: pd.DataFrame) -> dict:
     # ---- 入场时机分析 ----
     entry = analyze_entry_timing(df)
     result["entry_timing"] = entry
+    result["exit_plan"] = analyze_exit_plan(df)
 
     # ---- 必选条件：均线 + DMI + EXPMA + MACD + 放量 ----
     hard_pass = bool(checks["technical_pass"])

@@ -2,7 +2,9 @@ import pandas as pd
 
 import config as cfg
 from indicators import (
+    analyze_exit_plan,
     calc_ma,
+    calculate_all_indicators,
     calc_trend_quality,
     calc_volume_ma,
     check_adx_condition,
@@ -156,6 +158,30 @@ def test_trend_quality_requires_persistence_slope_and_not_overheated(monkeypatch
     df = pd.DataFrame({"ADX": [24.99], "plus_di": [30.0], "minus_di": [10.0]})
     ok, _ = check_adx_condition(df)
     assert ok is False
+
+
+def test_exit_plan_outputs_holding_stop_profit_and_note():
+    close = [10 + i * 0.2 for i in range(40)]
+    high = [c * 1.02 for c in close]
+    low = [c * 0.98 for c in close]
+    open_ = [c * 0.99 for c in close]
+    volume = [1000 + i * 10 for i in range(40)]
+    df = calculate_all_indicators(pd.DataFrame({
+        "open": open_,
+        "high": high,
+        "low": low,
+        "close": close,
+        "volume": volume,
+    }))
+
+    plan = analyze_exit_plan(df)
+
+    assert plan["planned_holding_days"] in {3, 5, 10}
+    assert 0 < plan["stop_loss_price"] < close[-1]
+    assert plan["take_profit_1_price"] > close[-1]
+    assert plan["take_profit_2_price"] > plan["take_profit_1_price"]
+    assert plan["trailing_stop_price"] >= plan["stop_loss_price"]
+    assert "止损" in plan["exit_signal"]
 
     df = pd.DataFrame({"ADX": [30.0], "plus_di": [10.0], "minus_di": [10.0]})
     ok, _ = check_adx_condition(df)

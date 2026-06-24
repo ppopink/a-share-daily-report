@@ -224,6 +224,7 @@ def compute_total_scores(
         consecutive_up = entry.get("consecutive_up", 0)
         consecutive_down = entry.get("consecutive_down", 0)
         pos_vs_ma5 = entry.get("position_vs_ma5", 0)
+        exit_plan = ind.get("exit_plan", {}) or {}
 
         # 入场时机加成：好时机加分，追高风险减分
         entry_bonus = 0
@@ -301,6 +302,15 @@ def compute_total_scores(
             "consecutive_up": consecutive_up,
             "consecutive_down": consecutive_down,
             "entry_label": entry_label,
+            "planned_holding_days": int(exit_plan.get("planned_holding_days", 5) or 5),
+            "stop_loss_price": round(float(exit_plan.get("stop_loss_price", 0) or 0), 2),
+            "take_profit_1_price": round(float(exit_plan.get("take_profit_1_price", 0) or 0), 2),
+            "take_profit_2_price": round(float(exit_plan.get("take_profit_2_price", 0) or 0), 2),
+            "trailing_stop_price": round(float(exit_plan.get("trailing_stop_price", 0) or 0), 2),
+            "risk_reward_ratio": round(float(exit_plan.get("risk_reward_ratio", 0) or 0), 2),
+            "exit_strategy": exit_plan.get("exit_strategy", ""),
+            "exit_signal": exit_plan.get("exit_signal", ""),
+            "exit_note": exit_plan.get("exit_note", ""),
         })
 
     df = pd.DataFrame(results)

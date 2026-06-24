@@ -42,6 +42,16 @@ export interface Stock {
   entryNote: string;
   risks: RiskFlag[];
   riskNote: string;
+  // 退出计划 / 卖出建议
+  plannedHoldingDays: number;
+  stopLossPrice: number;
+  takeProfit1Price: number;
+  takeProfit2Price: number;
+  trailingStopPrice: number;
+  riskRewardRatio: number;
+  exitStrategy: string;
+  exitSignal: string;
+  exitNote: string;
   // 详细技术指标
   adx: number;
   plusDI: number;

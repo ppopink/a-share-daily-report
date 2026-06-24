@@ -47,6 +47,13 @@ DISPLAY_COLUMNS = [
     ("sector_rank_pct", "板块排名分位"),
     ("stock_rank_in_sector", "板块内排名分位"),
     ("entry_label", "入场时机"),
+    ("planned_holding_days", "计划持有日"),
+    ("stop_loss_price", "止损价"),
+    ("take_profit_1_price", "第一止盈"),
+    ("take_profit_2_price", "第二止盈"),
+    ("trailing_stop_price", "移动止盈"),
+    ("risk_reward_ratio", "盈亏比"),
+    ("exit_signal", "退出计划"),
 ]
 
 SCORE_PARTS = [
@@ -555,6 +562,7 @@ def generate_html_report(
             f"<td>{_fmt(row.get('vol_ratio'), 2)}</td>"
             f"<td>{_score_stack_html(row)}</td>"
             f"<td>{html.escape(str(row.get('entry_label', '')))}</td>"
+            f"<td>{html.escape(str(row.get('exit_signal', '')))}</td>"
             "</tr>"
         )
 
@@ -663,7 +671,7 @@ tr:nth-child(even) td {{ background:#fafafa; }}
     <div class="panel"><h2>ADX 与量比散点</h2>{_scatter_html(picks)}</div>
   </section>
   <section class="panel"><h2>技术筛选漏斗</h2>{_bar_svg(funnel_items, value_key='value', label_key='label') if funnel_items else "<div class='empty'>暂无技术诊断数据</div>"}</section>
-  <section class="panel"><h2>候选股详情</h2><div class="table-scroll"><table><thead><tr><th>排名</th><th>代码</th><th>名称</th><th>现价</th><th>行业</th><th>总分</th><th>20日线上</th><th>MA20斜率</th><th>涨跌幅</th><th>ADX</th><th>量比</th><th>评分拆解</th><th>入场时机</th></tr></thead><tbody>{''.join(table_rows)}</tbody></table></div></section>
+  <section class="panel"><h2>候选股详情</h2><div class="table-scroll"><table><thead><tr><th>排名</th><th>代码</th><th>名称</th><th>现价</th><th>行业</th><th>总分</th><th>20日线上</th><th>MA20斜率</th><th>涨跌幅</th><th>ADX</th><th>量比</th><th>评分拆解</th><th>入场时机</th><th>退出计划</th></tr></thead><tbody>{''.join(table_rows)}</tbody></table></div></section>
   <section class="panel"><h2>准确性评估</h2>{accuracy_html}</section>
   <section class="panel note"><strong>说明：</strong>本报告仅用于规则选股跟踪，不构成投资建议。信号基于收盘后数据，实盘需考虑涨跌停、停牌、滑点、手续费和成交量约束。</section>
 </div>
