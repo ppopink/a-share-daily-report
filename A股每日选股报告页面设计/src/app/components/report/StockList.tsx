@@ -65,7 +65,7 @@ function StockCard({ stock, onClick }: { stock: Stock; onClick: () => void }) {
 
       {stock.exitStrategy && (
         <div className="rounded-md bg-neutral-soft/60 px-2 py-1.5 text-xs text-neutral">
-          卖出计划：1日{stock.day1TakeProfitPrice?.toFixed(2) ?? "-"} / 2日{stock.day2TakeProfitPrice?.toFixed(2) ?? "-"} / 3日{stock.day3TakeProfitPrice?.toFixed(2) ?? "-"}
+          短线计划：1日盈{stock.day1TakeProfitPrice?.toFixed(2) ?? "-"} / 损{stock.day1StopLossPrice?.toFixed(2) ?? "-"}；2日盈{stock.day2TakeProfitPrice?.toFixed(2) ?? "-"} / 损{stock.day2StopLossPrice?.toFixed(2) ?? "-"}
         </div>
       )}
     </Card>
@@ -131,7 +131,7 @@ export function StockList({
                   <TableCell><EntryTag timing={s.entryTiming} /></TableCell>
                   <TableCell className="whitespace-nowrap text-xs text-neutral">
                     {s.exitStrategy
-                      ? `1日${s.day1TakeProfitPrice?.toFixed(2) ?? "-"} / 2日${s.day2TakeProfitPrice?.toFixed(2) ?? "-"} / 3日${s.day3TakeProfitPrice?.toFixed(2) ?? "-"}`
+                      ? `1日盈${s.day1TakeProfitPrice?.toFixed(2) ?? "-"}/损${s.day1StopLossPrice?.toFixed(2) ?? "-"} · 2日盈${s.day2TakeProfitPrice?.toFixed(2) ?? "-"}/损${s.day2StopLossPrice?.toFixed(2) ?? "-"}`
                       : "-"}
                   </TableCell>
                   <TableCell className="whitespace-nowrap">
