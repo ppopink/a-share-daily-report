@@ -31,9 +31,9 @@ export function KlineChart({ data }: { data?: KlinePoint[] }) {
     );
   }
 
-  const width = 760;
+  const width = 960;
   const height = 360;
-  const pad = { left: 42, right: 18, top: 18, bottom: 26 };
+  const pad = { left: 52, right: 54, top: 18, bottom: 26 };
   const priceBottom = 248;
   const volumeTop = 278;
   const chartWidth = width - pad.left - pad.right;
@@ -65,7 +65,9 @@ export function KlineChart({ data }: { data?: KlinePoint[] }) {
   const ticks = [0, 0.25, 0.5, 0.75, 1].map((t) => yMin + (yMax - yMin) * t);
 
   return (
-    <div className="rounded-lg border border-border bg-card p-3">
+    <div
+      className="min-w-0 max-w-full overflow-hidden rounded-lg border border-border bg-card p-2 sm:p-3"
+    >
       <div className="mb-2 flex flex-wrap items-center justify-between gap-2">
         <div>
           <h4 className="text-foreground">近期 K 线走势</h4>
@@ -82,8 +84,14 @@ export function KlineChart({ data }: { data?: KlinePoint[] }) {
         </div>
       </div>
 
-      <div className="w-full overflow-x-auto">
-        <svg viewBox={`0 0 ${width} ${height}`} className="h-auto min-w-[680px]">
+      <div
+        className="min-w-0 max-w-full overflow-hidden"
+      >
+        <svg
+          viewBox={`0 0 ${width} ${height}`}
+          preserveAspectRatio="xMidYMid meet"
+          className="block h-auto max-h-[58vh] w-full"
+        >
           {ticks.map((tick) => {
             const y = scale(tick, yMin, yMax, pad.top, priceBottom);
             return (

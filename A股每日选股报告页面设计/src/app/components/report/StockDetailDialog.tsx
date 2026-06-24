@@ -50,21 +50,29 @@ export function StockDetailDialog({
 
   return (
     <Dialog open={open} onOpenChange={(o) => !o && onClose()}>
-      <DialogContent className="max-h-[88vh] gap-4 overflow-y-auto p-0 sm:max-w-2xl">
-        <DialogHeader className="sticky top-0 z-10 border-b border-border bg-card px-5 py-4">
-          <DialogTitle className="flex items-center gap-2">
+      <DialogContent
+        className="max-h-[94vh] !max-w-none gap-0 overflow-x-hidden overflow-y-auto p-0 sm:!max-w-none [&_*]:box-border"
+        style={{
+          width: "min(1280px, calc(100vw - 8px))",
+          maxWidth: "calc(100vw - 8px)",
+          boxSizing: "border-box",
+          overflowX: "hidden",
+        }}
+      >
+        <DialogHeader className="sticky top-0 z-10 min-w-0 max-w-full overflow-x-hidden border-b border-border bg-card px-3 py-4 sm:px-5">
+          <DialogTitle className="flex min-w-0 flex-wrap items-center gap-2 pr-8">
             <span className="flex size-7 items-center justify-center rounded-md bg-finance-blue-soft text-sm text-finance-blue">
               {stock.rank}
             </span>
-            {stock.name}
-            <span className="text-sm font-normal text-neutral">{stock.code}</span>
+            <span className="min-w-0 truncate">{stock.name}</span>
+            <span className="shrink-0 text-sm font-normal text-neutral">{stock.code}</span>
           </DialogTitle>
-          <DialogDescription className="flex items-center gap-3">
+          <DialogDescription className="flex min-w-0 flex-wrap items-center gap-3 pr-8">
             <span className="text-lg tabular-nums text-foreground">
               {stock.price.toFixed(2)}
             </span>
             <ChangeText value={stock.changePct} />
-            <span className="ml-auto text-base tabular-nums text-finance-blue">
+            <span className="text-base tabular-nums text-finance-blue sm:ml-auto">
               总分 {stock.totalScore}
             </span>
           </DialogDescription>
@@ -78,35 +86,37 @@ export function StockDetailDialog({
           </div>
         </DialogHeader>
 
-        <div className="space-y-5 px-5 pb-5">
-          <section>
+        <div className="min-w-0 max-w-full space-y-5 overflow-x-hidden px-2 pb-5 sm:px-5 lg:px-6" style={{ width: "100%" }}>
+          <section className="min-w-0 max-w-full overflow-hidden" style={{ width: "100%" }}>
             <KlineChart data={stock.kline} />
           </section>
 
-          {/* 评分拆解 */}
-          <section>
-            <h4 className="mb-2 text-foreground">评分拆解</h4>
-            <div className="space-y-2">
-              {scores.map(([label, v]) => (
-                <ScoreBar key={label} label={label} score={v} max={25} compact />
-              ))}
-            </div>
-          </section>
+          <div className="grid min-w-0 max-w-full gap-5 overflow-x-hidden lg:grid-cols-[minmax(0,1fr)_minmax(0,1.2fr)]">
+            {/* 评分拆解 */}
+            <section>
+              <h4 className="mb-2 text-foreground">评分拆解</h4>
+              <div className="space-y-2">
+                {scores.map(([label, v]) => (
+                  <ScoreBar key={label} label={label} score={v} max={25} compact />
+                ))}
+              </div>
+            </section>
 
-          {/* 趋势 / DMI */}
-          <section>
-            <h4 className="mb-2 text-foreground">趋势与 DMI</h4>
-            <div className="grid grid-cols-2 gap-2 sm:grid-cols-3">
-              <Metric label="ADX" value={stock.adx} />
-              <Metric label="+DI" value={stock.plusDI} />
-              <Metric label="-DI" value={stock.minusDI} />
-              <Metric label="量比" value={stock.volRatio} />
-              <Metric label="MA20上方天数" value={stock.aboveMa20Days20} hint="above_ma20_days_20" />
-              <Metric label="股价/MA20" value={stock.closeMa20Ratio} hint="close_ma20_ratio" />
-              <Metric label="MA20近10日斜率" value={<ChangeText value={stock.ma20Slope10Pct} />} hint="ma20_slope_10_pct" />
-              <Metric label="MA20近20日斜率" value={<ChangeText value={stock.ma20Slope20Pct} />} hint="ma20_slope_20_pct" />
-            </div>
-          </section>
+            {/* 趋势 / DMI */}
+            <section>
+              <h4 className="mb-2 text-foreground">趋势与 DMI</h4>
+              <div className="grid grid-cols-2 gap-2 sm:grid-cols-4 lg:grid-cols-3">
+                <Metric label="ADX" value={stock.adx} />
+                <Metric label="+DI" value={stock.plusDI} />
+                <Metric label="-DI" value={stock.minusDI} />
+                <Metric label="量比" value={stock.volRatio} />
+                <Metric label="MA20上方天数" value={stock.aboveMa20Days20} hint="above_ma20_days_20" />
+                <Metric label="股价/MA20" value={stock.closeMa20Ratio} hint="close_ma20_ratio" />
+                <Metric label="MA20近10日斜率" value={<ChangeText value={stock.ma20Slope10Pct} />} hint="ma20_slope_10_pct" />
+                <Metric label="MA20近20日斜率" value={<ChangeText value={stock.ma20Slope20Pct} />} hint="ma20_slope_20_pct" />
+              </div>
+            </section>
+          </div>
 
           {/* MACD / 资金 / 板块 */}
           <section>
