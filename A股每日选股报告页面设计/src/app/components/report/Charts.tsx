@@ -13,6 +13,7 @@ import {
   ZAxis,
 } from "recharts";
 import { Card } from "../ui/card";
+import { Badge } from "../ui/badge";
 import { FunnelBar, SectionTitle } from "./shared";
 import type { DailyReport } from "../../data/types";
 
@@ -60,6 +61,8 @@ export function ChartsSection({ report }: { report: DailyReport }) {
 
   return (
     <div className="grid gap-4 lg:grid-cols-2">
+      <HotSectorCard report={report} />
+
       <ChartCard title="Top20 综合评分" desc="按总分排序的入选股票">
         <ResponsiveContainer width="100%" height={300}>
           <BarChart data={scoreData} margin={{ left: -10, bottom: 50 }}>
@@ -126,6 +129,88 @@ export function ChartsSection({ report }: { report: DailyReport }) {
 
       <AccuracySummaryCard />
     </div>
+  );
+}
+
+function formatAmount(value: number) {
+  if (!value) return "-";
+  return `${(value / 100000000).toFixed(1)}亿`;
+}
+
+function HotSectorCard({ report }: { report: DailyReport }) {
+  const sectors = report.hotSectors ?? [];
+  if (sectors.length === 0) {
+    return (
+      <Card className="rounded-lg border-dashed p-4 shadow-sm lg:col-span-2">
+        <SectionTitle title="今日热门领涨板块" desc="暂无板块热度数据，等待后端生成 hot_sectors 文件" />
+        <p className="text-sm text-neutral">运行最新版选股程序后会自动生成热门板块榜。</p>
+      </Card>
+    );
+  }
+  const topScore = Math.max(...sectors.map((s) => s.heatScore), 1);
+
+  return (
+    <Card className="rounded-lg p-5 shadow-sm lg:col-span-2">
+      <SectionTitle
+        title="今日热门领涨板块"
+        desc="热度分综合板块涨幅、上涨占比、成交额、换手与领涨股强度"
+      />
+      <div className="grid gap-3 md:grid-cols-2">
+        {sectors.slice(0, 6).map((s) => (
+          <div key={`${s.rank}-${s.name}`} className="rounded-lg border border-border p-3">
+            <div className="flex items-start justify-between gap-2">
+              <div className="min-w-0">
+                <div className="flex items-center gap-2">
+                  <span className="flex size-6 shrink-0 items-center justify-center rounded-md bg-finance-blue-soft text-xs tabular-nums text-finance-blue">
+                    {s.rank}
+                  </span>
+                  <span className="truncate text-foreground">{s.name}</span>
+                  {s.selectedCount > 0 && (
+                    <Badge variant="outline" className="text-finance-blue">
+                      入选 {s.selectedCount}
+                    </Badge>
+                  )}
+                </div>
+                <div className="mt-1 text-xs text-neutral">
+                  领涨：{s.leaderName || "-"} {s.leaderPctChange ? `${s.leaderPctChange.toFixed(2)}%` : ""}
+                </div>
+              </div>
+              <div className="text-right">
+                <div className="text-lg tabular-nums text-finance-blue">{s.heatScore.toFixed(1)}</div>
+                <div className="text-xs text-neutral">热度分</div>
+              </div>
+            </div>
+
+            <div className="mt-3 h-2 overflow-hidden rounded-full bg-neutral-soft">
+              <div
+                className="h-full rounded-full bg-finance-blue"
+                style={{ width: `${Math.max(8, (s.heatScore / topScore) * 100)}%` }}
+              />
+            </div>
+
+            <div className="mt-3 grid grid-cols-3 gap-2 text-xs">
+              <div className="rounded-md bg-neutral-soft/50 p-2">
+                <div className="text-neutral">板块涨幅</div>
+                <div className={`mt-0.5 tabular-nums ${s.pctChange >= 0 ? "text-up" : "text-risk"}`}>
+                  {s.pctChange.toFixed(2)}%
+                </div>
+              </div>
+              <div className="rounded-md bg-neutral-soft/50 p-2">
+                <div className="text-neutral">上涨占比</div>
+                <div className="mt-0.5 tabular-nums text-foreground">{s.upRatio.toFixed(1)}%</div>
+              </div>
+              <div className="rounded-md bg-neutral-soft/50 p-2">
+                <div className="text-neutral">成交额</div>
+                <div className="mt-0.5 tabular-nums text-foreground">{formatAmount(s.amount)}</div>
+              </div>
+            </div>
+            <p className="mt-2 line-clamp-2 text-xs leading-relaxed text-neutral">
+              {s.quantNote || `${s.upCount}涨 / ${s.downCount}跌，来源：${s.dataSource || "板块数据"}`}
+            </p>
+          </div>
+        ))}
+      </div>
+    </Card>
   );
 }
 

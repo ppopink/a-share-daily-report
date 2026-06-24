@@ -17,6 +17,7 @@ from data_fetcher import (
     get_money_flow_batch,
     estimate_money_flow_from_kline,
     build_sector_score_map,
+    get_hot_sector_boards,
 )
 from indicators import calculate_all_indicators, check_all_conditions, evaluate_technical_conditions
 from scorer import compute_total_scores
@@ -40,6 +41,128 @@ def _save_filter_log(rows: list, trade_date: datetime.date = None) -> str:
         trade_date = datetime.date.today()
     path = output_path(f"filter_log_{trade_date.strftime('%Y%m%d')}.csv", trade_date)
     pd.DataFrame(rows).to_csv(path, index=False, encoding="utf-8-sig")
+    return path
+
+
+def _fallback_hot_sectors_from_spot(spot_df: pd.DataFrame, selected_df: pd.DataFrame = None) -> pd.DataFrame:
+    """当远程板块接口不可用时，用本地行情聚合生成保守版热度榜。"""
+    if spot_df is None or spot_df.empty:
+        return pd.DataFrame()
+    df = spot_df.copy()
+    df["pct_change"] = pd.to_numeric(df.get("pct_change", 0), errors="coerce").fillna(0)
+    df["amount"] = pd.to_numeric(df.get("amount", 0), errors="coerce").fillna(0)
+    if "industry" in df.columns and df["industry"].fillna("").astype(str).str.strip().ne("").any():
+        df["sector_name"] = df["industry"].fillna("").astype(str).str.strip()
+        df = df[df["sector_name"] != ""]
+    else:
+        # 行业字段缺失时，明确标记为行情强势分组，不伪装成真实板块。
+        df["sector_name"] = "未分类强势组"
+
+    if df.empty:
+        return pd.DataFrame()
+
+    grouped = (
+        df.groupby("sector_name")
+        .agg(
+            pct_change=("pct_change", "mean"),
+            amount=("amount", "sum"),
+            stock_count=("code", "count"),
+            up_count=("pct_change", lambda s: int((s > 0).sum())),
+            down_count=("pct_change", lambda s: int((s < 0).sum())),
+            strong_count=("pct_change", lambda s: int((s >= 5).sum())),
+        )
+        .reset_index()
+    )
+    grouped["up_ratio"] = grouped["up_count"] / grouped["stock_count"].replace(0, np.nan)
+    grouped["strong_ratio"] = grouped["strong_count"] / grouped["stock_count"].replace(0, np.nan)
+
+    top_stocks = []
+    for sector_name, sub in df.groupby("sector_name"):
+        leaders = sub.sort_values("pct_change", ascending=False).head(3)
+        leader = leaders.iloc[0]
+        top_stocks.append({
+            "sector_name": sector_name,
+            "leader_name": leader.get("name", ""),
+            "leader_code": str(leader.get("code", "")),
+            "leader_pct_change": float(leader.get("pct_change", 0)),
+            "leading_stocks": "；".join(
+                f"{r.get('name', '')}({str(r.get('code', ''))}) {float(r.get('pct_change', 0)):.2f}%"
+                for _, r in leaders.iterrows()
+            ),
+        })
+    grouped = grouped.merge(pd.DataFrame(top_stocks), on="sector_name", how="left")
+
+    pct_norm = (grouped["pct_change"] - grouped["pct_change"].min()) / max(grouped["pct_change"].max() - grouped["pct_change"].min(), 1e-9)
+    amount_norm = (grouped["amount"] - grouped["amount"].min()) / max(grouped["amount"].max() - grouped["amount"].min(), 1e-9)
+    grouped["heat_score"] = (
+        pct_norm.fillna(0) * 45
+        + grouped["up_ratio"].fillna(0).clip(0, 1) * 25
+        + grouped["strong_ratio"].fillna(0).clip(0, 1) * 15
+        + amount_norm.fillna(0) * 15
+    ).round(2)
+    grouped["sector_code"] = ""
+    grouped["turnover"] = 0.0
+    grouped["flat_count"] = grouped["stock_count"] - grouped["up_count"] - grouped["down_count"]
+    grouped = grouped.sort_values(["heat_score", "pct_change"], ascending=[False, False]).reset_index(drop=True)
+    grouped.insert(0, "sector_rank", range(1, len(grouped) + 1))
+    grouped["quant_note"] = grouped.apply(
+        lambda r: (
+            f"热度{r['heat_score']:.1f} = 平均涨幅{r['pct_change']:.2f}%、"
+            f"上涨占比{r['up_ratio'] * 100:.1f}%、强势股占比{r['strong_ratio'] * 100:.1f}%、"
+            f"成交额{r['amount'] / 1e8:.1f}亿"
+        ),
+        axis=1,
+    )
+    return grouped
+
+
+def _save_hot_sector_report(
+    spot_df: pd.DataFrame,
+    selected_df: pd.DataFrame = None,
+    trade_date: datetime.date = None,
+    verbose: bool = True,
+) -> str:
+    if trade_date is None:
+        trade_date = datetime.date.today()
+    date_str = trade_date.strftime("%Y%m%d")
+    hot = get_hot_sector_boards(limit=max(getattr(cfg, "HOT_SECTOR_TOP_N", 8), 8))
+    source = "东方财富行业板块"
+    if hot.empty:
+        hot = _fallback_hot_sectors_from_spot(spot_df, selected_df)
+        source = "本地行情聚合"
+
+    if selected_df is not None and not selected_df.empty and "industry" in selected_df.columns and not hot.empty:
+        selected = selected_df.copy()
+        selected["industry"] = selected["industry"].fillna("").astype(str).str.strip()
+        selected_counts = selected[selected["industry"] != ""].groupby("industry")["code"].count().to_dict()
+        hot["selected_count"] = hot["sector_name"].map(selected_counts).fillna(0).astype(int)
+    elif not hot.empty:
+        hot["selected_count"] = 0
+
+    if not hot.empty:
+        hot["data_source"] = source
+        hot = hot.head(getattr(cfg, "HOT_SECTOR_TOP_N", 8)).copy()
+
+    cols = [
+        "sector_rank", "sector_code", "sector_name", "heat_score",
+        "pct_change", "amount", "turnover", "up_count", "down_count",
+        "flat_count", "stock_count", "up_ratio", "selected_count",
+        "leader_name", "leader_code", "leader_pct_change", "leading_stocks",
+        "quant_note", "data_source",
+    ]
+    path = output_path(f"hot_sectors_{date_str}.csv", trade_date)
+    save_df = hot[[c for c in cols if c in hot.columns]].copy() if not hot.empty else pd.DataFrame(columns=cols)
+    save_df.to_csv(path, index=False, encoding="utf-8-sig")
+    if verbose:
+        print(f"[板块] 热门板块榜: {path} ({len(save_df)} 个, {source})")
+        for _, row in save_df.head(5).iterrows():
+            print(
+                f"  {int(row.get('sector_rank', 0))}. {row.get('sector_name', '')} "
+                f"热度 {float(row.get('heat_score', 0)):.1f} | "
+                f"涨幅 {float(row.get('pct_change', 0)):.2f}% | "
+                f"上涨占比 {float(row.get('up_ratio', 0)) * 100:.1f}% | "
+                f"领涨 {row.get('leader_name', '')}"
+            )
     return path
 
 
@@ -424,6 +547,7 @@ def run_screening(
         print(f"[筛选] 技术面通过: {len(passed_symbols)} / {total} ({pct:.1f}%)")
 
     if not passed_symbols:
+        _save_hot_sector_report(spot_df, selected_df=None, verbose=verbose)
         log_path = _save_filter_log(filter_log)
         if verbose:
             print(f"[日志] 过滤过程已保存: {log_path}")
@@ -468,6 +592,7 @@ def run_screening(
     if verbose:
         print(f"[日志] 过滤过程已保存: {log_path}")
     if not passed_symbols:
+        _save_hot_sector_report(spot_df, selected_df=None, verbose=verbose)
         print("[结果] 无股票通过资金/成交额/板块硬过滤")
         return pd.DataFrame()
 
@@ -495,6 +620,7 @@ def run_screening(
         sector_score_map=sector_score_map,
         rule_flags=rule_flags,
     )
+    _save_hot_sector_report(spot_df, selected_df=result_df, verbose=verbose)
 
     # ================================================
     # Step 7: 返回 Top N

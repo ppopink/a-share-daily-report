@@ -63,8 +63,31 @@ export interface DiagnosticItem {
   total: number;
 }
 
+export interface HotSector {
+  rank: number;
+  code: string;
+  name: string;
+  heatScore: number;
+  pctChange: number;
+  amount: number;
+  turnover: number;
+  upCount: number;
+  downCount: number;
+  flatCount: number;
+  stockCount: number;
+  upRatio: number;
+  selectedCount: number;
+  leaderName: string;
+  leaderCode: string;
+  leaderPctChange: number;
+  leadingStocks: string;
+  quantNote: string;
+  dataSource: string;
+}
+
 export interface ReportFiles {
   csv?: string;
+  hotSectorsCsv?: string;
   excel?: string;
   html?: string;
   pdf?: string;
@@ -95,6 +118,7 @@ export interface DailyReport {
   diagnostics: DiagnosticItem[];
   funnel: { stage: string; count: number }[];
   industryDist: { sector: string; count: number }[];
+  hotSectors?: HotSector[];
 }
 
 export interface HistoryEntry {

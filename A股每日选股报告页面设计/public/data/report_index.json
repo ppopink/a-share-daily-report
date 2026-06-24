@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-06-24 16:54:14",
+  "generatedAt": "2026-06-24 18:29:20",
   "latestDate": "2026-06-24",
   "availableDates": [
     "2026-06-24",
@@ -15,6 +15,7 @@
       "avgScore": 83.44,
       "files": {
         "csv": "reports/20260624/stock_pick_20260624.csv",
+        "hotSectorsCsv": "reports/20260624/hot_sectors_20260624.csv",
         "excel": "reports/20260624/stock_pick_20260624.xlsx",
         "html": "reports/20260624/stock_pick_report_20260624.html",
         "pdf": "reports/20260624/stock_pick_report_20260624.pdf"
@@ -69,6 +70,7 @@
       "avgScore": 83.44,
       "files": {
         "csv": "reports/20260624/stock_pick_20260624.csv",
+        "hotSectorsCsv": "reports/20260624/hot_sectors_20260624.csv",
         "excel": "reports/20260624/stock_pick_20260624.xlsx",
         "html": "reports/20260624/stock_pick_report_20260624.html",
         "pdf": "reports/20260624/stock_pick_report_20260624.pdf"

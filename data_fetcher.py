@@ -53,6 +53,10 @@ def _money_flow_cache_file() -> str:
     return os.path.join(_cache_dir(), f"money_flow_{_today_key()}_{cfg.FLOW_LOOKBACK_DAYS}.pkl")
 
 
+def _hot_sector_cache_file() -> str:
+    return os.path.join(_cache_dir(), f"hot_sector_{_today_key()}.pkl")
+
+
 def _log_filter_step(log: list, step_name: str, before_count: int, after_count: int):
     pass_count = after_count
     pass_rate = pass_count / before_count if before_count else 0
@@ -755,6 +759,121 @@ def build_sector_score_map(spot_df: pd.DataFrame = None) -> dict:
         if industry in industry_scores:
             scores[str(row["code"])] = industry_scores[industry]
     return scores
+
+
+def _normalize_series(series: pd.Series) -> pd.Series:
+    values = pd.to_numeric(series, errors="coerce").fillna(0)
+    v_min = float(values.min()) if len(values) else 0
+    v_max = float(values.max()) if len(values) else 0
+    if v_max <= v_min:
+        return pd.Series([0.5] * len(values), index=values.index)
+    return (values - v_min) / (v_max - v_min)
+
+
+def get_hot_sector_boards(limit: int = None) -> pd.DataFrame:
+    """
+    获取东方财富行业板块实时热度榜。
+
+    返回字段：
+    sector_rank, sector_code, sector_name, heat_score, pct_change, amount,
+    turnover, up_count, down_count, up_ratio, leader_name, leader_code,
+    leader_pct_change, quant_note
+    """
+    if limit is None:
+        limit = getattr(cfg, "HOT_SECTOR_TOP_N", 8)
+
+    cache_file = _hot_sector_cache_file()
+    if _cache_enabled() and not _force_refresh_cache() and os.path.exists(cache_file):
+        try:
+            cached = pd.read_pickle(cache_file)
+            if not cached.empty:
+                print(f"[缓存] 使用热门板块缓存: {cache_file} ({len(cached)} 个)")
+                return cached.head(limit).copy()
+        except Exception as e:
+            print(f"[缓存] 热门板块缓存读取失败，改为重新获取: {e}")
+
+    if not getattr(cfg, "USE_HOT_SECTOR_API", True):
+        return pd.DataFrame()
+
+    url = "https://push2.eastmoney.com/api/qt/clist/get"
+    params = {
+        "pn": "1",
+        "pz": str(max(limit * 3, 30)),
+        "po": "1",
+        "np": "1",
+        "ut": "bd1d9ddb04089700cf9c27f6f7426281",
+        "fltt": "2",
+        "invt": "2",
+        "fid": "f3",
+        # m:90+t:2 为东方财富行业板块列表
+        "fs": "m:90+t:2",
+        "fields": "f12,f14,f3,f6,f8,f104,f105,f106,f128,f136,f140",
+    }
+    try:
+        resp = _get(url, params=params, timeout=getattr(cfg, "HOT_SECTOR_API_TIMEOUT", 8), retries=1)
+        payload = resp.json()
+        diff = (payload.get("data") or {}).get("diff") or []
+    except Exception as e:
+        print(f"[警告] 热门板块获取失败: {e}")
+        return pd.DataFrame()
+
+    rows = []
+    for item in diff:
+        up_count = float(item.get("f104") or 0)
+        down_count = float(item.get("f105") or 0)
+        flat_count = float(item.get("f106") or 0)
+        total_count = up_count + down_count + flat_count
+        rows.append({
+            "sector_code": str(item.get("f12", "")),
+            "sector_name": str(item.get("f14", "")),
+            "pct_change": float(item.get("f3") or 0),
+            "amount": float(item.get("f6") or 0),
+            "turnover": float(item.get("f8") or 0),
+            "up_count": int(up_count),
+            "down_count": int(down_count),
+            "flat_count": int(flat_count),
+            "stock_count": int(total_count),
+            "up_ratio": up_count / total_count if total_count else 0,
+            "leader_name": str(item.get("f128", "") or ""),
+            "leader_code": str(item.get("f140", "") or ""),
+            "leader_pct_change": float(item.get("f136") or 0),
+        })
+
+    df = pd.DataFrame(rows)
+    if df.empty:
+        return df
+
+    pct_score = _normalize_series(df["pct_change"])
+    amount_score = _normalize_series(df["amount"])
+    turnover_score = _normalize_series(df["turnover"])
+    leader_score = _normalize_series(df["leader_pct_change"])
+    up_ratio = pd.to_numeric(df["up_ratio"], errors="coerce").fillna(0).clip(0, 1)
+    df["heat_score"] = (
+        pct_score * 45
+        + up_ratio * 25
+        + amount_score * 15
+        + leader_score * 10
+        + turnover_score * 5
+    ).round(2)
+    df = df.sort_values(["heat_score", "pct_change", "amount"], ascending=[False, False, False]).reset_index(drop=True)
+    df.insert(0, "sector_rank", range(1, len(df) + 1))
+    df["quant_note"] = df.apply(
+        lambda r: (
+            f"热度{r['heat_score']:.1f} = 涨幅{r['pct_change']:.2f}%、"
+            f"上涨占比{r['up_ratio'] * 100:.1f}%、成交额{r['amount'] / 1e8:.1f}亿、"
+            f"领涨股{r['leader_name']} {r['leader_pct_change']:.2f}%"
+        ),
+        axis=1,
+    )
+
+    if _cache_enabled():
+        try:
+            df.to_pickle(cache_file)
+            print(f"[缓存] 已保存热门板块缓存: {cache_file}")
+        except Exception as e:
+            print(f"[缓存] 热门板块缓存保存失败: {e}")
+
+    return df.head(limit).copy()
 
 
 def load_benchmark_data(csv_path: str = None, benchmark_code: str = None) -> pd.DataFrame:

@@ -84,6 +84,7 @@ def _copy_artifacts(date_key: str, day_dir: str) -> Dict[str, str]:
     files: Dict[str, str] = {}
     patterns = {
         "csv": f"stock_pick_{date_key}.csv",
+        "hotSectorsCsv": f"hot_sectors_{date_key}.csv",
         "excel": f"stock_pick_{date_key}.xlsx",
         "html": f"stock_pick_report_{date_key}.html",
         "pdf": f"stock_pick_report_{date_key}.pdf",
@@ -220,6 +221,38 @@ def _industry_dist(stocks: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
     ]
 
 
+def _hot_sectors(date_key: str, day_dir: str) -> List[Dict[str, Any]]:
+    path = os.path.join(day_dir, f"hot_sectors_{date_key}.csv")
+    df = _read_csv(path, dtype={"sector_code": str, "leader_code": str})
+    if df.empty:
+        return []
+
+    sectors: List[Dict[str, Any]] = []
+    for _, row in df.head(getattr(cfg, "HOT_SECTOR_TOP_N", 8)).iterrows():
+        sectors.append({
+            "rank": int(_safe_num(row.get("sector_rank"), len(sectors) + 1)),
+            "code": _safe_str(row.get("sector_code")),
+            "name": _safe_str(row.get("sector_name"), "未命名板块"),
+            "heatScore": _round(row.get("heat_score"), 2),
+            "pctChange": _round(row.get("pct_change"), 2),
+            "amount": _round(row.get("amount"), 2),
+            "turnover": _round(row.get("turnover"), 2),
+            "upCount": int(_safe_num(row.get("up_count"), 0)),
+            "downCount": int(_safe_num(row.get("down_count"), 0)),
+            "flatCount": int(_safe_num(row.get("flat_count"), 0)),
+            "stockCount": int(_safe_num(row.get("stock_count"), 0)),
+            "upRatio": _round(_safe_num(row.get("up_ratio")) * 100, 2),
+            "selectedCount": int(_safe_num(row.get("selected_count"), 0)),
+            "leaderName": _safe_str(row.get("leader_name")),
+            "leaderCode": _safe_str(row.get("leader_code")),
+            "leaderPctChange": _round(row.get("leader_pct_change"), 2),
+            "leadingStocks": _safe_str(row.get("leading_stocks")),
+            "quantNote": _safe_str(row.get("quant_note")),
+            "dataSource": _safe_str(row.get("data_source")),
+        })
+    return sectors
+
+
 def _build_daily_report(date_key: str) -> Optional[Dict[str, Any]]:
     day_dir = os.path.join(cfg.OUTPUT_DIR, date_key)
     pick_path = os.path.join(day_dir, f"stock_pick_{date_key}.csv")
@@ -288,6 +321,7 @@ def _build_daily_report(date_key: str) -> Optional[Dict[str, Any]]:
         "diagnostics": diagnostics,
         "funnel": _funnel(date_key, day_dir, selected_count),
         "industryDist": _industry_dist(stocks),
+        "hotSectors": _hot_sectors(date_key, day_dir),
     }
 
 
