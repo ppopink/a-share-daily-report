@@ -10,6 +10,17 @@ export interface RiskFlag {
   label: string;
 }
 
+export interface KlinePoint {
+  date: string;
+  open: number;
+  close: number;
+  high: number;
+  low: number;
+  volume: number;
+  ma5: number | null;
+  ma20: number | null;
+}
+
 export interface Stock {
   rank: number;
   name: string;
@@ -47,6 +58,7 @@ export interface Stock {
   sectorRankPct: number; // 板块排名分位 %
   sectorInnerRankPct: number; // 板块内排名分位 %
   sector: string;
+  kline?: KlinePoint[];
 }
 
 export interface SummaryStat {

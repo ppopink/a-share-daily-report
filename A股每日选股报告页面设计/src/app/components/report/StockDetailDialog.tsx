@@ -6,6 +6,7 @@ import {
   DialogTitle,
 } from "../ui/dialog";
 import { ChangeText, EntryTag, RiskTag, NoRiskTag, ScoreBar } from "./shared";
+import { KlineChart } from "./KlineChart";
 import type { Stock } from "../../data/types";
 
 function Metric({
@@ -78,6 +79,10 @@ export function StockDetailDialog({
         </DialogHeader>
 
         <div className="space-y-5 px-5 pb-5">
+          <section>
+            <KlineChart data={stock.kline} />
+          </section>
+
           {/* 评分拆解 */}
           <section>
             <h4 className="mb-2 text-foreground">评分拆解</h4>

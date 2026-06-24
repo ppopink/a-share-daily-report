@@ -129,7 +129,51 @@ def _entry_timing(row: pd.Series) -> str:
     return "等待回踩"
 
 
-def _stock_from_row(row: pd.Series) -> Dict[str, Any]:
+def _load_kline_cache(date_key: str) -> pd.DataFrame:
+    preferred = os.path.join(cfg.CACHE_DIR, f"kline_daily_{date_key}_{cfg.HISTORY_DAYS}.pkl")
+    candidates = [preferred]
+    if not os.path.exists(preferred):
+        import glob
+        candidates = sorted(glob.glob(os.path.join(cfg.CACHE_DIR, f"kline_daily_{date_key}_*.pkl")), reverse=True)
+    for path in candidates:
+        if os.path.exists(path):
+            try:
+                df = pd.read_pickle(path)
+                if isinstance(df, pd.DataFrame) and not df.empty:
+                    df = df.copy()
+                    df["code"] = df["code"].astype(str).str.zfill(6)
+                    return df
+            except Exception:
+                continue
+    return pd.DataFrame()
+
+
+def _kline_points(kline_df: pd.DataFrame, code: str, limit: int = 60) -> List[Dict[str, Any]]:
+    if kline_df.empty or "code" not in kline_df.columns:
+        return []
+    sub = kline_df[kline_df["code"].astype(str).str.zfill(6) == str(code).zfill(6)].copy()
+    if sub.empty:
+        return []
+    sub = sub.sort_values("date").tail(limit).copy()
+    sub["MA5"] = pd.to_numeric(sub["close"], errors="coerce").rolling(5).mean()
+    sub["MA20"] = pd.to_numeric(sub["close"], errors="coerce").rolling(20).mean()
+
+    points = []
+    for _, row in sub.iterrows():
+        points.append({
+            "date": _safe_str(row.get("date")),
+            "open": _round(row.get("open"), 3),
+            "close": _round(row.get("close"), 3),
+            "high": _round(row.get("high"), 3),
+            "low": _round(row.get("low"), 3),
+            "volume": _round(row.get("volume"), 0),
+            "ma5": None if pd.isna(row.get("MA5")) else _round(row.get("MA5"), 3),
+            "ma20": None if pd.isna(row.get("MA20")) else _round(row.get("MA20"), 3),
+        })
+    return points
+
+
+def _stock_from_row(row: pd.Series, kline_df: pd.DataFrame = None) -> Dict[str, Any]:
     risks = _risk_flags(row)
     entry_timing = _entry_timing(row)
     risk_note = "暂无明显风险信号。" if not risks else "；".join(r["label"] for r in risks) + "。注意控制仓位。"
@@ -170,6 +214,7 @@ def _stock_from_row(row: pd.Series) -> Dict[str, Any]:
         "sectorRankPct": _round(_safe_num(row.get("sector_rank_pct")) * 100, 2),
         "sectorInnerRankPct": _round(_safe_num(row.get("stock_rank_in_sector")) * 100, 2),
         "sector": sector,
+        "kline": _kline_points(kline_df if kline_df is not None else pd.DataFrame(), code),
     }
 
 
@@ -261,7 +306,8 @@ def _build_daily_report(date_key: str) -> Optional[Dict[str, Any]]:
         return None
 
     df = df.sort_values("total_score", ascending=False).head(cfg.TOP_N)
-    stocks = [_stock_from_row(row) for _, row in df.iterrows()]
+    kline_df = _load_kline_cache(date_key)
+    stocks = [_stock_from_row(row, kline_df) for _, row in df.iterrows()]
     for idx, stock in enumerate(stocks, start=1):
         stock["rank"] = idx
 

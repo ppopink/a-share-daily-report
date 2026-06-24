@@ -46,7 +46,8 @@
       "moneyFlowRatio": 0.0,
       "sectorRankPct": 0.0,
       "sectorInnerRankPct": 0.0,
-      "sector": "未分类"
+      "sector": "未分类",
+      "kline": []
     },
     {
       "rank": 2,
@@ -81,7 +82,8 @@
       "moneyFlowRatio": 0.0,
       "sectorRankPct": 0.0,
       "sectorInnerRankPct": 0.0,
-      "sector": "未分类"
+      "sector": "未分类",
+      "kline": []
     },
     {
       "rank": 3,
@@ -121,7 +123,8 @@
       "moneyFlowRatio": 0.0,
       "sectorRankPct": 0.0,
       "sectorInnerRankPct": 0.0,
-      "sector": "未分类"
+      "sector": "未分类",
+      "kline": []
     },
     {
       "rank": 4,
@@ -156,7 +159,8 @@
       "moneyFlowRatio": 0.0,
       "sectorRankPct": 0.0,
       "sectorInnerRankPct": 0.0,
-      "sector": "未分类"
+      "sector": "未分类",
+      "kline": []
     },
     {
       "rank": 5,
@@ -191,7 +195,8 @@
       "moneyFlowRatio": 0.0,
       "sectorRankPct": 0.0,
       "sectorInnerRankPct": 0.0,
-      "sector": "未分类"
+      "sector": "未分类",
+      "kline": []
     },
     {
       "rank": 6,
@@ -226,7 +231,8 @@
       "moneyFlowRatio": 0.0,
       "sectorRankPct": 0.0,
       "sectorInnerRankPct": 0.0,
-      "sector": "未分类"
+      "sector": "未分类",
+      "kline": []
     },
     {
       "rank": 7,
@@ -261,7 +267,8 @@
       "moneyFlowRatio": 0.0,
       "sectorRankPct": 0.0,
       "sectorInnerRankPct": 0.0,
-      "sector": "未分类"
+      "sector": "未分类",
+      "kline": []
     },
     {
       "rank": 8,
@@ -296,7 +303,8 @@
       "moneyFlowRatio": 0.0,
       "sectorRankPct": 0.0,
       "sectorInnerRankPct": 0.0,
-      "sector": "未分类"
+      "sector": "未分类",
+      "kline": []
     },
     {
       "rank": 9,
@@ -331,7 +339,8 @@
       "moneyFlowRatio": 0.0,
       "sectorRankPct": 0.0,
       "sectorInnerRankPct": 0.0,
-      "sector": "未分类"
+      "sector": "未分类",
+      "kline": []
     },
     {
       "rank": 10,
@@ -366,7 +375,8 @@
       "moneyFlowRatio": 0.0,
       "sectorRankPct": 0.0,
       "sectorInnerRankPct": 0.0,
-      "sector": "未分类"
+      "sector": "未分类",
+      "kline": []
     }
   ],
   "summary": {
