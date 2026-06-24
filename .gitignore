@@ -1,0 +1,12 @@
+.DS_Store
+__pycache__/
+.pytest_cache/
+*.pyc
+
+cache/
+A股每日选股报告页面设计.zip
+A股每日选股报告页面设计/node_modules/
+A股每日选股报告页面设计/dist/
+
+# 本地原始输出可以很大；前端发布只需要提交 public/data 和 public/reports
+output/

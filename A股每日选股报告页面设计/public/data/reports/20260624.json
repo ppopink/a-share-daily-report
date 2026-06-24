@@ -1,0 +1,1048 @@
+{
+  "date": "2026-06-24",
+  "mode": "normal",
+  "generatedAt": "2026-06-24 16:04:27",
+  "files": {
+    "csv": "reports/20260624/stock_pick_20260624.csv",
+    "excel": "reports/20260624/stock_pick_20260624.xlsx",
+    "html": "reports/20260624/stock_pick_report_20260624.html",
+    "pdf": "reports/20260624/stock_pick_report_20260624.pdf"
+  },
+  "stocks": [
+    {
+      "rank": 1,
+      "name": "智微智能",
+      "code": "001339",
+      "price": 136.95,
+      "changePct": 10.0,
+      "totalScore": 100.79,
+      "trendScore": 11.0,
+      "volumeScore": 4.93,
+      "dmiScore": 15.0,
+      "macdScore": 8.0,
+      "expmaScore": 10.0,
+      "moneyFlowScore": 22.5,
+      "sectorScore": 20.0,
+      "trendQualityScore": 11.0,
+      "entryTiming": "追高谨慎",
+      "entryNote": "🟡 首日上涨，可关注",
+      "risks": [
+        {
+          "level": "high",
+          "label": "偏离MA20较大"
+        },
+        {
+          "level": "medium",
+          "label": "短线涨幅偏高"
+        }
+      ],
+      "riskNote": "偏离MA20较大；短线涨幅偏高。注意控制仓位。",
+      "adx": 49.2,
+      "plusDI": 47.18,
+      "minusDI": 8.58,
+      "volRatio": 1.23,
+      "aboveMa20Days20": 10,
+      "ma20Slope10Pct": 2.72,
+      "ma20Slope20Pct": 7.54,
+      "closeMa20Ratio": 1.2668,
+      "macdDIF": 8.4273,
+      "macdDEA": 5.8105,
+      "macdHIST": 5.2335,
+      "moneyFlowRatio": 0.23,
+      "sectorRankPct": 6.45,
+      "sectorInnerRankPct": 6.45,
+      "sector": "未分类"
+    },
+    {
+      "rank": 2,
+      "name": "超声电子",
+      "code": "000823",
+      "price": 23.52,
+      "changePct": 10.01,
+      "totalScore": 96.46,
+      "trendScore": 12.8,
+      "volumeScore": 4.88,
+      "dmiScore": 15.0,
+      "macdScore": 8.0,
+      "expmaScore": 10.0,
+      "moneyFlowScore": 14.11,
+      "sectorScore": 20.0,
+      "trendQualityScore": 12.8,
+      "entryTiming": "追高谨慎",
+      "entryNote": "🟡 首日上涨，可关注",
+      "risks": [
+        {
+          "level": "high",
+          "label": "偏离MA20较大"
+        },
+        {
+          "level": "medium",
+          "label": "短线涨幅偏高"
+        }
+      ],
+      "riskNote": "偏离MA20较大；短线涨幅偏高。注意控制仓位。",
+      "adx": 52.5,
+      "plusDI": 28.0,
+      "minusDI": 8.8,
+      "volRatio": 1.22,
+      "aboveMa20Days20": 16,
+      "ma20Slope10Pct": 13.31,
+      "ma20Slope20Pct": 15.93,
+      "closeMa20Ratio": 1.2473,
+      "macdDIF": 1.4388,
+      "macdDEA": 1.2873,
+      "macdHIST": 0.3029,
+      "moneyFlowRatio": 0.15,
+      "sectorRankPct": 3.23,
+      "sectorInnerRankPct": 3.23,
+      "sector": "未分类"
+    },
+    {
+      "rank": 3,
+      "name": "三孚股份",
+      "code": "603938",
+      "price": 71.63,
+      "changePct": 10.0,
+      "totalScore": 92.2,
+      "trendScore": 14.0,
+      "volumeScore": 6.18,
+      "dmiScore": 15.0,
+      "macdScore": 15.0,
+      "expmaScore": 10.0,
+      "moneyFlowScore": 9.4,
+      "sectorScore": 20.0,
+      "trendQualityScore": 14.0,
+      "entryTiming": "追高谨慎",
+      "entryNote": "🟠 连涨多日，等回调再入",
+      "risks": [
+        {
+          "level": "high",
+          "label": "偏离MA20较大"
+        },
+        {
+          "level": "medium",
+          "label": "短线涨幅偏高"
+        }
+      ],
+      "riskNote": "偏离MA20较大；短线涨幅偏高。注意控制仓位。",
+      "adx": 49.4,
+      "plusDI": 54.77,
+      "minusDI": 9.74,
+      "volRatio": 1.54,
+      "aboveMa20Days20": 20,
+      "ma20Slope10Pct": 13.39,
+      "ma20Slope20Pct": 35.7,
+      "closeMa20Ratio": 1.3513,
+      "macdDIF": 4.5595,
+      "macdDEA": 3.2783,
+      "macdHIST": 2.5624,
+      "moneyFlowRatio": 0.1,
+      "sectorRankPct": 13.71,
+      "sectorInnerRankPct": 13.71,
+      "sector": "未分类"
+    },
+    {
+      "rank": 4,
+      "name": "密尔克卫",
+      "code": "603713",
+      "price": 68.77,
+      "changePct": 10.0,
+      "totalScore": 90.24,
+      "trendScore": 12.5,
+      "volumeScore": 7.7,
+      "dmiScore": 15.0,
+      "macdScore": 8.0,
+      "expmaScore": 10.0,
+      "moneyFlowScore": 14.41,
+      "sectorScore": 20.0,
+      "trendQualityScore": 12.5,
+      "entryTiming": "追高谨慎",
+      "entryNote": "🟠 连涨多日，等回调再入",
+      "risks": [
+        {
+          "level": "high",
+          "label": "偏离MA20较大"
+        },
+        {
+          "level": "medium",
+          "label": "短线涨幅偏高"
+        }
+      ],
+      "riskNote": "偏离MA20较大；短线涨幅偏高。注意控制仓位。",
+      "adx": 51.5,
+      "plusDI": 42.18,
+      "minusDI": 5.05,
+      "volRatio": 1.92,
+      "aboveMa20Days20": 15,
+      "ma20Slope10Pct": 5.68,
+      "ma20Slope20Pct": 3.19,
+      "closeMa20Ratio": 1.2018,
+      "macdDIF": 2.9168,
+      "macdDEA": 2.0129,
+      "macdHIST": 1.8078,
+      "moneyFlowRatio": 0.15,
+      "sectorRankPct": 13.71,
+      "sectorInnerRankPct": 13.71,
+      "sector": "未分类"
+    },
+    {
+      "rank": 5,
+      "name": "上峰材料",
+      "code": "000672",
+      "price": 21.55,
+      "changePct": 7.21,
+      "totalScore": 89.43,
+      "trendScore": 10.7,
+      "volumeScore": 4.96,
+      "dmiScore": 15.0,
+      "macdScore": 8.0,
+      "expmaScore": 10.0,
+      "moneyFlowScore": 25.0,
+      "sectorScore": 15.0,
+      "trendQualityScore": 10.7,
+      "entryTiming": "追高谨慎",
+      "entryNote": "🟠 连涨多日，等回调再入",
+      "risks": [
+        {
+          "level": "high",
+          "label": "偏离MA20较大"
+        },
+        {
+          "level": "medium",
+          "label": "短线涨幅偏高"
+        }
+      ],
+      "riskNote": "偏离MA20较大；短线涨幅偏高。注意控制仓位。",
+      "adx": 47.6,
+      "plusDI": 44.35,
+      "minusDI": 6.25,
+      "volRatio": 1.24,
+      "aboveMa20Days20": 9,
+      "ma20Slope10Pct": 0.01,
+      "ma20Slope20Pct": 7.36,
+      "closeMa20Ratio": 1.2389,
+      "macdDIF": 1.1013,
+      "macdDEA": 0.6838,
+      "macdHIST": 0.8351,
+      "moneyFlowRatio": 0.25,
+      "sectorRankPct": 32.26,
+      "sectorInnerRankPct": 32.26,
+      "sector": "未分类"
+    },
+    {
+      "rank": 6,
+      "name": "深天马Ａ",
+      "code": "000050",
+      "price": 10.72,
+      "changePct": 7.31,
+      "totalScore": 88.76,
+      "trendScore": 12.8,
+      "volumeScore": 7.18,
+      "dmiScore": 15.0,
+      "macdScore": 8.0,
+      "expmaScore": 10.0,
+      "moneyFlowScore": 19.85,
+      "sectorScore": 15.0,
+      "trendQualityScore": 12.8,
+      "entryTiming": "追高谨慎",
+      "entryNote": "🟠 连涨多日，等回调再入",
+      "risks": [
+        {
+          "level": "high",
+          "label": "偏离MA20较大"
+        },
+        {
+          "level": "medium",
+          "label": "短线涨幅偏高"
+        }
+      ],
+      "riskNote": "偏离MA20较大；短线涨幅偏高。注意控制仓位。",
+      "adx": 51.4,
+      "plusDI": 47.36,
+      "minusDI": 4.27,
+      "volRatio": 1.79,
+      "aboveMa20Days20": 16,
+      "ma20Slope10Pct": 6.52,
+      "ma20Slope20Pct": 7.94,
+      "closeMa20Ratio": 1.2713,
+      "macdDIF": 0.6143,
+      "macdDEA": 0.3832,
+      "macdHIST": 0.4621,
+      "moneyFlowRatio": 0.2,
+      "sectorRankPct": 30.65,
+      "sectorInnerRankPct": 30.65,
+      "sector": "未分类"
+    },
+    {
+      "rank": 7,
+      "name": "晶方科技",
+      "code": "603005",
+      "price": 49.63,
+      "changePct": 4.93,
+      "totalScore": 87.44,
+      "trendScore": 15.0,
+      "volumeScore": 6.59,
+      "dmiScore": 11.93,
+      "macdScore": 15.0,
+      "expmaScore": 10.0,
+      "moneyFlowScore": 14.76,
+      "sectorScore": 15.0,
+      "trendQualityScore": 15.0,
+      "entryTiming": "追高谨慎",
+      "entryNote": "🟠 连涨多日，等回调再入",
+      "risks": [],
+      "riskNote": "暂无明显风险信号。",
+      "adx": 38.9,
+      "plusDI": 28.41,
+      "minusDI": 8.78,
+      "volRatio": 1.65,
+      "aboveMa20Days20": 19,
+      "ma20Slope10Pct": 11.0,
+      "ma20Slope20Pct": 29.06,
+      "closeMa20Ratio": 1.125,
+      "macdDIF": 1.6405,
+      "macdDEA": 1.33,
+      "macdHIST": 0.621,
+      "moneyFlowRatio": 0.15,
+      "sectorRankPct": 48.39,
+      "sectorInnerRankPct": 48.39,
+      "sector": "未分类"
+    },
+    {
+      "rank": 8,
+      "name": "凯盛科技",
+      "code": "600552",
+      "price": 27.85,
+      "changePct": 8.75,
+      "totalScore": 85.55,
+      "trendScore": 13.7,
+      "volumeScore": 5.81,
+      "dmiScore": 15.0,
+      "macdScore": 8.0,
+      "expmaScore": 10.0,
+      "moneyFlowScore": 8.97,
+      "sectorScore": 20.0,
+      "trendQualityScore": 13.7,
+      "entryTiming": "追高谨慎",
+      "entryNote": "🟠 远离均线，不宜追高",
+      "risks": [
+        {
+          "level": "high",
+          "label": "偏离MA20较大"
+        },
+        {
+          "level": "medium",
+          "label": "短线涨幅偏高"
+        }
+      ],
+      "riskNote": "偏离MA20较大；短线涨幅偏高。注意控制仓位。",
+      "adx": 53.8,
+      "plusDI": 37.97,
+      "minusDI": 5.08,
+      "volRatio": 1.45,
+      "aboveMa20Days20": 19,
+      "ma20Slope10Pct": 11.58,
+      "ma20Slope20Pct": 23.47,
+      "closeMa20Ratio": 1.3037,
+      "macdDIF": 1.8535,
+      "macdDEA": 1.3791,
+      "macdHIST": 0.9487,
+      "moneyFlowRatio": 0.1,
+      "sectorRankPct": 19.35,
+      "sectorInnerRankPct": 19.35,
+      "sector": "未分类"
+    },
+    {
+      "rank": 9,
+      "name": "亚太实业",
+      "code": "000691",
+      "price": 13.49,
+      "changePct": 5.64,
+      "totalScore": 82.7,
+      "trendScore": 14.0,
+      "volumeScore": 6.1,
+      "dmiScore": 15.0,
+      "macdScore": 8.0,
+      "expmaScore": 10.0,
+      "moneyFlowScore": 12.8,
+      "sectorScore": 15.0,
+      "trendQualityScore": 14.0,
+      "entryTiming": "追高谨慎",
+      "entryNote": "🟠 远离均线，不宜追高",
+      "risks": [
+        {
+          "level": "high",
+          "label": "偏离MA20较大"
+        }
+      ],
+      "riskNote": "偏离MA20较大。注意控制仓位。",
+      "adx": 89.9,
+      "plusDI": 41.4,
+      "minusDI": 0.41,
+      "volRatio": 1.52,
+      "aboveMa20Days20": 20,
+      "ma20Slope10Pct": 16.66,
+      "ma20Slope20Pct": 25.18,
+      "closeMa20Ratio": 1.3452,
+      "macdDIF": 1.0413,
+      "macdDEA": 0.8515,
+      "macdHIST": 0.3795,
+      "moneyFlowRatio": 0.13,
+      "sectorRankPct": 41.94,
+      "sectorInnerRankPct": 41.94,
+      "sector": "未分类"
+    },
+    {
+      "rank": 10,
+      "name": "法拉电子",
+      "code": "600563",
+      "price": 178.76,
+      "changePct": 10.0,
+      "totalScore": 82.46,
+      "trendScore": 15.0,
+      "volumeScore": 6.02,
+      "dmiScore": 4.87,
+      "macdScore": 8.0,
+      "expmaScore": 10.0,
+      "moneyFlowScore": 7.54,
+      "sectorScore": 20.0,
+      "trendQualityScore": 15.0,
+      "entryTiming": "等待回踩",
+      "entryNote": "🟡 首日上涨，可关注",
+      "risks": [
+        {
+          "level": "medium",
+          "label": "短线涨幅偏高"
+        }
+      ],
+      "riskNote": "短线涨幅偏高。注意控制仓位。",
+      "adx": 24.7,
+      "plusDI": 25.95,
+      "minusDI": 15.26,
+      "volRatio": 1.5,
+      "aboveMa20Days20": 14,
+      "ma20Slope10Pct": 3.7,
+      "ma20Slope20Pct": 20.77,
+      "closeMa20Ratio": 1.0885,
+      "macdDIF": 3.9018,
+      "macdDEA": 2.613,
+      "macdHIST": 2.5775,
+      "moneyFlowRatio": 0.08,
+      "sectorRankPct": 9.68,
+      "sectorInnerRankPct": 9.68,
+      "sector": "未分类"
+    },
+    {
+      "rank": 11,
+      "name": "昭衍新药",
+      "code": "603127",
+      "price": 38.08,
+      "changePct": 4.24,
+      "totalScore": 80.07,
+      "trendScore": 7.11,
+      "volumeScore": 5.99,
+      "dmiScore": 15.0,
+      "macdScore": 8.0,
+      "expmaScore": 9.1,
+      "moneyFlowScore": 15.35,
+      "sectorScore": 15.0,
+      "trendQualityScore": 7.11,
+      "entryTiming": "等待回踩",
+      "entryNote": "🟡 首日上涨，可关注",
+      "risks": [],
+      "riskNote": "暂无明显风险信号。",
+      "adx": 45.0,
+      "plusDI": 37.54,
+      "minusDI": 7.7,
+      "volRatio": 1.5,
+      "aboveMa20Days20": 4,
+      "ma20Slope10Pct": -7.64,
+      "ma20Slope20Pct": -13.73,
+      "closeMa20Ratio": 1.1236,
+      "macdDIF": 0.9672,
+      "macdDEA": 0.2848,
+      "macdHIST": 1.3649,
+      "moneyFlowRatio": 0.16,
+      "sectorRankPct": 54.84,
+      "sectorInnerRankPct": 54.84,
+      "sector": "未分类"
+    },
+    {
+      "rank": 12,
+      "name": "大元泵业",
+      "code": "603757",
+      "price": 73.7,
+      "changePct": 8.64,
+      "totalScore": 79.56,
+      "trendScore": 5.1,
+      "volumeScore": 9.11,
+      "dmiScore": 14.04,
+      "macdScore": 8.0,
+      "expmaScore": 10.0,
+      "moneyFlowScore": 15.41,
+      "sectorScore": 20.0,
+      "trendQualityScore": 5.1,
+      "entryTiming": "追高谨慎",
+      "entryNote": "🟠 连涨多日，等回调再入",
+      "risks": [
+        {
+          "level": "high",
+          "label": "偏离MA20较大"
+        },
+        {
+          "level": "medium",
+          "label": "短线涨幅偏高"
+        }
+      ],
+      "riskNote": "偏离MA20较大；短线涨幅偏高。注意控制仓位。",
+      "adx": 43.1,
+      "plusDI": 53.6,
+      "minusDI": 7.97,
+      "volRatio": 2.28,
+      "aboveMa20Days20": 7,
+      "ma20Slope10Pct": -4.65,
+      "ma20Slope20Pct": -2.6,
+      "closeMa20Ratio": 1.3189,
+      "macdDIF": 4.3307,
+      "macdDEA": 1.8109,
+      "macdHIST": 5.0395,
+      "moneyFlowRatio": 0.16,
+      "sectorRankPct": 20.97,
+      "sectorInnerRankPct": 20.97,
+      "sector": "未分类"
+    },
+    {
+      "rank": 13,
+      "name": "药明康德",
+      "code": "603259",
+      "price": 115.4,
+      "changePct": 8.55,
+      "totalScore": 79.4,
+      "trendScore": 6.45,
+      "volumeScore": 9.93,
+      "dmiScore": 10.05,
+      "macdScore": 8.0,
+      "expmaScore": 10.0,
+      "moneyFlowScore": 11.22,
+      "sectorScore": 20.0,
+      "trendQualityScore": 6.45,
+      "entryTiming": "追高谨慎",
+      "entryNote": "🟠 远离均线，不宜追高",
+      "risks": [
+        {
+          "level": "medium",
+          "label": "短线涨幅偏高"
+        }
+      ],
+      "riskNote": "短线涨幅偏高。注意控制仓位。",
+      "adx": 35.1,
+      "plusDI": 50.8,
+      "minusDI": 9.51,
+      "volRatio": 2.48,
+      "aboveMa20Days20": 4,
+      "ma20Slope10Pct": -0.79,
+      "ma20Slope20Pct": -5.09,
+      "closeMa20Ratio": 1.1498,
+      "macdDIF": 3.3189,
+      "macdDEA": 1.5696,
+      "macdHIST": 3.4985,
+      "moneyFlowRatio": 0.12,
+      "sectorRankPct": 22.58,
+      "sectorInnerRankPct": 22.58,
+      "sector": "未分类"
+    },
+    {
+      "rank": 14,
+      "name": "众合科技",
+      "code": "000925",
+      "price": 9.09,
+      "changePct": 10.05,
+      "totalScore": 78.23,
+      "trendScore": 8.2,
+      "volumeScore": 8.93,
+      "dmiScore": 6.98,
+      "macdScore": 8.0,
+      "expmaScore": 5.75,
+      "moneyFlowScore": 10.54,
+      "sectorScore": 20.0,
+      "trendQualityScore": 8.2,
+      "entryTiming": "等待回踩",
+      "entryNote": "🟡 首日上涨，可关注",
+      "risks": [
+        {
+          "level": "medium",
+          "label": "短线涨幅偏高"
+        }
+      ],
+      "riskNote": "短线涨幅偏高。注意控制仓位。",
+      "adx": 29.0,
+      "plusDI": 29.84,
+      "minusDI": 7.53,
+      "volRatio": 2.23,
+      "aboveMa20Days20": 6,
+      "ma20Slope10Pct": -4.57,
+      "ma20Slope20Pct": -13.27,
+      "closeMa20Ratio": 1.104,
+      "macdDIF": 0.111,
+      "macdDEA": 0.03,
+      "macdHIST": 0.1619,
+      "moneyFlowRatio": 0.11,
+      "sectorRankPct": 1.61,
+      "sectorInnerRankPct": 1.61,
+      "sector": "未分类"
+    },
+    {
+      "rank": 15,
+      "name": "驰宏锌锗",
+      "code": "600497",
+      "price": 12.1,
+      "changePct": 10.0,
+      "totalScore": 77.02,
+      "trendScore": 5.7,
+      "volumeScore": 5.93,
+      "dmiScore": 15.0,
+      "macdScore": 8.0,
+      "expmaScore": 10.0,
+      "moneyFlowScore": 7.03,
+      "sectorScore": 20.0,
+      "trendQualityScore": 5.7,
+      "entryTiming": "追高谨慎",
+      "entryNote": "🟠 远离均线，不宜追高",
+      "risks": [
+        {
+          "level": "high",
+          "label": "偏离MA20较大"
+        },
+        {
+          "level": "medium",
+          "label": "短线涨幅偏高"
+        }
+      ],
+      "riskNote": "偏离MA20较大；短线涨幅偏高。注意控制仓位。",
+      "adx": 48.0,
+      "plusDI": 37.21,
+      "minusDI": 10.75,
+      "volRatio": 1.48,
+      "aboveMa20Days20": 9,
+      "ma20Slope10Pct": -0.06,
+      "ma20Slope20Pct": -0.63,
+      "closeMa20Ratio": 1.2463,
+      "macdDIF": 0.6403,
+      "macdDEA": 0.4046,
+      "macdHIST": 0.4713,
+      "moneyFlowRatio": 0.08,
+      "sectorRankPct": 6.45,
+      "sectorInnerRankPct": 6.45,
+      "sector": "未分类"
+    },
+    {
+      "rank": 16,
+      "name": "云天化",
+      "code": "600096",
+      "price": 34.12,
+      "changePct": 6.42,
+      "totalScore": 76.54,
+      "trendScore": 7.64,
+      "volumeScore": 6.04,
+      "dmiScore": 9.32,
+      "macdScore": 8.0,
+      "expmaScore": 9.22,
+      "moneyFlowScore": 14.88,
+      "sectorScore": 15.0,
+      "trendQualityScore": 7.64,
+      "entryTiming": "等待回踩",
+      "entryNote": "🟡 首日上涨，可关注",
+      "risks": [],
+      "riskNote": "暂无明显风险信号。",
+      "adx": 33.6,
+      "plusDI": 33.19,
+      "minusDI": 10.16,
+      "volRatio": 1.51,
+      "aboveMa20Days20": 5,
+      "ma20Slope10Pct": -1.89,
+      "ma20Slope20Pct": -9.3,
+      "closeMa20Ratio": 1.1145,
+      "macdDIF": 0.7319,
+      "macdDEA": 0.2729,
+      "macdHIST": 0.918,
+      "moneyFlowRatio": 0.15,
+      "sectorRankPct": 35.48,
+      "sectorInnerRankPct": 35.48,
+      "sector": "未分类"
+    },
+    {
+      "rank": 17,
+      "name": "江瀚新材",
+      "code": "603281",
+      "price": 40.64,
+      "changePct": 7.77,
+      "totalScore": 75.79,
+      "trendScore": 7.46,
+      "volumeScore": 9.47,
+      "dmiScore": 8.45,
+      "macdScore": 8.0,
+      "expmaScore": 10.0,
+      "moneyFlowScore": 10.15,
+      "sectorScore": 15.0,
+      "trendQualityScore": 7.46,
+      "entryTiming": "等待回踩",
+      "entryNote": "🟠 连涨2天，注意节奏",
+      "risks": [
+        {
+          "level": "medium",
+          "label": "短线涨幅偏高"
+        }
+      ],
+      "riskNote": "短线涨幅偏高。注意控制仓位。",
+      "adx": 31.9,
+      "plusDI": 36.22,
+      "minusDI": 10.73,
+      "volRatio": 2.37,
+      "aboveMa20Days20": 7,
+      "ma20Slope10Pct": -1.19,
+      "ma20Slope20Pct": -2.79,
+      "closeMa20Ratio": 1.1456,
+      "macdDIF": 1.1608,
+      "macdDEA": 0.7297,
+      "macdHIST": 0.8623,
+      "moneyFlowRatio": 0.11,
+      "sectorRankPct": 27.42,
+      "sectorInnerRankPct": 27.42,
+      "sector": "未分类"
+    },
+    {
+      "rank": 18,
+      "name": "锡业股份",
+      "code": "000960",
+      "price": 46.6,
+      "changePct": 9.78,
+      "totalScore": 75.59,
+      "trendScore": 12.9,
+      "volumeScore": 5.0,
+      "dmiScore": 11.3,
+      "macdScore": 8.0,
+      "expmaScore": 10.0,
+      "moneyFlowScore": 0.0,
+      "sectorScore": 20.0,
+      "trendQualityScore": 12.9,
+      "entryTiming": "追高谨慎",
+      "entryNote": "🟡 首日上涨，可关注",
+      "risks": [
+        {
+          "level": "high",
+          "label": "偏离MA20较大"
+        },
+        {
+          "level": "medium",
+          "label": "短线涨幅偏高"
+        }
+      ],
+      "riskNote": "偏离MA20较大；短线涨幅偏高。注意控制仓位。",
+      "adx": 37.6,
+      "plusDI": 34.18,
+      "minusDI": 13.52,
+      "volRatio": 1.25,
+      "aboveMa20Days20": 13,
+      "ma20Slope10Pct": 3.29,
+      "ma20Slope20Pct": 4.58,
+      "closeMa20Ratio": 1.1644,
+      "macdDIF": 1.859,
+      "macdDEA": 1.2685,
+      "macdHIST": 1.1811,
+      "moneyFlowRatio": 0.01,
+      "sectorRankPct": 16.13,
+      "sectorInnerRankPct": 16.13,
+      "sector": "未分类"
+    },
+    {
+      "rank": 19,
+      "name": "新洁能",
+      "code": "605111",
+      "price": 79.49,
+      "changePct": -0.53,
+      "totalScore": 75.26,
+      "trendScore": 12.8,
+      "volumeScore": 5.46,
+      "dmiScore": 15.0,
+      "macdScore": 8.0,
+      "expmaScore": 10.0,
+      "moneyFlowScore": 14.55,
+      "sectorScore": 5.0,
+      "trendQualityScore": 12.8,
+      "entryTiming": "追高谨慎",
+      "entryNote": "🟢 回调即机会",
+      "risks": [
+        {
+          "level": "high",
+          "label": "偏离MA20较大"
+        }
+      ],
+      "riskNote": "偏离MA20较大。注意控制仓位。",
+      "adx": 52.6,
+      "plusDI": 38.17,
+      "minusDI": 5.38,
+      "volRatio": 1.37,
+      "aboveMa20Days20": 16,
+      "ma20Slope10Pct": 12.38,
+      "ma20Slope20Pct": 37.28,
+      "closeMa20Ratio": 1.2009,
+      "macdDIF": 5.0125,
+      "macdDEA": 3.8736,
+      "macdHIST": 2.2779,
+      "moneyFlowRatio": 0.15,
+      "sectorRankPct": 85.48,
+      "sectorInnerRankPct": 85.48,
+      "sector": "未分类"
+    },
+    {
+      "rank": 20,
+      "name": "正川股份",
+      "code": "603976",
+      "price": 29.18,
+      "changePct": 4.21,
+      "totalScore": 75.22,
+      "trendScore": 12.2,
+      "volumeScore": 5.45,
+      "dmiScore": 15.0,
+      "macdScore": 8.0,
+      "expmaScore": 10.0,
+      "moneyFlowScore": 5.22,
+      "sectorScore": 15.0,
+      "trendQualityScore": 12.2,
+      "entryTiming": "追高谨慎",
+      "entryNote": "🟡 首日上涨，可关注",
+      "risks": [
+        {
+          "level": "high",
+          "label": "偏离MA20较大"
+        }
+      ],
+      "riskNote": "偏离MA20较大。注意控制仓位。",
+      "adx": 57.7,
+      "plusDI": 33.3,
+      "minusDI": 5.51,
+      "volRatio": 1.36,
+      "aboveMa20Days20": 14,
+      "ma20Slope10Pct": 9.53,
+      "ma20Slope20Pct": 11.16,
+      "closeMa20Ratio": 1.2041,
+      "macdDIF": 1.4478,
+      "macdDEA": 1.2433,
+      "macdHIST": 0.409,
+      "moneyFlowRatio": 0.06,
+      "sectorRankPct": 56.45,
+      "sectorInnerRankPct": 56.45,
+      "sector": "未分类"
+    }
+  ],
+  "summary": {
+    "selectedCount": 20,
+    "topStock": {
+      "name": "智微智能",
+      "code": "001339",
+      "score": 100.79,
+      "price": 136.95
+    },
+    "avgScore": 83.44,
+    "riskCount": 17,
+    "above80Count": 11,
+    "passRate": 3.44
+  },
+  "conclusion": {
+    "selectedCount": 20,
+    "top5": [
+      {
+        "name": "智微智能",
+        "code": "001339"
+      },
+      {
+        "name": "超声电子",
+        "code": "000823"
+      },
+      {
+        "name": "三孚股份",
+        "code": "603938"
+      },
+      {
+        "name": "密尔克卫",
+        "code": "603713"
+      },
+      {
+        "name": "上峰材料",
+        "code": "000672"
+      }
+    ],
+    "strictestCondition": "MACD golden cross above zero",
+    "chaseRisk": true,
+    "status": "偏强",
+    "narrative": "2026-06-24 共选出 20 只候选股，最高分为 智微智能(001339)，平均分 83.44。当前最严格的技术条件是：MACD golden cross above zero。"
+  },
+  "diagnostics": [
+    {
+      "id": "close_>_ma3_>_ma5_>_ma21",
+      "label": "close > MA3 > MA5 > MA21",
+      "passed": 192,
+      "total": 2122
+    },
+    {
+      "id": "close_>_ma20_today",
+      "label": "close > MA20 today",
+      "passed": 510,
+      "total": 2122
+    },
+    {
+      "id": "ma20_persistence_days_within_20",
+      "label": "MA20 persistence days within 20",
+      "passed": 142,
+      "total": 2122
+    },
+    {
+      "id": "ma20_slope_up",
+      "label": "MA20 slope up",
+      "passed": 277,
+      "total": 2122
+    },
+    {
+      "id": "close_not_overheated_vs_ma20",
+      "label": "close not overheated vs MA20",
+      "passed": 2031,
+      "total": 2122
+    },
+    {
+      "id": "ma20_trend_quality",
+      "label": "MA20 trend quality",
+      "passed": 72,
+      "total": 2122
+    },
+    {
+      "id": "+di_>_-di",
+      "label": "+DI > -DI",
+      "passed": 606,
+      "total": 2122
+    },
+    {
+      "id": "adx_>_adx_threshold",
+      "label": "ADX > ADX_THRESHOLD",
+      "passed": 1860,
+      "total": 2122
+    },
+    {
+      "id": "volume___previous_5day_avg_volume_>=_vol_mult",
+      "label": "volume / previous_5day_avg_volume >= VOL_MULT",
+      "passed": 423,
+      "total": 2122
+    },
+    {
+      "id": "expma7_>_expma21",
+      "label": "EXPMA7 > EXPMA21",
+      "passed": 435,
+      "total": 2122
+    },
+    {
+      "id": "expma7_recent_golden_cross_within_n_days",
+      "label": "EXPMA7 recent golden cross within N days",
+      "passed": 161,
+      "total": 2122
+    },
+    {
+      "id": "dif_>_0_and_dea_>_0",
+      "label": "DIF > 0 and DEA > 0",
+      "passed": 434,
+      "total": 2122
+    },
+    {
+      "id": "dif_>_dea",
+      "label": "DIF > DEA",
+      "passed": 1091,
+      "total": 2122
+    },
+    {
+      "id": "macd_golden_cross_above_zero",
+      "label": "MACD golden cross above zero",
+      "passed": 8,
+      "total": 2122
+    },
+    {
+      "id": "macd_second_golden_cross_above_zero",
+      "label": "MACD second golden cross above zero",
+      "passed": 275,
+      "total": 2122
+    },
+    {
+      "id": "macd_second_golden_cross_within_n_days",
+      "label": "MACD second golden cross within N days",
+      "passed": 16,
+      "total": 2122
+    },
+    {
+      "id": "最终技术面通过",
+      "label": "最终技术面通过",
+      "passed": 73,
+      "total": 2122
+    }
+  ],
+  "funnel": [
+    {
+      "stage": "初始股票池（当日缓存）",
+      "count": 2124
+    },
+    {
+      "stage": "最终股票池（当日缓存）",
+      "count": 2124
+    },
+    {
+      "stage": "MA 条件",
+      "count": 192
+    },
+    {
+      "stage": "MA20 趋势持续性",
+      "count": 72
+    },
+    {
+      "stage": "DMI 条件",
+      "count": 531
+    },
+    {
+      "stage": "成交量条件",
+      "count": 423
+    },
+    {
+      "stage": "EXPMA 条件",
+      "count": 435
+    },
+    {
+      "stage": "MACD 二次金叉条件",
+      "count": 306
+    },
+    {
+      "stage": "技术条件合计",
+      "count": 62
+    },
+    {
+      "stage": "成交额过滤",
+      "count": 62
+    },
+    {
+      "stage": "资金净流入条件",
+      "count": 62
+    },
+    {
+      "stage": "板块热度条件",
+      "count": 12
+    },
+    {
+      "stage": "板块内领涨条件",
+      "count": 12
+    },
+    {
+      "stage": "最终股票池",
+      "count": 62
+    }
+  ],
+  "industryDist": [
+    {
+      "sector": "未分类",
+      "count": 20
+    }
+  ]
+}

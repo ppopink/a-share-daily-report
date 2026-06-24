@@ -1,0 +1,129 @@
+{
+  "generatedAt": "2026-06-24 16:54:14",
+  "latestDate": "2026-06-24",
+  "availableDates": [
+    "2026-06-24",
+    "2026-06-23",
+    "2026-06-22",
+    "2026-06-19"
+  ],
+  "history": [
+    {
+      "date": "2026-06-24",
+      "selectedCount": 20,
+      "topStock": "智微智能",
+      "avgScore": 83.44,
+      "files": {
+        "csv": "reports/20260624/stock_pick_20260624.csv",
+        "excel": "reports/20260624/stock_pick_20260624.xlsx",
+        "html": "reports/20260624/stock_pick_report_20260624.html",
+        "pdf": "reports/20260624/stock_pick_report_20260624.pdf"
+      }
+    },
+    {
+      "date": "2026-06-23",
+      "selectedCount": 20,
+      "topStock": "红豆股份",
+      "avgScore": 90.96,
+      "files": {
+        "csv": "reports/20260623/stock_pick_20260623.csv",
+        "excel": "reports/20260623/stock_pick_20260623.xlsx",
+        "html": "reports/20260623/stock_pick_report_20260623.html",
+        "pdf": "reports/20260623/stock_pick_report_20260623.pdf"
+      }
+    },
+    {
+      "date": "2026-06-22",
+      "selectedCount": 20,
+      "topStock": "中信建投",
+      "avgScore": 92.67,
+      "files": {
+        "csv": "reports/20260622/stock_pick_20260622.csv",
+        "excel": "reports/20260622/stock_pick_20260622.xlsx",
+        "html": "reports/20260622/stock_pick_report_20260622.html",
+        "pdf": "reports/20260622/stock_pick_report_20260622.pdf"
+      }
+    },
+    {
+      "date": "2026-06-19",
+      "selectedCount": 10,
+      "topStock": "奥康国际",
+      "avgScore": 72.79,
+      "files": {
+        "csv": "reports/20260619/stock_pick_20260619.csv",
+        "excel": "reports/20260619/stock_pick_20260619.xlsx",
+        "html": "reports/20260619/stock_pick_report_20260619.html"
+      }
+    }
+  ],
+  "reports": [
+    {
+      "date": "2026-06-24",
+      "selectedCount": 20,
+      "topStock": {
+        "name": "智微智能",
+        "code": "001339",
+        "score": 100.79,
+        "price": 136.95
+      },
+      "avgScore": 83.44,
+      "files": {
+        "csv": "reports/20260624/stock_pick_20260624.csv",
+        "excel": "reports/20260624/stock_pick_20260624.xlsx",
+        "html": "reports/20260624/stock_pick_report_20260624.html",
+        "pdf": "reports/20260624/stock_pick_report_20260624.pdf"
+      }
+    },
+    {
+      "date": "2026-06-23",
+      "selectedCount": 20,
+      "topStock": {
+        "name": "红豆股份",
+        "code": "600400",
+        "score": 98.35,
+        "price": 3.26
+      },
+      "avgScore": 90.96,
+      "files": {
+        "csv": "reports/20260623/stock_pick_20260623.csv",
+        "excel": "reports/20260623/stock_pick_20260623.xlsx",
+        "html": "reports/20260623/stock_pick_report_20260623.html",
+        "pdf": "reports/20260623/stock_pick_report_20260623.pdf"
+      }
+    },
+    {
+      "date": "2026-06-22",
+      "selectedCount": 20,
+      "topStock": {
+        "name": "中信建投",
+        "code": "601066",
+        "score": 107.6,
+        "price": 27.39
+      },
+      "avgScore": 92.67,
+      "files": {
+        "csv": "reports/20260622/stock_pick_20260622.csv",
+        "excel": "reports/20260622/stock_pick_20260622.xlsx",
+        "html": "reports/20260622/stock_pick_report_20260622.html",
+        "pdf": "reports/20260622/stock_pick_report_20260622.pdf"
+      }
+    },
+    {
+      "date": "2026-06-19",
+      "selectedCount": 10,
+      "topStock": {
+        "name": "奥康国际",
+        "code": "603001",
+        "score": 82.2,
+        "price": 11.89
+      },
+      "avgScore": 72.79,
+      "files": {
+        "csv": "reports/20260619/stock_pick_20260619.csv",
+        "excel": "reports/20260619/stock_pick_20260619.xlsx",
+        "html": "reports/20260619/stock_pick_report_20260619.html"
+      }
+    }
+  ],
+  "hasBacktest": true
+}
