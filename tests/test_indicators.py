@@ -176,11 +176,17 @@ def test_exit_plan_outputs_holding_stop_profit_and_note():
 
     plan = analyze_exit_plan(df)
 
-    assert plan["planned_holding_days"] in {3, 5, 10}
+    assert plan["planned_holding_days"] in {1, 2, 3}
     assert 0 < plan["stop_loss_price"] < close[-1]
     assert plan["take_profit_1_price"] > close[-1]
     assert plan["take_profit_2_price"] > plan["take_profit_1_price"]
     assert plan["trailing_stop_price"] >= plan["stop_loss_price"]
+    assert plan["day1_take_profit_price"] > close[-1]
+    assert plan["day2_take_profit_price"] > close[-1]
+    assert plan["day3_take_profit_price"] > close[-1]
+    assert "T+1" in plan["day1_exit_plan"]
+    assert "T+2" in plan["day2_exit_plan"]
+    assert "T+3" in plan["day3_exit_plan"]
     assert "止损" in plan["exit_signal"]
 
     df = pd.DataFrame({"ADX": [30.0], "plus_di": [10.0], "minus_di": [10.0]})

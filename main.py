@@ -204,6 +204,9 @@ def save_results(df, trade_date=None):
         "take_profit_1_price", "take_profit_2_price",
         "trailing_stop_price", "risk_reward_ratio",
         "exit_strategy", "exit_signal", "exit_note",
+        "day1_stop_loss_price", "day1_take_profit_price", "day1_exit_plan",
+        "day2_stop_loss_price", "day2_take_profit_price", "day2_exit_plan",
+        "day3_stop_loss_price", "day3_take_profit_price", "day3_exit_plan",
     ]
     available = [c for c in save_cols if c in df.columns]
     result_df = df[available].copy()

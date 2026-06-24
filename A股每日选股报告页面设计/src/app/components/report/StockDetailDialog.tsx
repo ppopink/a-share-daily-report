@@ -148,6 +148,20 @@ export function StockDetailDialog({
                   <Metric label="移动减仓/止损" value={stock.trailingStopPrice?.toFixed(2) ?? "—"} />
                 </div>
                 <p className="text-sm text-foreground/90">{stock.exitSignal}</p>
+                <div className="mt-2 grid gap-2 md:grid-cols-3">
+                  <div className="rounded-md bg-background/70 p-2">
+                    <div className="text-xs font-medium text-purple-600 dark:text-purple-400">第1日</div>
+                    <div className="mt-1 text-xs text-foreground/90">{stock.day1ExitPlan}</div>
+                  </div>
+                  <div className="rounded-md bg-background/70 p-2">
+                    <div className="text-xs font-medium text-purple-600 dark:text-purple-400">第2日</div>
+                    <div className="mt-1 text-xs text-foreground/90">{stock.day2ExitPlan}</div>
+                  </div>
+                  <div className="rounded-md bg-background/70 p-2">
+                    <div className="text-xs font-medium text-purple-600 dark:text-purple-400">第3日</div>
+                    <div className="mt-1 text-xs text-foreground/90">{stock.day3ExitPlan}</div>
+                  </div>
+                </div>
                 <p className="mt-1 text-[11px] text-neutral/80">{stock.exitNote}</p>
               </div>
             )}

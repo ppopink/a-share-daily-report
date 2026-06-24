@@ -311,6 +311,15 @@ def compute_total_scores(
             "exit_strategy": exit_plan.get("exit_strategy", ""),
             "exit_signal": exit_plan.get("exit_signal", ""),
             "exit_note": exit_plan.get("exit_note", ""),
+            "day1_stop_loss_price": round(float(exit_plan.get("day1_stop_loss_price", 0) or 0), 2),
+            "day1_take_profit_price": round(float(exit_plan.get("day1_take_profit_price", 0) or 0), 2),
+            "day1_exit_plan": exit_plan.get("day1_exit_plan", ""),
+            "day2_stop_loss_price": round(float(exit_plan.get("day2_stop_loss_price", 0) or 0), 2),
+            "day2_take_profit_price": round(float(exit_plan.get("day2_take_profit_price", 0) or 0), 2),
+            "day2_exit_plan": exit_plan.get("day2_exit_plan", ""),
+            "day3_stop_loss_price": round(float(exit_plan.get("day3_stop_loss_price", 0) or 0), 2),
+            "day3_take_profit_price": round(float(exit_plan.get("day3_take_profit_price", 0) or 0), 2),
+            "day3_exit_plan": exit_plan.get("day3_exit_plan", ""),
         })
 
     df = pd.DataFrame(results)

@@ -652,18 +652,34 @@ def analyze_exit_plan(df: pd.DataFrame) -> dict:
     注意：这是交易纪律/风控计划，不是收益承诺。默认假设 T 日收盘后出信号，
     T+1 观察买入，后续按止损、止盈、均线破位和时间退出执行。
     """
-    if len(df) < 25:
+    def _empty_exit_plan(strategy: str, signal: str, note: str) -> dict:
         return {
-            "planned_holding_days": 5,
+            "planned_holding_days": 1,
             "stop_loss_price": 0.0,
             "take_profit_1_price": 0.0,
             "take_profit_2_price": 0.0,
             "trailing_stop_price": 0.0,
             "risk_reward_ratio": 0.0,
-            "exit_strategy": "数据不足，轻仓观察",
-            "exit_signal": "数据不足：优先等回测/次日确认",
-            "exit_note": "K线数据不足，无法生成完整止盈止损计划。",
+            "exit_strategy": strategy,
+            "exit_signal": signal,
+            "exit_note": note,
+            "day1_stop_loss_price": 0.0,
+            "day1_take_profit_price": 0.0,
+            "day1_exit_plan": signal,
+            "day2_stop_loss_price": 0.0,
+            "day2_take_profit_price": 0.0,
+            "day2_exit_plan": signal,
+            "day3_stop_loss_price": 0.0,
+            "day3_take_profit_price": 0.0,
+            "day3_exit_plan": signal,
         }
+
+    if len(df) < 25:
+        return _empty_exit_plan(
+            "数据不足，轻仓观察",
+            "数据不足：优先等回测/次日确认",
+            "K线数据不足，无法生成完整止盈止损计划。",
+        )
 
     latest = df.iloc[-1]
     close = _num(latest.get("close", 0))
@@ -678,31 +694,25 @@ def analyze_exit_plan(df: pd.DataFrame) -> dict:
     overextended = bool(entry.get("overextended", False))
 
     if close <= 0:
-        return {
-            "planned_holding_days": 5,
-            "stop_loss_price": 0.0,
-            "take_profit_1_price": 0.0,
-            "take_profit_2_price": 0.0,
-            "trailing_stop_price": 0.0,
-            "risk_reward_ratio": 0.0,
-            "exit_strategy": "价格异常，暂不交易",
-            "exit_signal": "价格异常：不建议执行",
-            "exit_note": "最新价格无效，无法生成退出计划。",
-        }
+        return _empty_exit_plan(
+            "价格异常，暂不交易",
+            "价格异常：不建议执行",
+            "最新价格无效，无法生成退出计划。",
+        )
 
     if atr <= 0:
         atr = max(close * 0.025, abs(close - ma5), 0.01)
 
-    # 越追高，计划持有期越短；趋势越稳，允许多给一些时间。
+    # 短线优先：越追高，计划越短；趋势越稳，最多给到3日。
     if overextended or close_ma20_ratio >= 1.15 or consecutive_up >= 3:
-        holding_days = 3
-        strategy = "追高风险，快进快出"
+        holding_days = 1
+        strategy = "1日快进快出，冲高先兑现"
     elif adx >= 35 and close > ma5 > ma20:
-        holding_days = 10
-        strategy = "趋势持有，跌破短均减仓"
+        holding_days = 3
+        strategy = "3日趋势观察，破短均退出"
     else:
-        holding_days = 5
-        strategy = "标准波段，按纪律退出"
+        holding_days = 2
+        strategy = "2日短线跟踪，按纪律退出"
 
     stop_candidates = [
         close - 1.8 * atr,
@@ -721,10 +731,29 @@ def analyze_exit_plan(df: pd.DataFrame) -> dict:
         trailing_stop = close - 0.8 * atr
     trailing_stop = max(trailing_stop, stop_loss)
 
+    day1_stop = max([x for x in [close - 1.0 * atr, close * 0.965, stop_loss] if 0 < x < close])
+    day2_stop = max([x for x in [close - 1.3 * atr, ma5 * 0.985 if ma5 > 0 else 0, stop_loss] if 0 < x < close])
+    day3_stop = max([x for x in [trailing_stop, ma5 * 0.98 if ma5 > 0 else 0, stop_loss] if 0 < x < close])
+    day1_take_profit = close + max(0.8 * atr, 0.9 * risk, close * 0.025)
+    day2_take_profit = close + max(1.2 * atr, 1.2 * risk, close * 0.04)
+    day3_take_profit = take_profit_1
+    day1_plan = (
+        f"T+1：冲到{day1_take_profit:.2f}先减仓，"
+        f"跌破{day1_stop:.2f}止损；若高开低走不恋战"
+    )
+    day2_plan = (
+        f"T+2：未突破{day2_take_profit:.2f}且量能转弱则减仓，"
+        f"跌破{day2_stop:.2f}退出"
+    )
+    day3_plan = (
+        f"T+3：到{day3_take_profit:.2f}分批止盈，"
+        f"跌破{day3_stop:.2f}或MA5失守退出"
+    )
     rr = (take_profit_1 - close) / risk if risk > 0 else 0
     exit_signal = (
-        f"{holding_days}日计划；跌破{stop_loss:.2f}止损；"
-        f"上冲{take_profit_1:.2f}先止盈；破MA5/移动止盈{trailing_stop:.2f}减仓"
+        f"{holding_days}日短线计划；T+1看{day1_take_profit:.2f}/止损{day1_stop:.2f}；"
+        f"T+2看{day2_take_profit:.2f}/止损{day2_stop:.2f}；"
+        f"T+3看{day3_take_profit:.2f}/止损{day3_stop:.2f}"
     )
     exit_note = (
         f"参考信号日收盘价{close:.2f}，若T+1买入价明显高于该价，"
@@ -741,6 +770,15 @@ def analyze_exit_plan(df: pd.DataFrame) -> dict:
         "exit_strategy": strategy,
         "exit_signal": exit_signal,
         "exit_note": exit_note,
+        "day1_stop_loss_price": round(day1_stop, 2),
+        "day1_take_profit_price": round(day1_take_profit, 2),
+        "day1_exit_plan": day1_plan,
+        "day2_stop_loss_price": round(day2_stop, 2),
+        "day2_take_profit_price": round(day2_take_profit, 2),
+        "day2_exit_plan": day2_plan,
+        "day3_stop_loss_price": round(day3_stop, 2),
+        "day3_take_profit_price": round(day3_take_profit, 2),
+        "day3_exit_plan": day3_plan,
     }
 
 

@@ -52,6 +52,15 @@ export interface Stock {
   exitStrategy: string;
   exitSignal: string;
   exitNote: string;
+  day1StopLossPrice: number;
+  day1TakeProfitPrice: number;
+  day1ExitPlan: string;
+  day2StopLossPrice: number;
+  day2TakeProfitPrice: number;
+  day2ExitPlan: string;
+  day3StopLossPrice: number;
+  day3TakeProfitPrice: number;
+  day3ExitPlan: string;
   // 详细技术指标
   adx: number;
   plusDI: number;
