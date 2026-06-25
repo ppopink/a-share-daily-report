@@ -1,13 +1,27 @@
 {
-  "generatedAt": "2026-06-24 21:22:52",
-  "latestDate": "2026-06-24",
+  "generatedAt": "2026-06-25 17:58:16",
+  "latestDate": "2026-06-25",
   "availableDates": [
+    "2026-06-25",
     "2026-06-24",
     "2026-06-23",
     "2026-06-22",
     "2026-06-19"
   ],
   "history": [
+    {
+      "date": "2026-06-25",
+      "selectedCount": 20,
+      "topStock": "方大炭素",
+      "avgScore": 91.27,
+      "files": {
+        "csv": "reports/20260625/stock_pick_20260625.csv",
+        "hotSectorsCsv": "reports/20260625/hot_sectors_20260625.csv",
+        "excel": "reports/20260625/stock_pick_20260625.xlsx",
+        "html": "reports/20260625/stock_pick_report_20260625.html",
+        "pdf": "reports/20260625/stock_pick_report_20260625.pdf"
+      }
+    },
     {
       "date": "2026-06-24",
       "selectedCount": 20,
@@ -58,6 +72,24 @@
     }
   ],
   "reports": [
+    {
+      "date": "2026-06-25",
+      "selectedCount": 20,
+      "topStock": {
+        "name": "方大炭素",
+        "code": "600516",
+        "score": 107.01,
+        "price": 6.77
+      },
+      "avgScore": 91.27,
+      "files": {
+        "csv": "reports/20260625/stock_pick_20260625.csv",
+        "hotSectorsCsv": "reports/20260625/hot_sectors_20260625.csv",
+        "excel": "reports/20260625/stock_pick_20260625.xlsx",
+        "html": "reports/20260625/stock_pick_report_20260625.html",
+        "pdf": "reports/20260625/stock_pick_report_20260625.pdf"
+      }
+    },
     {
       "date": "2026-06-24",
       "selectedCount": 20,
@@ -127,5 +159,5 @@
       }
     }
   ],
-  "hasBacktest": true
+  "hasBacktest": false
 }
