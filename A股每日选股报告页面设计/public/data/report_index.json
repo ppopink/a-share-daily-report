@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-06-25 18:17:36",
+  "generatedAt": "2026-06-25 18:29:14",
   "latestDate": "2026-06-25",
   "availableDates": [
     "2026-06-25",
@@ -13,7 +13,7 @@
       "date": "2026-06-25",
       "selectedCount": 20,
       "topStock": "方大炭素",
-      "avgScore": 91.27,
+      "avgScore": 91.03,
       "files": {
         "csv": "reports/20260625/stock_pick_20260625.csv",
         "hotSectorsCsv": "reports/20260625/hot_sectors_20260625.csv",
@@ -78,10 +78,10 @@
       "topStock": {
         "name": "方大炭素",
         "code": "600516",
-        "score": 107.01,
+        "score": 107.81,
         "price": 6.77
       },
-      "avgScore": 91.27,
+      "avgScore": 91.03,
       "files": {
         "csv": "reports/20260625/stock_pick_20260625.csv",
         "hotSectorsCsv": "reports/20260625/hot_sectors_20260625.csv",

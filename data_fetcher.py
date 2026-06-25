@@ -901,6 +901,10 @@ def _em_sec_code(code: str) -> str:
     return f"{code}.{suffix}"
 
 
+def _plain_stock_code(code: str) -> str:
+    return str(code).zfill(6)
+
+
 def _date_yyyy_mm_dd(days: int) -> tuple[str, str]:
     end = datetime.date.today()
     start = end - datetime.timedelta(days=max(days, 1) * 2)
@@ -957,7 +961,7 @@ def _fetch_recent_events(code: str) -> dict:
         "page_index": "1",
         "ann_type": "A",
         "client_source": "web",
-        "stock_list": _em_sec_code(code),
+        "stock_list": _plain_stock_code(code),
         "f_node": "0",
         "s_node": "0",
         "begin_time": begin,
@@ -994,7 +998,7 @@ def _fetch_margin_data(code: str) -> dict:
 
     url = "https://datacenter-web.eastmoney.com/api/data/v1/get"
     params = {
-        "sortColumns": "TRADE_DATE",
+        "sortColumns": "DATE",
         "sortTypes": "-1",
         "pageSize": str(max(getattr(cfg, "MARGIN_LOOKBACK_DAYS", 5), 5)),
         "pageNumber": "1",
@@ -1002,7 +1006,7 @@ def _fetch_margin_data(code: str) -> dict:
         "columns": "ALL",
         "source": "WEB",
         "client": "WEB",
-        "filter": f'(SECURITY_CODE="{str(code).zfill(6)}")',
+        "filter": f'(SCODE="{str(code).zfill(6)}")',
     }
     try:
         payload = _get(
@@ -1025,7 +1029,7 @@ def _fetch_margin_data(code: str) -> dict:
     change_pct = ((latest_balance - oldest_balance) / oldest_balance * 100) if oldest_balance > 0 else 0.0
     buy_amt = _safe_float(latest.get("RZMRE") or latest.get("FIN_BUY_AMT"))
     repay_amt = _safe_float(latest.get("RZCHE") or latest.get("FIN_REPAY_AMT"))
-    net_buy = buy_amt - repay_amt
+    net_buy = _safe_float(latest.get("RZJME"), buy_amt - repay_amt)
 
     score = 0.0
     if change_pct >= 5:
@@ -1060,7 +1064,7 @@ def _fetch_lhb_data(code: str) -> dict:
     if not getattr(cfg, "USE_LHB_API", True):
         return {"score": 0.0, "count": 0, "net_buy": 0.0, "note": "龙虎榜接口关闭"}
 
-    begin, end = _date_yyyymmdd(getattr(cfg, "LHB_LOOKBACK_DAYS", 10))
+    begin, end = _date_yyyy_mm_dd(getattr(cfg, "LHB_LOOKBACK_DAYS", 10))
     url = "https://datacenter-web.eastmoney.com/api/data/v1/get"
     params = {
         "sortColumns": "TRADE_DATE",
