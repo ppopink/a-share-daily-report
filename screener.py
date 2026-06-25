@@ -18,6 +18,7 @@ from data_fetcher import (
     estimate_money_flow_from_kline,
     build_sector_score_map,
     get_hot_sector_boards,
+    get_market_context_batch,
 )
 from indicators import calculate_all_indicators, check_all_conditions, evaluate_technical_conditions
 from scorer import compute_total_scores
@@ -607,7 +608,17 @@ def run_screening(
             print(f"[数据] 板块评分：无行业字段，使用个股相对强度估算")
 
     # ================================================
-    # Step 6: 综合评分排名
+    # Step 6: 市场上下文（大事件 / 融资融券 / 龙虎榜）
+    # ================================================
+    if verbose:
+        print(f"[进度] 获取 {len(passed_symbols)} 只候选股市场上下文...")
+    market_context_data = get_market_context_batch(passed_symbols)
+    if verbose:
+        valid_context = sum(1 for d in market_context_data.values() if d.get("context_note"))
+        print(f"[数据] 市场上下文: {valid_context}/{len(passed_symbols)} 只有效")
+
+    # ================================================
+    # Step 7: 综合评分排名
     # ================================================
     if verbose:
         print("[进度] 计算综合评分...")
@@ -619,11 +630,12 @@ def run_screening(
         spot_df=spot_df,
         sector_score_map=sector_score_map,
         rule_flags=rule_flags,
+        market_context_data=market_context_data,
     )
     _save_hot_sector_report(spot_df, selected_df=result_df, verbose=verbose)
 
     # ================================================
-    # Step 7: 返回 Top N
+    # Step 8: 返回 Top N
     # ================================================
     top_n = result_df.head(cfg.TOP_N) if not result_df.empty else result_df
 

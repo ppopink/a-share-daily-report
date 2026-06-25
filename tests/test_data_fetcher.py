@@ -2,7 +2,12 @@ import pandas as pd
 
 import config as cfg
 import data_fetcher
-from data_fetcher import build_sector_score_map, get_hot_sector_boards, get_industry_performance
+from data_fetcher import (
+    build_sector_score_map,
+    get_hot_sector_boards,
+    get_industry_performance,
+    get_market_context_batch,
+)
 
 
 def test_get_industry_performance_aggregates_and_filters_small_groups():
@@ -105,3 +110,52 @@ def test_get_hot_sector_boards_returns_empty_on_api_error(monkeypatch, tmp_path)
     out = get_hot_sector_boards(limit=2)
 
     assert out.empty
+
+
+def test_get_market_context_batch_combines_event_margin_and_lhb(monkeypatch, tmp_path):
+    monkeypatch.setattr(cfg, "CACHE_DIR", str(tmp_path))
+    monkeypatch.setattr(cfg, "USE_DAILY_CACHE", False)
+    monkeypatch.setattr(cfg, "USE_MARKET_CONTEXT_API", True)
+    monkeypatch.setattr(cfg, "USE_EVENT_API", True)
+    monkeypatch.setattr(cfg, "USE_MARGIN_API", True)
+    monkeypatch.setattr(cfg, "USE_LHB_API", True)
+
+    def fake_get(url, params=None, **kwargs):
+        if "np-anotice" in url:
+            return _FakeResponse({
+                "data": {
+                    "list": [
+                        {"title": "关于回购股份方案的公告"},
+                        {"title": "关于中标重大合同的公告"},
+                    ]
+                }
+            })
+        report = (params or {}).get("reportName")
+        if report == "RPTA_WEB_RZRQ_GGMX":
+            return _FakeResponse({
+                "result": {
+                    "data": [
+                        {"RZYE": 110.0, "RZMRE": 30.0, "RZCHE": 10.0},
+                        {"RZYE": 100.0, "RZMRE": 10.0, "RZCHE": 10.0},
+                    ]
+                }
+            })
+        if report == "RPT_DAILYBILLBOARD_DETAILSNEW":
+            return _FakeResponse({
+                "result": {
+                    "data": [
+                        {"BILLBOARD_NET_AMT": 200000000.0, "EXPLAIN": "日涨幅偏离值达7%"},
+                    ]
+                }
+            })
+        return _FakeResponse({})
+
+    monkeypatch.setattr(data_fetcher, "_get", fake_get)
+    out = get_market_context_batch(["000001"], max_workers=1)
+
+    ctx = out["000001"]
+    assert ctx["context_score"] > 0
+    assert ctx["event_count"] == 2
+    assert ctx["margin_balance_change_pct"] == 10.0
+    assert ctx["lhb_count"] == 1
+    assert "公告偏正面" in ctx["context_note"]

@@ -96,7 +96,7 @@ export function StockList({
               <TableRow className="bg-neutral-soft/60 hover:bg-neutral-soft/60">
                 {[
                   "#", "名称", "代码", "现价", "涨跌幅", "总分", "趋势", "量能",
-                  "DMI", "MACD", "EXPMA", "资金", "板块", "入场", "卖出计划", "风险",
+                  "DMI", "MACD", "EXPMA", "资金", "板块", "上下文", "入场", "卖出计划", "风险",
                 ].map((h) => (
                   <TableHead
                     key={h}
@@ -128,6 +128,7 @@ export function StockList({
                   <TableCell className="tabular-nums text-neutral">{s.expmaScore}</TableCell>
                   <TableCell className="tabular-nums text-neutral">{s.moneyFlowScore}</TableCell>
                   <TableCell className="tabular-nums text-neutral">{s.sectorScore}</TableCell>
+                  <TableCell className="tabular-nums text-neutral">{s.contextScore}</TableCell>
                   <TableCell><EntryTag timing={s.entryTiming} /></TableCell>
                   <TableCell className="whitespace-nowrap text-xs text-neutral">
                     {s.exitStrategy

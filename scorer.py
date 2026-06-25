@@ -124,6 +124,7 @@ def compute_total_scores(
     spot_df: pd.DataFrame,
     sector_score_map: dict,
     rule_flags: pd.DataFrame = None,
+    market_context_data: dict = None,
 ) -> pd.DataFrame:
     """
     计算综合总分并排序
@@ -138,6 +139,7 @@ def compute_total_scores(
     # 分项评分
     flow_scores = score_capital_flow(symbols, money_flow_data, spot_indexed)
     sector_scores = score_sector_leadership(symbols, sector_score_map, spot_df)
+    market_context_data = market_context_data or {}
     if rule_flags is not None and not rule_flags.empty:
         flags_indexed = rule_flags.set_index("code")
     else:
@@ -151,6 +153,8 @@ def compute_total_scores(
         sector_score = sector_scores.get(sym, 5.0)
         money_flow = money_flow_data.get(sym, {})
         total_inflow = float(money_flow.get("total_inflow", 0))
+        context = market_context_data.get(sym, {}) or {}
+        context_score = float(context.get("context_score", 0) or 0)
 
         try:
             name = spot_indexed.loc[sym, "name"] if sym in spot_indexed.index else sym
@@ -214,7 +218,7 @@ def compute_total_scores(
         sector_component = sector_score
         total = round(
             trend_score + volume_score + dmi_score + macd_score + expma_score +
-            money_flow_score + sector_component + leading_score,
+            money_flow_score + sector_component + leading_score + context_score,
             2,
         )
 
@@ -272,6 +276,20 @@ def compute_total_scores(
             "expma_score": round(expma_score, 2),
             "money_flow_score": round(money_flow_score, 2),
             "leading_score": round(leading_score, 2),
+            "context_score": round(context_score, 2),
+            "event_score": round(float(context.get("event_score", 0) or 0), 2),
+            "event_count": int(context.get("event_count", 0) or 0),
+            "event_note": context.get("event_note", ""),
+            "event_titles": context.get("event_titles", ""),
+            "margin_score": round(float(context.get("margin_score", 0) or 0), 2),
+            "margin_balance_change_pct": round(float(context.get("margin_balance_change_pct", 0) or 0), 2),
+            "margin_net_buy": round(float(context.get("margin_net_buy", 0) or 0), 2),
+            "margin_note": context.get("margin_note", ""),
+            "lhb_score": round(float(context.get("lhb_score", 0) or 0), 2),
+            "lhb_count": int(context.get("lhb_count", 0) or 0),
+            "lhb_net_buy": round(float(context.get("lhb_net_buy", 0) or 0), 2),
+            "lhb_note": context.get("lhb_note", ""),
+            "context_note": context.get("context_note", ""),
             "tech_score": tech_score,
             "adx": round(ind.get("adx_value", 0), 1),
             "plus_di": round(ind.get("plus_di", 0), 2),

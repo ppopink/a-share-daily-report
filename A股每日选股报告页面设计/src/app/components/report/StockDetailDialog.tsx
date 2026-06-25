@@ -46,6 +46,7 @@ export function StockDetailDialog({
     ["EXPMA分", stock.expmaScore],
     ["资金分", stock.moneyFlowScore],
     ["板块分", stock.sectorScore],
+    ["上下文", stock.contextScore],
   ];
 
   return (
@@ -129,6 +130,20 @@ export function StockDetailDialog({
               <Metric label="板块排名分位" value={`${stock.sectorRankPct}%`} hint={stock.sector} />
               <Metric label="板块内排名分位" value={`${stock.sectorInnerRankPct}%`} />
             </div>
+          </section>
+
+          {/* 大事件 / 两融 / 龙虎榜 */}
+          <section>
+            <h4 className="mb-2 text-foreground">大事件 · 两融 · 龙虎榜</h4>
+            <div className="grid grid-cols-2 gap-2 sm:grid-cols-4">
+              <Metric label="上下文分" value={stock.contextScore} hint={stock.contextNote} />
+              <Metric label="公告事件" value={stock.eventScore} hint={stock.eventNote} />
+              <Metric label="融资余额变化" value={<ChangeText value={stock.marginBalanceChangePct} />} hint={stock.marginNote} />
+              <Metric label="龙虎榜次数" value={stock.lhbCount} hint={stock.lhbNote} />
+            </div>
+            {stock.eventTitles && (
+              <p className="mt-2 text-xs text-neutral">近期公告：{stock.eventTitles}</p>
+            )}
           </section>
 
           {/* 入场 / 退出计划 / 风险说明 */}

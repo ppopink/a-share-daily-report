@@ -39,6 +39,11 @@ DISPLAY_COLUMNS = [
     ("money_flow_score", "资金"),
     ("sector_score", "板块"),
     ("leading_score", "领涨"),
+    ("context_score", "事件上下文"),
+    ("event_note", "近期大事件"),
+    ("margin_note", "融资融券"),
+    ("lhb_note", "龙虎榜"),
+    ("context_note", "上下文说明"),
     ("adx", "ADX"),
     ("plus_di", "+DI"),
     ("minus_di", "-DI"),
@@ -74,6 +79,7 @@ SCORE_PARTS = [
     ("money_flow_score", "资金"),
     ("sector_score", "板块"),
     ("leading_score", "领涨"),
+    ("context_score", "上下文"),
 ]
 
 
@@ -570,6 +576,8 @@ def generate_html_report(
             f"<td>{_fmt(row.get('adx'), 1)}</td>"
             f"<td>{_fmt(row.get('vol_ratio'), 2)}</td>"
             f"<td>{_score_stack_html(row)}</td>"
+            f"<td>{_fmt(row.get('context_score'), 2)}</td>"
+            f"<td>{html.escape(str(row.get('context_note', '')))}</td>"
             f"<td>{html.escape(str(row.get('entry_label', '')))}</td>"
             f"<td>{html.escape(str(row.get('exit_signal', '')))}</td>"
             f"<td>{html.escape(str(row.get('day1_exit_plan', '')))}</td>"
@@ -683,7 +691,7 @@ tr:nth-child(even) td {{ background:#fafafa; }}
     <div class="panel"><h2>ADX 与量比散点</h2>{_scatter_html(picks)}</div>
   </section>
   <section class="panel"><h2>技术筛选漏斗</h2>{_bar_svg(funnel_items, value_key='value', label_key='label') if funnel_items else "<div class='empty'>暂无技术诊断数据</div>"}</section>
-  <section class="panel"><h2>候选股详情</h2><div class="table-scroll"><table><thead><tr><th>排名</th><th>代码</th><th>名称</th><th>现价</th><th>行业</th><th>总分</th><th>20日线上</th><th>MA20斜率</th><th>涨跌幅</th><th>ADX</th><th>量比</th><th>评分拆解</th><th>入场时机</th><th>退出计划</th><th>第1日计划</th><th>第2日计划</th><th>第3日计划</th></tr></thead><tbody>{''.join(table_rows)}</tbody></table></div></section>
+  <section class="panel"><h2>候选股详情</h2><div class="table-scroll"><table><thead><tr><th>排名</th><th>代码</th><th>名称</th><th>现价</th><th>行业</th><th>总分</th><th>20日线上</th><th>MA20斜率</th><th>涨跌幅</th><th>ADX</th><th>量比</th><th>评分拆解</th><th>上下文分</th><th>上下文说明</th><th>入场时机</th><th>退出计划</th><th>第1日计划</th><th>第2日计划</th><th>第3日计划</th></tr></thead><tbody>{''.join(table_rows)}</tbody></table></div></section>
   <section class="panel"><h2>准确性评估</h2>{accuracy_html}</section>
   <section class="panel note"><strong>说明：</strong>本报告仅用于规则选股跟踪，不构成投资建议。信号基于收盘后数据，实盘需考虑涨跌停、停牌、滑点、手续费和成交量约束。</section>
 </div>

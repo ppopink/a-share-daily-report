@@ -137,3 +137,54 @@ def test_compute_total_scores_sorts_by_total_score_and_preserves_key_fields():
     assert out.iloc[0]["total_score"] > out.iloc[1]["total_score"]
     assert out.iloc[0]["entry_bonus"] > 0
     assert bool(out.iloc[0]["sector_hot"]) is True
+
+
+def test_compute_total_scores_applies_market_context_score():
+    symbols = ["000001", "000002"]
+    indicators = {
+        sym: {
+            "technical_score": 50,
+            "ma_bullish": True,
+            "trend_quality_pass": True,
+            "above_ma20_days_20": 18,
+            "ma20_slope_10_pct": 4,
+            "ma20_slope_20_pct": 7,
+            "close_ma20_ratio": 1.04,
+            "vol_ratio": 1.8,
+            "adx_value": 35,
+            "macd_pass": True,
+            "macd_score": 1,
+            "expma_ratio": 0.02,
+            "expma_score": 1,
+            "plus_di": 30,
+            "minus_di": 12,
+            "entry_timing": {},
+        }
+        for sym in symbols
+    }
+    spot_df = pd.DataFrame({
+        "code": symbols,
+        "name": ["事件偏强", "事件偏弱"],
+        "industry": ["测试", "测试"],
+        "pct_change": [2.0, 2.0],
+        "price": [10.0, 10.0],
+        "amount": [1000.0, 1000.0],
+    })
+    money_flow = {sym: {"total_inflow": 100.0} for sym in symbols}
+    context = {
+        "000001": {"context_score": 4.0, "event_note": "公告偏正面", "context_note": "公告偏正面"},
+        "000002": {"context_score": -3.0, "event_note": "公告偏风险", "context_note": "公告偏风险"},
+    }
+
+    out = compute_total_scores(
+        symbols=symbols,
+        indicators_results=indicators,
+        money_flow_data=money_flow,
+        spot_df=spot_df,
+        sector_score_map={},
+        market_context_data=context,
+    )
+
+    assert out.iloc[0]["code"] == "000001"
+    assert out.iloc[0]["context_score"] == 4.0
+    assert "公告偏正面" in out.iloc[0]["context_note"]

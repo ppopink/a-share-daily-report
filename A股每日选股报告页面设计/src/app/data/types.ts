@@ -36,6 +36,20 @@ export interface Stock {
   expmaScore: number;
   moneyFlowScore: number;
   sectorScore: number;
+  contextScore: number;
+  eventScore: number;
+  eventCount: number;
+  eventNote: string;
+  eventTitles: string;
+  marginScore: number;
+  marginBalanceChangePct: number;
+  marginNetBuy: number;
+  marginNote: string;
+  lhbScore: number;
+  lhbCount: number;
+  lhbNetBuy: number;
+  lhbNote: string;
+  contextNote: string;
   trendQualityScore: number;
   // 入场 / 风险
   entryTiming: EntryTiming;

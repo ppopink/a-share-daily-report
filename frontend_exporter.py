@@ -113,6 +113,12 @@ def _risk_flags(row: pd.Series) -> List[Dict[str, str]]:
         risks.append({"level": "medium", "label": "量能确认偏弱"})
     if main_net_ratio < 0:
         risks.append({"level": "low", "label": "主力净流入偏弱"})
+    context_score = _safe_num(row.get("context_score"))
+    lhb_count = _safe_num(row.get("lhb_count"))
+    if context_score <= -2:
+        risks.append({"level": "medium", "label": "事件/两融/龙虎榜偏负"})
+    if lhb_count > 0:
+        risks.append({"level": "low", "label": "近期上龙虎榜"})
     return risks
 
 
@@ -194,6 +200,20 @@ def _stock_from_row(row: pd.Series, kline_df: pd.DataFrame = None) -> Dict[str, 
         "expmaScore": _round(row.get("expma_score"), 2),
         "moneyFlowScore": _round(row.get("money_flow_score", row.get("flow_score")), 2),
         "sectorScore": _round(row.get("sector_score"), 2),
+        "contextScore": _round(row.get("context_score"), 2),
+        "eventScore": _round(row.get("event_score"), 2),
+        "eventCount": int(_safe_num(row.get("event_count"), 0)),
+        "eventNote": _safe_str(row.get("event_note"), "近期公告中性"),
+        "eventTitles": _safe_str(row.get("event_titles")),
+        "marginScore": _round(row.get("margin_score"), 2),
+        "marginBalanceChangePct": _round(row.get("margin_balance_change_pct"), 2),
+        "marginNetBuy": _round(row.get("margin_net_buy"), 2),
+        "marginNote": _safe_str(row.get("margin_note"), "两融变化中性"),
+        "lhbScore": _round(row.get("lhb_score"), 2),
+        "lhbCount": int(_safe_num(row.get("lhb_count"), 0)),
+        "lhbNetBuy": _round(row.get("lhb_net_buy"), 2),
+        "lhbNote": _safe_str(row.get("lhb_note"), "近期未上龙虎榜"),
+        "contextNote": _safe_str(row.get("context_note"), "上下文数据中性"),
         "trendQualityScore": _round(row.get("trend_quality_score"), 2),
         "entryTiming": entry_timing,
         "entryNote": _safe_str(row.get("entry_label"), "信号成立，建议结合T+1开盘与成交情况观察。"),

@@ -57,6 +57,10 @@ def _hot_sector_cache_file() -> str:
     return os.path.join(_cache_dir(), f"hot_sector_{_today_key()}.pkl")
 
 
+def _market_context_cache_file() -> str:
+    return os.path.join(_cache_dir(), f"market_context_{_today_key()}.pkl")
+
+
 def _log_filter_step(log: list, step_name: str, before_count: int, after_count: int):
     pass_count = after_count
     pass_rate = pass_count / before_count if before_count else 0
@@ -874,6 +878,387 @@ def get_hot_sector_boards(limit: int = None) -> pd.DataFrame:
             print(f"[缓存] 热门板块缓存保存失败: {e}")
 
     return df.head(limit).copy()
+
+
+# ============================================================
+# 市场上下文：大事件 / 融资融券 / 龙虎榜
+# ============================================================
+
+POSITIVE_EVENT_KEYWORDS = [
+    "回购", "增持", "中标", "重大合同", "签订合同", "预增", "业绩增长",
+    "扭亏", "股权激励", "重组", "并购", "定增获批", "项目投产",
+]
+NEGATIVE_EVENT_KEYWORDS = [
+    "减持", "立案", "处罚", "问询函", "监管函", "诉讼", "仲裁",
+    "预减", "亏损", "业绩下降", "终止", "解禁", "质押", "退市",
+]
+EVENT_RISK_KEYWORDS = ["异动", "异常波动", "澄清", "停牌", "风险提示"]
+
+
+def _em_sec_code(code: str) -> str:
+    code = str(code).zfill(6)
+    suffix = "SH" if code.startswith("6") else "SZ"
+    return f"{code}.{suffix}"
+
+
+def _date_yyyy_mm_dd(days: int) -> tuple[str, str]:
+    end = datetime.date.today()
+    start = end - datetime.timedelta(days=max(days, 1) * 2)
+    return start.strftime("%Y-%m-%d"), end.strftime("%Y-%m-%d")
+
+
+def _date_yyyymmdd(days: int) -> tuple[str, str]:
+    start, end = get_recent_trading_dates(max(days + 10, 15))
+    return start, end
+
+
+def _safe_float(value, default: float = 0.0) -> float:
+    try:
+        if value is None or pd.isna(value):
+            return default
+        return float(value)
+    except (TypeError, ValueError):
+        return default
+
+
+def _clip(value: float, limit: float) -> float:
+    return max(-limit, min(limit, value))
+
+
+def _score_event_titles(titles: list[str]) -> tuple[float, str]:
+    positive = 0
+    negative = 0
+    risk = 0
+    for title in titles:
+        positive += sum(1 for kw in POSITIVE_EVENT_KEYWORDS if kw in title)
+        negative += sum(1 for kw in NEGATIVE_EVENT_KEYWORDS if kw in title)
+        risk += sum(1 for kw in EVENT_RISK_KEYWORDS if kw in title)
+    score = _clip(positive * 1.5 - negative * 2.0 - risk * 0.8, 3.0)
+    if not titles:
+        note = "近期无重大公告"
+    elif score > 0:
+        note = f"公告偏正面({positive}个积极关键词)"
+    elif score < 0:
+        note = f"公告偏风险({negative}个负面关键词, {risk}个异动/风险词)"
+    else:
+        note = "近期公告中性"
+    return round(score, 2), note
+
+
+def _fetch_recent_events(code: str) -> dict:
+    if not getattr(cfg, "USE_EVENT_API", True):
+        return {"score": 0.0, "count": 0, "titles": [], "note": "公告接口关闭"}
+
+    begin, end = _date_yyyy_mm_dd(getattr(cfg, "EVENT_LOOKBACK_DAYS", 14))
+    url = "https://np-anotice-stock.eastmoney.com/api/security/ann"
+    params = {
+        "sr": "-1",
+        "page_size": "30",
+        "page_index": "1",
+        "ann_type": "A",
+        "client_source": "web",
+        "stock_list": _em_sec_code(code),
+        "f_node": "0",
+        "s_node": "0",
+        "begin_time": begin,
+        "end_time": end,
+    }
+    try:
+        payload = _get(
+            url,
+            params=params,
+            timeout=getattr(cfg, "MARKET_CONTEXT_API_TIMEOUT", 6),
+            retries=getattr(cfg, "MARKET_CONTEXT_API_RETRIES", 1),
+        ).json()
+        items = (payload.get("data") or {}).get("list") or []
+    except Exception:
+        return {"score": 0.0, "count": 0, "titles": [], "note": "公告数据获取失败"}
+
+    titles = []
+    for item in items:
+        title = str(item.get("title") or item.get("announcementTitle") or "").strip()
+        if title:
+            titles.append(title)
+    score, note = _score_event_titles(titles)
+    return {
+        "score": score,
+        "count": len(titles),
+        "titles": titles[:3],
+        "note": note,
+    }
+
+
+def _fetch_margin_data(code: str) -> dict:
+    if not getattr(cfg, "USE_MARGIN_API", True):
+        return {"score": 0.0, "change_pct": 0.0, "net_buy": 0.0, "note": "两融接口关闭"}
+
+    url = "https://datacenter-web.eastmoney.com/api/data/v1/get"
+    params = {
+        "sortColumns": "TRADE_DATE",
+        "sortTypes": "-1",
+        "pageSize": str(max(getattr(cfg, "MARGIN_LOOKBACK_DAYS", 5), 5)),
+        "pageNumber": "1",
+        "reportName": "RPTA_WEB_RZRQ_GGMX",
+        "columns": "ALL",
+        "source": "WEB",
+        "client": "WEB",
+        "filter": f'(SECURITY_CODE="{str(code).zfill(6)}")',
+    }
+    try:
+        payload = _get(
+            url,
+            params=params,
+            timeout=getattr(cfg, "MARKET_CONTEXT_API_TIMEOUT", 6),
+            retries=getattr(cfg, "MARKET_CONTEXT_API_RETRIES", 1),
+        ).json()
+        rows = (payload.get("result") or {}).get("data") or []
+    except Exception:
+        return {"score": 0.0, "change_pct": 0.0, "net_buy": 0.0, "note": "两融数据获取失败"}
+
+    if not rows:
+        return {"score": 0.0, "change_pct": 0.0, "net_buy": 0.0, "note": "无两融数据"}
+
+    latest = rows[0]
+    oldest = rows[-1]
+    latest_balance = _safe_float(latest.get("RZYE") or latest.get("FIN_BALANCE"))
+    oldest_balance = _safe_float(oldest.get("RZYE") or oldest.get("FIN_BALANCE"))
+    change_pct = ((latest_balance - oldest_balance) / oldest_balance * 100) if oldest_balance > 0 else 0.0
+    buy_amt = _safe_float(latest.get("RZMRE") or latest.get("FIN_BUY_AMT"))
+    repay_amt = _safe_float(latest.get("RZCHE") or latest.get("FIN_REPAY_AMT"))
+    net_buy = buy_amt - repay_amt
+
+    score = 0.0
+    if change_pct >= 5:
+        score += 2.0
+    elif change_pct >= 1:
+        score += 1.0
+    elif change_pct <= -5:
+        score -= 2.0
+    elif change_pct <= -1:
+        score -= 1.0
+    if net_buy > 0:
+        score += 0.8
+    elif net_buy < 0:
+        score -= 0.8
+    score = round(_clip(score, 3.0), 2)
+
+    if score > 0:
+        note = f"融资余额上升{change_pct:.1f}%"
+    elif score < 0:
+        note = f"融资余额下降{change_pct:.1f}%"
+    else:
+        note = "两融变化中性"
+    return {
+        "score": score,
+        "change_pct": round(change_pct, 2),
+        "net_buy": round(net_buy, 2),
+        "note": note,
+    }
+
+
+def _fetch_lhb_data(code: str) -> dict:
+    if not getattr(cfg, "USE_LHB_API", True):
+        return {"score": 0.0, "count": 0, "net_buy": 0.0, "note": "龙虎榜接口关闭"}
+
+    begin, end = _date_yyyymmdd(getattr(cfg, "LHB_LOOKBACK_DAYS", 10))
+    url = "https://datacenter-web.eastmoney.com/api/data/v1/get"
+    params = {
+        "sortColumns": "TRADE_DATE",
+        "sortTypes": "-1",
+        "pageSize": "20",
+        "pageNumber": "1",
+        "reportName": "RPT_DAILYBILLBOARD_DETAILSNEW",
+        "columns": "ALL",
+        "source": "WEB",
+        "client": "WEB",
+        "filter": (
+            f'(SECURITY_CODE="{str(code).zfill(6)}")'
+            f'(TRADE_DATE>="{begin}")(TRADE_DATE<="{end}")'
+        ),
+    }
+    try:
+        payload = _get(
+            url,
+            params=params,
+            timeout=getattr(cfg, "MARKET_CONTEXT_API_TIMEOUT", 6),
+            retries=getattr(cfg, "MARKET_CONTEXT_API_RETRIES", 1),
+        ).json()
+        rows = (payload.get("result") or {}).get("data") or []
+    except Exception:
+        return {"score": 0.0, "count": 0, "net_buy": 0.0, "note": "龙虎榜数据获取失败"}
+
+    if not rows:
+        return {"score": 0.0, "count": 0, "net_buy": 0.0, "note": "近期未上龙虎榜"}
+
+    net_buy = 0.0
+    reasons = []
+    for row in rows:
+        net_buy += _safe_float(
+            row.get("BILLBOARD_NET_AMT")
+            or row.get("BILLBOARD_NET_BUY_AMT")
+            or row.get("NET_BUY_AMT")
+        )
+        reason = str(row.get("EXPLAIN") or row.get("EXPLANATION") or "").strip()
+        if reason:
+            reasons.append(reason)
+
+    score = 0.8
+    if net_buy > 0:
+        score += 1.7
+    elif net_buy < 0:
+        score -= 2.2
+    if len(rows) >= 2:
+        score += 0.5 if net_buy > 0 else -0.5
+    score = round(_clip(score, 3.0), 2)
+    if net_buy > 0:
+        note = f"龙虎榜{len(rows)}次，净买入{net_buy / 1e8:.2f}亿"
+    elif net_buy < 0:
+        note = f"龙虎榜{len(rows)}次，净卖出{abs(net_buy) / 1e8:.2f}亿"
+    else:
+        note = f"龙虎榜{len(rows)}次，净额中性"
+    if reasons:
+        note += f"；{reasons[0][:24]}"
+    return {
+        "score": score,
+        "count": len(rows),
+        "net_buy": round(net_buy, 2),
+        "note": note,
+    }
+
+
+def _neutral_market_context(code: str, note: str = "上下文数据中性") -> dict:
+    return {
+        "symbol": str(code).zfill(6),
+        "context_score": 0.0,
+        "event_score": 0.0,
+        "event_count": 0,
+        "event_titles": "",
+        "event_note": note,
+        "margin_score": 0.0,
+        "margin_balance_change_pct": 0.0,
+        "margin_net_buy": 0.0,
+        "margin_note": note,
+        "lhb_score": 0.0,
+        "lhb_count": 0,
+        "lhb_net_buy": 0.0,
+        "lhb_note": note,
+        "context_note": note,
+    }
+
+
+def _fetch_one_market_context(code: str) -> dict:
+    code = str(code).zfill(6)
+    event = _fetch_recent_events(code)
+    margin = _fetch_margin_data(code)
+    lhb = _fetch_lhb_data(code)
+    total = round(_clip(
+        float(event.get("score", 0)) + float(margin.get("score", 0)) + float(lhb.get("score", 0)),
+        float(getattr(cfg, "MARKET_CONTEXT_SCORE_LIMIT", 8)),
+    ), 2)
+    notes = [
+        str(event.get("note", "")),
+        str(margin.get("note", "")),
+        str(lhb.get("note", "")),
+    ]
+    return {
+        "symbol": code,
+        "context_score": total,
+        "event_score": float(event.get("score", 0)),
+        "event_count": int(event.get("count", 0) or 0),
+        "event_titles": "；".join(event.get("titles", []) or []),
+        "event_note": str(event.get("note", "")),
+        "margin_score": float(margin.get("score", 0)),
+        "margin_balance_change_pct": float(margin.get("change_pct", 0)),
+        "margin_net_buy": float(margin.get("net_buy", 0)),
+        "margin_note": str(margin.get("note", "")),
+        "lhb_score": float(lhb.get("score", 0)),
+        "lhb_count": int(lhb.get("count", 0) or 0),
+        "lhb_net_buy": float(lhb.get("net_buy", 0)),
+        "lhb_note": str(lhb.get("note", "")),
+        "context_note": "；".join(n for n in notes if n),
+    }
+
+
+def get_market_context_batch(symbols: list, max_workers: int = None) -> dict:
+    """批量获取大事件、融资融券和龙虎榜上下文评分。"""
+    symbols = [str(s).zfill(6) for s in symbols]
+    if not symbols:
+        return {}
+    if not getattr(cfg, "USE_MARKET_CONTEXT_API", True):
+        return {s: _neutral_market_context(s, "上下文接口关闭") for s in symbols}
+
+    if max_workers is None:
+        max_workers = max(1, int(getattr(cfg, "MARKET_CONTEXT_MAX_WORKERS", 4)))
+
+    results = {}
+    cache_file = _market_context_cache_file()
+    use_cache = _cache_enabled() and getattr(cfg, "USE_MARKET_CONTEXT_CACHE", True) and not _force_refresh_cache()
+    if use_cache and os.path.exists(cache_file):
+        try:
+            cached = pd.read_pickle(cache_file)
+            if isinstance(cached, dict):
+                requested = set(symbols)
+                results = {
+                    str(code).zfill(6): data
+                    for code, data in cached.items()
+                    if str(code).zfill(6) in requested
+                }
+                print(f"[缓存] 市场上下文命中: {len(results)}/{len(symbols)} ({cache_file})")
+        except Exception as e:
+            print(f"[缓存] 市场上下文缓存读取失败，改为重新获取: {e}")
+
+    symbols_to_fetch = [s for s in symbols if s not in results]
+    if not symbols_to_fetch:
+        return results
+
+    total = len(symbols_to_fetch)
+    max_workers = min(max_workers, total)
+    max_wait = float(getattr(cfg, "MARKET_CONTEXT_TOTAL_TIMEOUT", 35))
+    print(f"[数据] 获取 {total} 只市场上下文（大事件/两融/龙虎榜）...")
+
+    fetched = {}
+    start_time = time.time()
+    ex = ThreadPoolExecutor(max_workers=max_workers)
+    fut = {ex.submit(_fetch_one_market_context, s): s for s in symbols_to_fetch}
+    pending = set(fut.keys())
+    try:
+        while pending:
+            remaining = max_wait - (time.time() - start_time)
+            if remaining <= 0:
+                break
+            completed, pending = wait(
+                pending,
+                timeout=min(1.0, remaining),
+                return_when=FIRST_COMPLETED,
+            )
+            for f in completed:
+                sym = fut[f]
+                try:
+                    fetched[sym] = f.result()
+                except Exception:
+                    fetched[sym] = _neutral_market_context(sym, "上下文数据获取失败")
+        for f in pending:
+            sym = fut[f]
+            f.cancel()
+            fetched[sym] = _neutral_market_context(sym, "上下文数据超时")
+    finally:
+        ex.shutdown(wait=False, cancel_futures=True)
+
+    results.update(fetched)
+    if _cache_enabled() and getattr(cfg, "USE_MARKET_CONTEXT_CACHE", True):
+        try:
+            existing = {}
+            if os.path.exists(cache_file) and not _force_refresh_cache():
+                cached = pd.read_pickle(cache_file)
+                if isinstance(cached, dict):
+                    existing = {str(code).zfill(6): data for code, data in cached.items()}
+            existing.update(results)
+            pd.to_pickle(existing, cache_file)
+            print(f"[缓存] 已保存市场上下文缓存: {cache_file} ({len(existing)} 只)")
+        except Exception as e:
+            print(f"[缓存] 市场上下文缓存保存失败: {e}")
+
+    return results
 
 
 def load_benchmark_data(csv_path: str = None, benchmark_code: str = None) -> pd.DataFrame:
