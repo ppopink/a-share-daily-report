@@ -199,12 +199,13 @@ def _kline_points(kline_df: pd.DataFrame, code: str, limit: int = 60) -> List[Di
     return points
 
 
-def _stock_from_row(row: pd.Series, kline_df: pd.DataFrame = None) -> Dict[str, Any]:
+def _stock_from_row(row: pd.Series, kline_df: pd.DataFrame = None, recent_stats: Dict[str, Any] = None) -> Dict[str, Any]:
     risks = _risk_flags(row)
     entry_timing = _entry_timing(row)
     risk_note = "暂无明显风险信号。" if not risks else "；".join(r["label"] for r in risks) + "。注意控制仓位。"
     code = _safe_str(row.get("code")).zfill(6)
     sector = _safe_str(row.get("industry"), "未分类")
+    recent = (recent_stats or {}).get(code, {})
 
     return {
         "rank": int(_safe_num(row.get("rank"), 0)),
@@ -243,6 +244,10 @@ def _stock_from_row(row: pd.Series, kline_df: pd.DataFrame = None) -> Dict[str, 
         "maxBuyPrice": _round(row.get("max_buy_price"), 2),
         "pullbackBuyPrice": _round(row.get("pullback_buy_price"), 2),
         "invalidBelowPrice": _round(row.get("invalid_below_price"), 2),
+        "recentPickCount": int(_safe_num(recent.get("recentPickCount"), 1)),
+        "consecutivePickDays": int(_safe_num(recent.get("consecutivePickDays"), 1)),
+        "firstSeenDate": _safe_str(recent.get("firstSeenDate"), _date_label(_safe_str(row.get("trade_date"), "")) if row.get("trade_date") else ""),
+        "recentPickNote": _safe_str(recent.get("recentPickNote"), "首次或近期入选次数较少"),
         "trendQualityScore": _round(row.get("trend_quality_score"), 2),
         "entryTiming": entry_timing,
         "entryNote": _safe_str(row.get("entry_label"), "信号成立，建议结合T+1开盘与成交情况观察。"),
@@ -367,6 +372,53 @@ def _hot_sectors(date_key: str, day_dir: str) -> List[Dict[str, Any]]:
     return sectors
 
 
+def _build_recent_pick_stats(date_key: str, mode: str = "normal", window: int = 5) -> Dict[str, Dict[str, Any]]:
+    date_keys = sorted(
+        [name for name in os.listdir(cfg.OUTPUT_DIR) if _is_date_dir(name) and name <= date_key],
+        reverse=True,
+    )[:window]
+    appearances: Dict[str, List[str]] = {}
+    for key in date_keys:
+        day_dir = os.path.join(cfg.OUTPUT_DIR, key)
+        path = _pick_path(key, day_dir, mode)
+        if not os.path.exists(path):
+            continue
+        df = _read_csv(path, dtype={"code": str})
+        if df.empty or "code" not in df.columns:
+            continue
+        for code in df["code"].dropna().astype(str).str.zfill(6).unique():
+            appearances.setdefault(code, []).append(_date_label(key))
+
+    stats: Dict[str, Dict[str, Any]] = {}
+    current_label = _date_label(date_key)
+    ordered_labels = [_date_label(k) for k in date_keys]
+    for code, dates in appearances.items():
+        consecutive = 0
+        date_set = set(dates)
+        for label in ordered_labels:
+            if label in date_set:
+                consecutive += 1
+            else:
+                break
+        count = len(dates)
+        first_seen = dates[-1] if dates else current_label
+        if consecutive >= 3:
+            note = f"连续{consecutive}次入选，注意是否已进入拥挤交易"
+        elif count >= 3:
+            note = f"近{window}次报告第{count}次入选，需关注是否已兑现涨幅"
+        elif count == 2:
+            note = "近期第2次入选，信号有延续"
+        else:
+            note = "首次或近期入选次数较少"
+        stats[code] = {
+            "recentPickCount": count,
+            "consecutivePickDays": consecutive,
+            "firstSeenDate": first_seen,
+            "recentPickNote": note,
+        }
+    return stats
+
+
 def _market_guard(date_key: str, day_dir: str) -> Dict[str, Any]:
     path = os.path.join(day_dir, f"market_guard_{date_key}.csv")
     df = _read_csv(path)
@@ -414,7 +466,8 @@ def _build_daily_report(date_key: str, mode: str = "normal") -> Optional[Dict[st
     if not df.empty and "total_score" in df.columns:
         df = df.sort_values("total_score", ascending=False).head(cfg.TOP_N)
     kline_df = _load_kline_cache(date_key)
-    stocks = [_stock_from_row(row, kline_df) for _, row in df.iterrows()]
+    recent_stats = _build_recent_pick_stats(date_key, mode)
+    stocks = [_stock_from_row(row, kline_df, recent_stats) for _, row in df.iterrows()]
     for idx, stock in enumerate(stocks, start=1):
         stock["rank"] = idx
 

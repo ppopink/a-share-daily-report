@@ -3,7 +3,7 @@ import { toast, Toaster } from "sonner";
 import { BarChart3, CalendarRange, FileText, LineChart } from "lucide-react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "./components/ui/tabs";
 import { Header, DisclaimerBar } from "./components/report/Header";
-import { SummaryCards, ConclusionPanel } from "./components/report/Summary";
+import { SummaryCards, ConclusionPanel, ModeComparePanel } from "./components/report/Summary";
 import { StockList } from "./components/report/StockList";
 import { StockDetailDialog } from "./components/report/StockDetailDialog";
 import { ChartsSection } from "./components/report/Charts";
@@ -14,7 +14,7 @@ import { HistoryTab } from "./components/report/HistoryTab";
 import { StrategyTab } from "./components/report/StrategyTab";
 import { SectionTitle } from "./components/report/shared";
 import { backtestData, historyList, todayReport } from "./data/mock";
-import type { BacktestData, DailyReport, FilterMode, HistoryEntry, Stock } from "./data/types";
+import type { BacktestData, DailyReport, FilterMode, HistoryEntry, ModeReportSummary, Stock } from "./data/types";
 
 const tabs = [
   { id: "today", label: "今日选股", icon: FileText },
@@ -64,6 +64,17 @@ async function fetchJson<T>(url: string): Promise<T> {
   return res.json();
 }
 
+function toModeSummary(report: DailyReport): ModeReportSummary {
+  return {
+    mode: report.mode,
+    selectedCount: report.summary.selectedCount,
+    avgScore: report.summary.avgScore,
+    passRate: report.summary.passRate,
+    riskCount: report.summary.riskCount,
+    topStock: report.summary.topStock,
+  };
+}
+
 export default function App() {
   const [tab, setTab] = useState("today");
   const [date, setDate] = useState(todayReport.date);
@@ -73,8 +84,10 @@ export default function App() {
   const [availableModesByDate, setAvailableModesByDate] = useState<Record<string, FilterMode[]>>({});
   const [history, setHistory] = useState<HistoryEntry[]>(historyList);
   const [backtest, setBacktest] = useState<BacktestData>(backtestData);
+  const [modeSummaries, setModeSummaries] = useState<ModeReportSummary[]>([]);
   const [dataError, setDataError] = useState("");
   const [selected, setSelected] = useState<Stock | null>(null);
+  const [selectedSector, setSelectedSector] = useState("");
   const [dialogOpen, setDialogOpen] = useState(false);
 
   useEffect(() => {
@@ -166,8 +179,42 @@ export default function App() {
     };
   }, [date, mode, availableDates, availableModesByDate]);
 
+  useEffect(() => {
+    let cancelled = false;
+
+    async function loadModeSummaries() {
+      const modesForDate = availableModesByDate[date] || ["normal"];
+      try {
+        const summaries = await Promise.all(
+          modesForDate.map((m) =>
+            fetchJson<DailyReport>(reportPath(date, m)).then(toModeSummary),
+          ),
+        );
+        if (!cancelled) {
+          setModeSummaries(summaries);
+        }
+      } catch {
+        if (!cancelled) {
+          setModeSummaries([toModeSummary(viewReport)]);
+        }
+      }
+    }
+
+    loadModeSummaries();
+    return () => {
+      cancelled = true;
+    };
+  }, [date, availableModesByDate]);
+
   const viewReport = { ...report, date, mode };
   const availableModesForDate = availableModesByDate[date] || ["normal"];
+  const displayedStocks = selectedSector
+    ? viewReport.stocks.filter((s) => s.sector === selectedSector)
+    : viewReport.stocks;
+
+  useEffect(() => {
+    setSelectedSector("");
+  }, [date, mode]);
 
   const handleDateChange = (nextDate: string) => {
     if (!nextDate || nextDate === date) return;
@@ -259,13 +306,37 @@ export default function App() {
           <TabsContent value="today" className="space-y-6">
             <SummaryCards report={viewReport} />
             <ConclusionPanel report={viewReport} />
+            <ModeComparePanel
+              summaries={modeSummaries}
+              currentMode={mode}
+              onModeChange={handleModeChange}
+            />
             <section>
-              <SectionTitle title="今日入选 Top20" desc="点击查看每只股票的详细技术诊断" />
-              <StockList stocks={viewReport.stocks} onSelect={openStock} />
+              <div className="flex flex-wrap items-end justify-between gap-2">
+                <SectionTitle
+                  title={selectedSector ? `${selectedSector} 入选股` : "今日入选 Top20"}
+                  desc="点击查看每只股票的详细技术诊断"
+                />
+                {selectedSector && (
+                  <button
+                    type="button"
+                    onClick={() => setSelectedSector("")}
+                    className="rounded-md border border-border bg-card px-3 py-1.5 text-sm text-neutral hover:bg-neutral-soft"
+                  >
+                    清除板块筛选
+                  </button>
+                )}
+              </div>
+              <StockList stocks={displayedStocks} onSelect={openStock} />
             </section>
             <section>
               <SectionTitle title="图表分析" />
-              <ChartsSection report={viewReport} />
+              <ChartsSection
+                report={viewReport}
+                backtest={backtest}
+                selectedSector={selectedSector}
+                onSectorSelect={setSelectedSector}
+              />
             </section>
             <Diagnostics items={viewReport.diagnostics} />
             <ShareSummary report={viewReport} />

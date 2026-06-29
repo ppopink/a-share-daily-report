@@ -75,6 +75,10 @@ export interface Stock {
   maxBuyPrice?: number;
   pullbackBuyPrice?: number;
   invalidBelowPrice?: number;
+  recentPickCount?: number;
+  consecutivePickDays?: number;
+  firstSeenDate?: string;
+  recentPickNote?: string;
   trendQualityScore: number;
   // 入场 / 风险
   entryTiming: EntryTiming;
@@ -191,6 +195,15 @@ export interface DailyReport {
   funnel: { stage: string; count: number }[];
   industryDist: { sector: string; count: number }[];
   hotSectors?: HotSector[];
+}
+
+export interface ModeReportSummary {
+  mode: FilterMode;
+  selectedCount: number;
+  avgScore: number;
+  passRate: number;
+  riskCount: number;
+  topStock: { name: string; code: string; score: number; price: number };
 }
 
 export interface HistoryEntry {

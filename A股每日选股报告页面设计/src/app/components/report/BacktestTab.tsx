@@ -33,6 +33,7 @@ export function BacktestTab({ data }: { data: BacktestData }) {
       <BacktestHeader data={data} />
       {!matureSample && <SampleNotMature />}
       <Overview data={data} />
+      <ShortTermAccuracy data={data} />
       <HoldingPerf data={data} />
       <EquityCurve data={data} />
       <LayerPerf data={data} />
@@ -40,6 +41,47 @@ export function BacktestTab({ data }: { data: BacktestData }) {
       <DetailTable rows={data.details} />
       <Credibility />
     </div>
+  );
+}
+
+function ShortTermAccuracy({ data }: { data: BacktestData }) {
+  const rows = data.holdingPerf.slice(0, 3);
+  if (!rows.length) return null;
+  return (
+    <Card className="rounded-lg p-5 shadow-sm">
+      <SectionTitle title="短线准确率摘要" desc="优先看最短几个持有周期，适合 1/2/3 日短线决策复盘" />
+      <div className="grid gap-3 md:grid-cols-3">
+        {rows.map((p) => (
+          <div key={p.period} className="rounded-lg border border-border p-4">
+            <div className="flex items-center justify-between">
+              <span className="text-foreground">{p.period}</span>
+              <Badge variant="outline" className="text-neutral">{p.samples} 样本</Badge>
+            </div>
+            <div className="mt-3 grid grid-cols-2 gap-2 text-sm">
+              <div>
+                <div className="text-xs text-neutral">胜率</div>
+                <div className="tabular-nums text-finance-blue">{p.winRate}%</div>
+              </div>
+              <div>
+                <div className="text-xs text-neutral">平均收益</div>
+                <ChangeText value={p.avgReturn} />
+              </div>
+              <div>
+                <div className="text-xs text-neutral">平均超额</div>
+                <ChangeText value={p.avgExcess} />
+              </div>
+              <div>
+                <div className="text-xs text-neutral">最大回撤</div>
+                <ChangeText value={p.maxDrawdown} />
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
+      <p className="mt-3 text-xs leading-relaxed text-neutral">
+        这里展示的是历史预测命中情况，不是未来收益承诺；样本不足时优先看方向和回撤，不要只看单一胜率。
+      </p>
+    </Card>
   );
 }
 

@@ -56,6 +56,11 @@ function StockCard({ stock, onClick }: { stock: Stock; onClick: () => void }) {
 
       <div className="flex flex-wrap items-center gap-1.5">
         <EntryTag timing={stock.entryTiming} />
+        {(stock.recentPickCount ?? 1) > 1 && (
+          <span className="inline-flex items-center rounded-md border border-finance-blue/20 bg-finance-blue-soft px-2 py-0.5 text-xs text-finance-blue">
+            近{stock.recentPickCount}次入选
+          </span>
+        )}
         {stock.risks.length > 0 ? (
           stock.risks.slice(0, 2).map((r) => <RiskTag key={r.label} risk={r} />)
         ) : (
@@ -85,6 +90,14 @@ export function StockList({
   stocks: Stock[];
   onSelect: (s: Stock) => void;
 }) {
+  if (stocks.length === 0) {
+    return (
+      <Card className="rounded-lg border-dashed p-6 text-center text-sm text-neutral shadow-sm">
+        当前筛选条件下暂无入选股票。
+      </Card>
+    );
+  }
+
   return (
     <>
       {/* 移动端：卡片 */}
@@ -148,7 +161,9 @@ export function StockList({
                     {s.risks.length > 0 ? (
                       <span className="text-xs text-risk">{s.risks[0].label}{s.risks.length > 1 ? ` +${s.risks.length - 1}` : ""}</span>
                     ) : (
-                      <span className="text-xs text-down">无</span>
+                      <span className="text-xs text-down">
+                        {(s.recentPickCount ?? 1) > 1 ? `近${s.recentPickCount}次入选` : "无"}
+                      </span>
                     )}
                   </TableCell>
                   <TableCell><ChevronRight className="size-4 text-neutral" /></TableCell>

@@ -79,6 +79,11 @@ export function StockDetailDialog({
           </DialogDescription>
           <div className="mt-1 flex flex-wrap gap-1.5">
             <EntryTag timing={stock.entryTiming} />
+            {(stock.recentPickCount ?? 1) > 1 && (
+              <span className="inline-flex items-center rounded-md border border-finance-blue/20 bg-finance-blue-soft px-2 py-0.5 text-xs text-finance-blue">
+                {stock.recentPickNote || `近${stock.recentPickCount}次入选`}
+              </span>
+            )}
             {stock.risks.length > 0 ? (
               stock.risks.map((r) => <RiskTag key={r.label} risk={r} />)
             ) : (
@@ -152,6 +157,9 @@ export function StockDetailDialog({
               <div className="rounded-md border border-up/15 bg-up-soft/40 p-3">
                 <div className="mb-1 text-sm font-medium text-up">为什么入选</div>
                 <p className="text-sm leading-relaxed text-foreground/90">{stock.selectionReason || "综合规则排序靠前"}</p>
+                <p className="mt-1 text-xs text-neutral">
+                  {stock.recentPickNote || "首次或近期入选次数较少"}
+                </p>
               </div>
               <div className="rounded-md border border-risk/15 bg-risk-soft/40 p-3">
                 <div className="mb-1 text-sm font-medium text-risk">为什么谨慎</div>

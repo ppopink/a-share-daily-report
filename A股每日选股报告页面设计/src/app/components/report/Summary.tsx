@@ -9,7 +9,7 @@ import {
 } from "lucide-react";
 import { Card } from "../ui/card";
 import { DataCard } from "./shared";
-import type { DailyReport } from "../../data/types";
+import type { DailyReport, FilterMode, ModeReportSummary } from "../../data/types";
 
 export function SummaryCards({ report }: { report: DailyReport }) {
   const s = report.summary;
@@ -126,6 +126,82 @@ export function ConclusionPanel({ report }: { report: DailyReport }) {
           <div className="mb-1.5 text-xs text-neutral">今日最严格技术条件</div>
           <div className="text-foreground">{c.strictestCondition}</div>
         </div>
+      </div>
+    </Card>
+  );
+}
+
+const modeNames: Record<FilterMode, string> = {
+  strict: "严格",
+  normal: "标准",
+  loose: "宽松",
+};
+
+export function ModeComparePanel({
+  summaries,
+  currentMode,
+  onModeChange,
+}: {
+  summaries: ModeReportSummary[];
+  currentMode: FilterMode;
+  onModeChange: (mode: FilterMode) => void;
+}) {
+  if (!summaries.length) return null;
+
+  return (
+    <Card className="rounded-lg p-5 shadow-sm">
+      <div className="mb-3 flex flex-wrap items-center justify-between gap-2">
+        <div>
+          <h3 className="text-foreground">模式对比</h3>
+          <p className="mt-0.5 text-sm text-neutral">
+            strict 找强信号，normal 做日常主策略，loose 做观察池。
+          </p>
+        </div>
+      </div>
+      <div className="grid gap-3 md:grid-cols-3">
+        {summaries.map((s) => {
+          const active = s.mode === currentMode;
+          return (
+            <button
+              key={s.mode}
+              type="button"
+              onClick={() => onModeChange(s.mode)}
+              className={`rounded-lg border p-4 text-left transition-colors ${
+                active
+                  ? "border-finance-blue bg-finance-blue-soft"
+                  : "border-border bg-card hover:bg-neutral-soft/50"
+              }`}
+            >
+              <div className="flex items-center justify-between">
+                <span className="text-foreground">{modeNames[s.mode]}模式</span>
+                <span className="rounded-md bg-white/70 px-2 py-0.5 text-xs text-finance-blue">
+                  {s.mode}
+                </span>
+              </div>
+              <div className="mt-3 grid grid-cols-2 gap-2 text-sm">
+                <div>
+                  <div className="text-xs text-neutral">入选</div>
+                  <div className="tabular-nums text-foreground">{s.selectedCount}只</div>
+                </div>
+                <div>
+                  <div className="text-xs text-neutral">均分</div>
+                  <div className="tabular-nums text-finance-blue">{s.avgScore}</div>
+                </div>
+                <div>
+                  <div className="text-xs text-neutral">通过率</div>
+                  <div className="tabular-nums text-foreground">{s.passRate}%</div>
+                </div>
+                <div>
+                  <div className="text-xs text-neutral">风险提示</div>
+                  <div className="tabular-nums text-risk">{s.riskCount}</div>
+                </div>
+              </div>
+              <div className="mt-3 rounded-md bg-background/70 px-2 py-1.5 text-xs text-neutral">
+                最高分：{s.topStock.name} {s.topStock.score || "-"}
+              </div>
+            </button>
+          );
+        })}
       </div>
     </Card>
   );

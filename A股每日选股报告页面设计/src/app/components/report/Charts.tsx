@@ -15,7 +15,7 @@ import {
 import { Card } from "../ui/card";
 import { Badge } from "../ui/badge";
 import { FunnelBar, SectionTitle } from "./shared";
-import type { DailyReport } from "../../data/types";
+import type { BacktestData, DailyReport } from "../../data/types";
 
 const BLUE = "#1f4e78";
 const PALETTE = ["#1f4e78", "#3a6ea5", "#5c8fc0", "#d23b3b", "#e08a2b", "#1f9e6e", "#5c7184", "#8aa6bd"];
@@ -37,7 +37,17 @@ function ChartCard({
   );
 }
 
-export function ChartsSection({ report }: { report: DailyReport }) {
+export function ChartsSection({
+  report,
+  backtest,
+  selectedSector,
+  onSectorSelect,
+}: {
+  report: DailyReport;
+  backtest?: BacktestData;
+  selectedSector?: string;
+  onSectorSelect?: (sector: string) => void;
+}) {
   const top = report.stocks.slice(0, 20);
   const scoreData = top.map((s) => ({ name: s.name, 总分: s.totalScore }));
   const stackData = top.slice(0, 10).map((s) => ({
@@ -61,7 +71,11 @@ export function ChartsSection({ report }: { report: DailyReport }) {
 
   return (
     <div className="grid gap-4 lg:grid-cols-2">
-      <HotSectorCard report={report} />
+      <HotSectorCard
+        report={report}
+        selectedSector={selectedSector}
+        onSectorSelect={onSectorSelect}
+      />
 
       <ChartCard title="Top20 综合评分" desc="按总分排序的入选股票">
         <ResponsiveContainer width="100%" height={300}>
@@ -127,7 +141,7 @@ export function ChartsSection({ report }: { report: DailyReport }) {
         </ResponsiveContainer>
       </ChartCard>
 
-      <AccuracySummaryCard />
+      <AccuracySummaryCard data={backtest} />
     </div>
   );
 }
@@ -137,7 +151,15 @@ function formatAmount(value: number) {
   return `${(value / 100000000).toFixed(1)}亿`;
 }
 
-function HotSectorCard({ report }: { report: DailyReport }) {
+function HotSectorCard({
+  report,
+  selectedSector,
+  onSectorSelect,
+}: {
+  report: DailyReport;
+  selectedSector?: string;
+  onSectorSelect?: (sector: string) => void;
+}) {
   const sectors = report.hotSectors ?? [];
   if (sectors.length === 0) {
     return (
@@ -157,7 +179,16 @@ function HotSectorCard({ report }: { report: DailyReport }) {
       />
       <div className="grid gap-3 md:grid-cols-2">
         {sectors.slice(0, 6).map((s) => (
-          <div key={`${s.rank}-${s.name}`} className="rounded-lg border border-border p-3">
+          <button
+            key={`${s.rank}-${s.name}`}
+            type="button"
+            onClick={() => onSectorSelect?.(s.name)}
+            className={`rounded-lg border p-3 text-left transition-colors ${
+              selectedSector === s.name
+                ? "border-finance-blue bg-finance-blue-soft"
+                : "border-border bg-card hover:bg-neutral-soft/50"
+            }`}
+          >
             <div className="flex items-start justify-between gap-2">
               <div className="min-w-0">
                 <div className="flex items-center gap-2">
@@ -207,7 +238,7 @@ function HotSectorCard({ report }: { report: DailyReport }) {
             <p className="mt-2 line-clamp-2 text-xs leading-relaxed text-neutral">
               {s.quantNote || `${s.upCount}涨 / ${s.downCount}跌，来源：${s.dataSource || "板块数据"}`}
             </p>
-          </div>
+          </button>
         ))}
       </div>
     </Card>
@@ -215,16 +246,20 @@ function HotSectorCard({ report }: { report: DailyReport }) {
 }
 
 /** 准确性评估摘要卡片（入口） */
-function AccuracySummaryCard() {
+function AccuracySummaryCard({ data }: { data?: BacktestData }) {
+  const perf = data?.holdingPerf ?? [];
+  const first = perf[0];
+  const second = perf[1];
+  const third = perf[2];
   return (
     <Card className="rounded-lg border-dashed p-4 shadow-sm">
-      <SectionTitle title="准确性评估" desc="未来 3/5/10/20 日表现" />
+      <SectionTitle title="准确性评估" desc="基于已成熟历史样本的未来表现" />
       <div className="grid grid-cols-2 gap-2 text-sm">
         {[
-          ["未来3日胜率", "56.2%"],
-          ["未来5日胜率", "58.3%"],
-          ["平均收益", "+1.9%"],
-          ["平均超额收益", "+0.8%"],
+          [first?.period || "最短持有期", first ? `${first.winRate}%` : "暂无"],
+          [second?.period || "次短持有期", second ? `${second.winRate}%` : "暂无"],
+          ["平均收益", data ? `${data.overview.avgReturn >= 0 ? "+" : ""}${data.overview.avgReturn}%` : "暂无"],
+          ["平均超额", data ? `${data.overview.avgExcess >= 0 ? "+" : ""}${data.overview.avgExcess}%` : "暂无"],
         ].map(([k, v]) => (
           <div key={k} className="rounded-md bg-neutral-soft/50 p-2.5">
             <div className="text-xs text-neutral">{k}</div>
@@ -233,7 +268,8 @@ function AccuracySummaryCard() {
         ))}
       </div>
       <p className="mt-3 text-xs leading-relaxed text-neutral">
-        当前样本仍在积累中，完整胜率、收益与因子预测力请见
+        {third ? `另有 ${third.period} 胜率 ${third.winRate}%。` : "当前样本仍在积累中。"}
+        完整胜率、收益与因子预测力请见
         <b className="text-finance-blue"> “准确率回测” </b>标签页。
       </p>
     </Card>
