@@ -10,6 +10,22 @@ export interface RiskFlag {
   label: string;
 }
 
+export interface MarketGuard {
+  marketStatus: string;
+  riskLevel: "low" | "medium" | "high" | string;
+  positionAdvice: string;
+  tradePermission: string;
+  marketNote: string;
+  totalCount: number;
+  upCount: number;
+  downCount: number;
+  upRatio: number;
+  avgPctChange: number;
+  limitUpCount: number;
+  limitDownCount: number;
+  totalAmount: number;
+}
+
 export interface KlinePoint {
   date: string;
   open: number;
@@ -50,6 +66,15 @@ export interface Stock {
   lhbNetBuy: number;
   lhbNote: string;
   contextNote: string;
+  selectionReason?: string;
+  watchReason?: string;
+  buyAction?: string;
+  buyTrigger?: string;
+  buyAvoidRules?: string;
+  maxOpenGapPct?: number;
+  maxBuyPrice?: number;
+  pullbackBuyPrice?: number;
+  invalidBelowPrice?: number;
   trendQualityScore: number;
   // 入场 / 风险
   entryTiming: EntryTiming;
@@ -152,6 +177,7 @@ export interface DailyReport {
     above80Count: number;
     passRate: number; // 技术筛选通过率 %
   };
+  marketGuard?: MarketGuard;
   conclusion: {
     selectedCount: number;
     top5: { name: string; code: string }[];
@@ -159,6 +185,7 @@ export interface DailyReport {
     chaseRisk: boolean;
     status: StrategyStatus;
     narrative: string;
+    marketAdvice?: string;
   };
   diagnostics: DiagnosticItem[];
   funnel: { stage: string; count: number }[];

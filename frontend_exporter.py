@@ -234,6 +234,15 @@ def _stock_from_row(row: pd.Series, kline_df: pd.DataFrame = None) -> Dict[str, 
         "lhbNetBuy": _round(row.get("lhb_net_buy"), 2),
         "lhbNote": _safe_str(row.get("lhb_note"), "近期未上龙虎榜"),
         "contextNote": _safe_str(row.get("context_note"), "上下文数据中性"),
+        "selectionReason": _safe_str(row.get("selection_reason"), "综合规则排序靠前"),
+        "watchReason": _safe_str(row.get("watch_reason"), "按T+1开盘条件执行"),
+        "buyAction": _safe_str(row.get("buy_action"), "轻仓观察"),
+        "buyTrigger": _safe_str(row.get("buy_trigger"), "等待T+1开盘确认。"),
+        "buyAvoidRules": _safe_str(row.get("buy_avoid_rules"), "涨停、停牌、高开过大或放量走弱不买。"),
+        "maxOpenGapPct": _round(row.get("max_open_gap_pct"), 2),
+        "maxBuyPrice": _round(row.get("max_buy_price"), 2),
+        "pullbackBuyPrice": _round(row.get("pullback_buy_price"), 2),
+        "invalidBelowPrice": _round(row.get("invalid_below_price"), 2),
         "trendQualityScore": _round(row.get("trend_quality_score"), 2),
         "entryTiming": entry_timing,
         "entryNote": _safe_str(row.get("entry_label"), "信号成立，建议结合T+1开盘与成交情况观察。"),
@@ -358,6 +367,43 @@ def _hot_sectors(date_key: str, day_dir: str) -> List[Dict[str, Any]]:
     return sectors
 
 
+def _market_guard(date_key: str, day_dir: str) -> Dict[str, Any]:
+    path = os.path.join(day_dir, f"market_guard_{date_key}.csv")
+    df = _read_csv(path)
+    if df.empty:
+        return {
+            "marketStatus": "数据不足",
+            "riskLevel": "medium",
+            "positionAdvice": "轻仓观察",
+            "tradePermission": "谨慎",
+            "marketNote": "暂无市场宽度数据。",
+            "totalCount": 0,
+            "upCount": 0,
+            "downCount": 0,
+            "upRatio": 0,
+            "avgPctChange": 0,
+            "limitUpCount": 0,
+            "limitDownCount": 0,
+            "totalAmount": 0,
+        }
+    row = df.iloc[0]
+    return {
+        "marketStatus": _safe_str(row.get("market_status"), "数据不足"),
+        "riskLevel": _safe_str(row.get("risk_level"), "medium"),
+        "positionAdvice": _safe_str(row.get("position_advice"), "轻仓观察"),
+        "tradePermission": _safe_str(row.get("trade_permission"), "谨慎"),
+        "marketNote": _safe_str(row.get("market_note"), "暂无市场宽度数据。"),
+        "totalCount": int(_safe_num(row.get("total_count"), 0)),
+        "upCount": int(_safe_num(row.get("up_count"), 0)),
+        "downCount": int(_safe_num(row.get("down_count"), 0)),
+        "upRatio": _round(_safe_num(row.get("up_ratio")) * 100, 2),
+        "avgPctChange": _round(row.get("avg_pct_change"), 2),
+        "limitUpCount": int(_safe_num(row.get("limit_up_count"), 0)),
+        "limitDownCount": int(_safe_num(row.get("limit_down_count"), 0)),
+        "totalAmount": _round(row.get("total_amount"), 2),
+    }
+
+
 def _build_daily_report(date_key: str, mode: str = "normal") -> Optional[Dict[str, Any]]:
     day_dir = os.path.join(cfg.OUTPUT_DIR, date_key)
     pick_path = _pick_path(date_key, day_dir, mode)
@@ -377,6 +423,7 @@ def _build_daily_report(date_key: str, mode: str = "normal") -> Optional[Dict[st
     risk_count = sum(1 for s in stocks if s["risks"])
     above80 = sum(1 for s in stocks if s["totalScore"] >= 80)
     diagnostics = _diagnostics(date_key, day_dir, mode)
+    market_guard = _market_guard(date_key, day_dir)
     final_diag = next((d for d in diagnostics if "最终" in d["label"]), None)
     pass_rate = _round((final_diag["passed"] / final_diag["total"] * 100) if final_diag and final_diag["total"] else 0, 2)
     strictest = min(
@@ -417,6 +464,7 @@ def _build_daily_report(date_key: str, mode: str = "normal") -> Optional[Dict[st
             "above80Count": above80,
             "passRate": pass_rate,
         },
+        "marketGuard": market_guard,
         "conclusion": {
             "selectedCount": selected_count,
             "top5": [{"name": s["name"], "code": s["code"]} for s in stocks[:5]],
@@ -424,6 +472,7 @@ def _build_daily_report(date_key: str, mode: str = "normal") -> Optional[Dict[st
             "chaseRisk": any(s["entryTiming"] == "追高谨慎" for s in stocks),
             "status": status,
             "narrative": narrative,
+            "marketAdvice": market_guard["marketNote"],
         },
         "diagnostics": diagnostics,
         "funnel": _funnel(date_key, day_dir, selected_count, mode),

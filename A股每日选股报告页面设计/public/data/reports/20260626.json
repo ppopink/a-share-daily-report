@@ -38,6 +38,15 @@
       "lhbNetBuy": 0.0,
       "lhbNote": "近期未上龙虎榜",
       "contextNote": "公告偏风险(1个负面关键词, 3个异动/风险词)；融资余额下降-3.8%；近期未上龙虎榜",
+      "selectionReason": "综合规则排序靠前",
+      "watchReason": "按T+1开盘条件执行",
+      "buyAction": "轻仓观察",
+      "buyTrigger": "等待T+1开盘确认。",
+      "buyAvoidRules": "涨停、停牌、高开过大或放量走弱不买。",
+      "maxOpenGapPct": 0.0,
+      "maxBuyPrice": 0.0,
+      "pullbackBuyPrice": 0.0,
+      "invalidBelowPrice": 0.0,
       "trendQualityScore": 3.9,
       "entryTiming": "追高谨慎",
       "entryNote": "🟠 连涨多日，等回调再入",
@@ -706,6 +715,21 @@
     "above80Count": 0,
     "passRate": 0.05
   },
+  "marketGuard": {
+    "marketStatus": "数据不足",
+    "riskLevel": "medium",
+    "positionAdvice": "轻仓观察",
+    "tradePermission": "谨慎",
+    "marketNote": "暂无市场宽度数据。",
+    "totalCount": 0,
+    "upCount": 0,
+    "downCount": 0,
+    "upRatio": 0,
+    "avgPctChange": 0,
+    "limitUpCount": 0,
+    "limitDownCount": 0,
+    "totalAmount": 0
+  },
   "conclusion": {
     "selectedCount": 1,
     "top5": [
@@ -717,7 +741,8 @@
     "strictestCondition": "volume / previous_5day_avg_volume >= VOL_MULT",
     "chaseRisk": true,
     "status": "一般",
-    "narrative": "2026-06-26 normal 模式共选出 1 只候选股，最高分为 宏柏新材(605366)，平均分 58.65。当前最严格的技术条件是：volume / previous_5day_avg_volume >= VOL_MULT。"
+    "narrative": "2026-06-26 normal 模式共选出 1 只候选股，最高分为 宏柏新材(605366)，平均分 58.65。当前最严格的技术条件是：volume / previous_5day_avg_volume >= VOL_MULT。",
+    "marketAdvice": "暂无市场宽度数据。"
   },
   "diagnostics": [
     {

@@ -50,6 +50,104 @@ def _save_filter_log(rows: list, trade_date: datetime.date = None, mode: str = N
     return path
 
 
+def _build_market_guard(spot_df: pd.DataFrame) -> dict:
+    """用当日全市场行情生成简单市场风控闸门。"""
+    if spot_df is None or spot_df.empty:
+        return {
+            "market_status": "数据不足",
+            "risk_level": "medium",
+            "position_advice": "轻仓观察",
+            "trade_permission": "谨慎",
+            "market_note": "未获取到市场宽度数据，个股信号需降低仓位验证。",
+            "total_count": 0,
+            "up_count": 0,
+            "down_count": 0,
+            "flat_count": 0,
+            "up_ratio": 0.0,
+            "avg_pct_change": 0.0,
+            "median_pct_change": 0.0,
+            "strong_up_count": 0,
+            "strong_down_count": 0,
+            "limit_up_count": 0,
+            "limit_down_count": 0,
+            "total_amount": 0.0,
+        }
+
+    df = spot_df.copy()
+    df["pct_change"] = pd.to_numeric(df.get("pct_change", 0), errors="coerce").fillna(0)
+    df["amount"] = pd.to_numeric(df.get("amount", 0), errors="coerce").fillna(0)
+    total = len(df)
+    up_count = int((df["pct_change"] > 0).sum())
+    down_count = int((df["pct_change"] < 0).sum())
+    flat_count = total - up_count - down_count
+    up_ratio = up_count / total if total else 0
+    avg_pct = float(df["pct_change"].mean()) if total else 0
+    median_pct = float(df["pct_change"].median()) if total else 0
+    strong_up = int((df["pct_change"] >= 5).sum())
+    strong_down = int((df["pct_change"] <= -5).sum())
+    limit_up = int((df["pct_change"] >= 9.7).sum())
+    limit_down = int((df["pct_change"] <= -9.7).sum())
+    total_amount = float(df["amount"].sum())
+
+    if up_ratio >= 0.55 and avg_pct >= 0.30 and strong_down <= max(20, strong_up):
+        market_status = "适合交易"
+        risk_level = "low"
+        position_advice = "正常仓位"
+        trade_permission = "可参与"
+    elif up_ratio >= 0.45 and avg_pct >= -0.50 and limit_down <= 30:
+        market_status = "结构性机会"
+        risk_level = "medium"
+        position_advice = "半仓以内"
+        trade_permission = "轻仓参与"
+    else:
+        market_status = "防守优先"
+        risk_level = "high"
+        position_advice = "轻仓或观望"
+        trade_permission = "谨慎观望"
+
+    market_note = (
+        f"上涨{up_count}/{total}只，上涨占比{up_ratio * 100:.1f}%，"
+        f"平均涨跌幅{avg_pct:.2f}%，涨停约{limit_up}只，跌停约{limit_down}只；"
+        f"建议：{position_advice}。"
+    )
+
+    return {
+        "market_status": market_status,
+        "risk_level": risk_level,
+        "position_advice": position_advice,
+        "trade_permission": trade_permission,
+        "market_note": market_note,
+        "total_count": total,
+        "up_count": up_count,
+        "down_count": down_count,
+        "flat_count": flat_count,
+        "up_ratio": round(up_ratio, 4),
+        "avg_pct_change": round(avg_pct, 4),
+        "median_pct_change": round(median_pct, 4),
+        "strong_up_count": strong_up,
+        "strong_down_count": strong_down,
+        "limit_up_count": limit_up,
+        "limit_down_count": limit_down,
+        "total_amount": round(total_amount, 2),
+    }
+
+
+def _save_market_guard(spot_df: pd.DataFrame, trade_date: datetime.date = None, verbose: bool = True) -> str:
+    if trade_date is None:
+        trade_date = datetime.date.today()
+    date_str = trade_date.strftime("%Y%m%d")
+    guard = _build_market_guard(spot_df)
+    path = output_path(f"market_guard_{date_str}.csv", trade_date)
+    pd.DataFrame([guard]).to_csv(path, index=False, encoding="utf-8-sig")
+    if verbose:
+        print(
+            f"[市场] {guard['market_status']} | {guard['trade_permission']} | "
+            f"{guard['market_note']}"
+        )
+        print(f"[市场] 风控闸门: {path}")
+    return path
+
+
 def _fallback_hot_sectors_from_spot(spot_df: pd.DataFrame, selected_df: pd.DataFrame = None) -> pd.DataFrame:
     """当远程板块接口不可用时，用本地行情聚合生成保守版热度榜。"""
     if spot_df is None or spot_df.empty:
@@ -468,6 +566,7 @@ def run_screening(
     if spot_df.empty:
         print("[错误] 无法获取股票列表")
         return pd.DataFrame()
+    _save_market_guard(spot_df, verbose=verbose)
 
     symbols_all = spot_df["code"].astype(str).tolist()
 

@@ -4,6 +4,7 @@ import {
   Filter,
   Gauge,
   ListChecks,
+  ShieldAlert,
   Trophy,
 } from "lucide-react";
 import { Card } from "../ui/card";
@@ -12,8 +13,18 @@ import type { DailyReport } from "../../data/types";
 
 export function SummaryCards({ report }: { report: DailyReport }) {
   const s = report.summary;
+  const market = report.marketGuard;
+  const marketTone =
+    market?.riskLevel === "high" ? "risk" : market?.riskLevel === "low" ? "up" : "primary";
   return (
-    <div className="grid grid-cols-2 gap-3 lg:grid-cols-6">
+    <div className="grid grid-cols-2 gap-3 lg:grid-cols-7">
+      <DataCard
+        label="市场闸门"
+        value={market?.tradePermission || "谨慎"}
+        sub={market?.positionAdvice || "轻仓观察"}
+        tone={marketTone}
+        icon={<ShieldAlert className="size-4" />}
+      />
       <DataCard
         label="今日入选"
         value={s.selectedCount}
@@ -74,6 +85,11 @@ export function ConclusionPanel({ report }: { report: DailyReport }) {
         </span>
       </div>
       <p className="text-sm leading-relaxed text-foreground/90">{c.narrative}</p>
+      {report.marketGuard && (
+        <p className="mt-2 text-sm leading-relaxed text-foreground/90">
+          <b>市场风控：</b>{c.marketAdvice || report.marketGuard.marketNote}
+        </p>
+      )}
 
       <div className="mt-4 grid gap-3 sm:grid-cols-2">
         <div className="rounded-md bg-neutral-soft/60 p-3">

@@ -117,6 +117,100 @@ def score_sector_leadership(
     return scores
 
 
+def _build_selection_reason(ind: dict, row: dict, context: dict) -> str:
+    reasons = []
+    if row.get("trend_quality_score", 0) >= 10:
+        reasons.append("趋势质量较好")
+    if ind.get("above_ma20_days_20", 0) >= 16:
+        reasons.append("20日多数站上MA20")
+    if ind.get("ma20_slope_10_pct", 0) >= 5 or ind.get("ma20_slope_20_pct", 0) >= 8:
+        reasons.append("MA20斜率上行")
+    if ind.get("adx_value", 0) >= 35 and ind.get("plus_di", 0) > ind.get("minus_di", 0):
+        reasons.append("DMI趋势偏强")
+    if ind.get("vol_ratio", 0) >= 1.5:
+        reasons.append("量能放大")
+    if ind.get("macd_pass"):
+        reasons.append("MACD动能确认")
+    if row.get("main_net_ratio", 0) > 0:
+        reasons.append("资金净流入")
+    if row.get("sector_score", 0) >= 15:
+        reasons.append("板块相对靠前")
+    if row.get("context_score", 0) > 0:
+        reasons.append("事件/两融/龙虎榜加分")
+    if not reasons:
+        reasons.append("综合规则排序靠前")
+    return "；".join(reasons[:5])
+
+
+def _build_watch_reason(ind: dict, row: dict, entry_label: str) -> str:
+    reasons = []
+    if "追高" in entry_label or "连涨" in entry_label:
+        reasons.append("短线已有涨幅，避免高开追入")
+    if row.get("pct_change", 0) >= 7:
+        reasons.append("当日涨幅较高")
+    if ind.get("close_ma20_ratio", 1) >= 1.15:
+        reasons.append("偏离MA20较大")
+    if ind.get("vol_ratio", 0) < 1.2:
+        reasons.append("量能确认不足")
+    if row.get("main_net_ratio", 0) < 0:
+        reasons.append("资金净流入偏弱")
+    if row.get("context_score", 0) < 0:
+        reasons.append("事件/两融/龙虎榜偏负")
+    return "；".join(reasons) if reasons else "暂无明显额外风险，仍需按T+1开盘条件执行"
+
+
+def _build_buy_trigger(row: dict, ind: dict, entry_label: str, entry_bonus: float, exit_plan: dict) -> dict:
+    price = float(row.get("price", 0) or exit_plan.get("signal_close", 0) or 0)
+    ma5 = float(exit_plan.get("reference_ma5", 0) or 0)
+    atr = float(exit_plan.get("reference_atr", 0) or max(price * 0.025, 0.01))
+    pct_change = float(row.get("pct_change", 0) or 0)
+    vol_ratio = float(ind.get("vol_ratio", 0) or 0)
+    close_ma20_ratio = float(ind.get("close_ma20_ratio", 1) or 1)
+
+    if price <= 0:
+        return {
+            "buy_action": "等待确认",
+            "buy_trigger": "价格数据不足，不能生成明日买入触发条件。",
+            "buy_avoid_rules": "缺少有效价格时不交易。",
+            "max_open_gap_pct": 0.0,
+            "max_buy_price": 0.0,
+            "pullback_buy_price": 0.0,
+            "invalid_below_price": 0.0,
+        }
+
+    if "追高" in entry_label or pct_change >= 7 or close_ma20_ratio >= 1.15:
+        max_gap_pct = 1.5
+        buy_action = "等回踩确认"
+    elif entry_bonus > 0 and vol_ratio >= 1.3:
+        max_gap_pct = 3.0
+        buy_action = "可积极观察"
+    else:
+        max_gap_pct = 2.0
+        buy_action = "轻仓观察"
+
+    max_buy_price = price * (1 + max_gap_pct / 100)
+    pullback_buy_price = ma5 if ma5 > 0 else max(price - 0.6 * atr, price * 0.98)
+    invalid_below_price = max(price * 0.985, ma5 * 0.985 if ma5 > 0 else 0)
+
+    buy_trigger = (
+        f"T+1不涨停、不停牌；开盘高开不超过{max_gap_pct:.1f}%且价格≤{max_buy_price:.2f}；"
+        f"盘中回踩{pullback_buy_price:.2f}附近不破、重新放量转强再考虑。"
+    )
+    buy_avoid_rules = (
+        f"一字涨停/开盘涨停不买；高开超过{max_gap_pct:.1f}%不追；"
+        f"跌破{invalid_below_price:.2f}或开盘后放量走弱不买；成交额明显不足不买。"
+    )
+    return {
+        "buy_action": buy_action,
+        "buy_trigger": buy_trigger,
+        "buy_avoid_rules": buy_avoid_rules,
+        "max_open_gap_pct": round(max_gap_pct, 2),
+        "max_buy_price": round(max_buy_price, 2),
+        "pullback_buy_price": round(pullback_buy_price, 2),
+        "invalid_below_price": round(invalid_below_price, 2),
+    }
+
+
 def compute_total_scores(
     symbols: list,
     indicators_results: dict,
@@ -252,6 +346,17 @@ def compute_total_scores(
             entry_bonus = -4   # 远离均线
 
         total_with_entry = round(total + entry_bonus, 2)
+        base_for_reason = {
+            "price": price,
+            "pct_change": pct,
+            "trend_quality_score": round(trend_quality_score, 2),
+            "sector_score": sector_component,
+            "context_score": context_score,
+            "main_net_ratio": total_inflow / amount if amount > 0 else 0,
+        }
+        buy_plan = _build_buy_trigger(base_for_reason, ind, entry_label, entry_bonus, exit_plan)
+        selection_reason = _build_selection_reason(ind, base_for_reason, context)
+        watch_reason = _build_watch_reason(ind, base_for_reason, entry_label)
 
         results.append({
             "code": sym,
@@ -290,6 +395,9 @@ def compute_total_scores(
             "lhb_net_buy": round(float(context.get("lhb_net_buy", 0) or 0), 2),
             "lhb_note": context.get("lhb_note", ""),
             "context_note": context.get("context_note", ""),
+            "selection_reason": selection_reason,
+            "watch_reason": watch_reason,
+            **buy_plan,
             "tech_score": tech_score,
             "adx": round(ind.get("adx_value", 0), 1),
             "plus_di": round(ind.get("plus_di", 0), 2),

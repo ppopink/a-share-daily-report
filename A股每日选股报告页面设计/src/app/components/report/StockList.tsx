@@ -68,6 +68,12 @@ function StockCard({ stock, onClick }: { stock: Stock; onClick: () => void }) {
           短线计划：1日盈{stock.day1TakeProfitPrice?.toFixed(2) ?? "-"} / 损{stock.day1StopLossPrice?.toFixed(2) ?? "-"}；2日盈{stock.day2TakeProfitPrice?.toFixed(2) ?? "-"} / 损{stock.day2StopLossPrice?.toFixed(2) ?? "-"}
         </div>
       )}
+      <div className="rounded-md bg-finance-blue-soft/45 px-2 py-1.5 text-xs text-finance-blue">
+        明日：{stock.buyAction || "轻仓观察"} · 最高追价 {stock.maxBuyPrice?.toFixed(2) ?? "-"}
+      </div>
+      <div className="text-xs leading-relaxed text-neutral">
+        入选：{stock.selectionReason || "综合规则排序靠前"}
+      </div>
     </Card>
   );
 }
@@ -96,7 +102,7 @@ export function StockList({
               <TableRow className="bg-neutral-soft/60 hover:bg-neutral-soft/60">
                 {[
                   "#", "名称", "代码", "现价", "涨跌幅", "总分", "趋势", "量能",
-                  "DMI", "MACD", "EXPMA", "资金", "板块", "上下文", "入场", "卖出计划", "风险",
+                  "DMI", "MACD", "EXPMA", "资金", "板块", "上下文", "入场", "明日动作", "卖出计划", "风险",
                 ].map((h) => (
                   <TableHead
                     key={h}
@@ -130,6 +136,9 @@ export function StockList({
                   <TableCell className="tabular-nums text-neutral">{s.sectorScore}</TableCell>
                   <TableCell className="tabular-nums text-neutral">{s.contextScore}</TableCell>
                   <TableCell><EntryTag timing={s.entryTiming} /></TableCell>
+                  <TableCell className="whitespace-nowrap text-xs text-finance-blue">
+                    {s.buyAction || "观察"} / ≤{s.maxBuyPrice?.toFixed(2) ?? "-"}
+                  </TableCell>
                   <TableCell className="whitespace-nowrap text-xs text-neutral">
                     {s.exitStrategy
                       ? `1日盈${s.day1TakeProfitPrice?.toFixed(2) ?? "-"}/损${s.day1StopLossPrice?.toFixed(2) ?? "-"} · 2日盈${s.day2TakeProfitPrice?.toFixed(2) ?? "-"}/损${s.day2StopLossPrice?.toFixed(2) ?? "-"}`

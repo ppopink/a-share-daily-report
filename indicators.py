@@ -762,6 +762,10 @@ def analyze_exit_plan(df: pd.DataFrame) -> dict:
 
     return {
         "planned_holding_days": holding_days,
+        "signal_close": round(close, 2),
+        "reference_ma5": round(ma5, 2),
+        "reference_ma20": round(ma20, 2),
+        "reference_atr": round(atr, 2),
         "stop_loss_price": round(stop_loss, 2),
         "take_profit_1_price": round(take_profit_1, 2),
         "take_profit_2_price": round(take_profit_2, 2),
@@ -919,6 +923,8 @@ def analyze_entry_timing(df: pd.DataFrame) -> dict:
         "consecutive_down": consecutive_down,
         "position_vs_ma5": round(pos_vs_ma5, 1),
         "position_vs_ma21": round(pos_vs_ma21, 1),
+        "reference_ma5": round(ma5, 2) if ma5 > 0 else 0.0,
+        "reference_ma21": round(ma21, 2) if ma21 > 0 else 0.0,
         "pullback_quality": round(pullback_quality, 2),
         "entry_score": round(entry_score, 2),
         "entry_label": entry_label,

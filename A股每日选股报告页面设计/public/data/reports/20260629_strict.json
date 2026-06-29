@@ -20,13 +20,29 @@
     "above80Count": 0,
     "passRate": 0.0
   },
+  "marketGuard": {
+    "marketStatus": "结构性机会",
+    "riskLevel": "medium",
+    "positionAdvice": "半仓以内",
+    "tradePermission": "轻仓参与",
+    "marketNote": "上涨1080/2126只，上涨占比50.8%，平均涨跌幅0.14%，涨停约55只，跌停约28只；建议：半仓以内。",
+    "totalCount": 2126,
+    "upCount": 1080,
+    "downCount": 983,
+    "upRatio": 50.8,
+    "avgPctChange": 0.14,
+    "limitUpCount": 55,
+    "limitDownCount": 28,
+    "totalAmount": 1304932875096.0
+  },
   "conclusion": {
     "selectedCount": 0,
     "top5": [],
     "strictestCondition": "MACD golden cross above zero",
     "chaseRisk": false,
     "status": "谨慎",
-    "narrative": "2026-06-29 strict 模式共选出 0 只候选股，最高分为 -(-)，平均分 0.0。当前最严格的技术条件是：MACD golden cross above zero。"
+    "narrative": "2026-06-29 strict 模式共选出 0 只候选股，最高分为 -(-)，平均分 0.0。当前最严格的技术条件是：MACD golden cross above zero。",
+    "marketAdvice": "上涨1080/2126只，上涨占比50.8%，平均涨跌幅0.14%，涨停约55只，跌停约28只；建议：半仓以内。"
   },
   "diagnostics": [
     {

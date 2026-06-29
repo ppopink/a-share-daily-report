@@ -148,9 +148,28 @@ export function StockDetailDialog({
 
           {/* 入场 / 退出计划 / 风险说明 */}
           <section className="space-y-2">
+            <div className="grid gap-2 lg:grid-cols-2">
+              <div className="rounded-md border border-up/15 bg-up-soft/40 p-3">
+                <div className="mb-1 text-sm font-medium text-up">为什么入选</div>
+                <p className="text-sm leading-relaxed text-foreground/90">{stock.selectionReason || "综合规则排序靠前"}</p>
+              </div>
+              <div className="rounded-md border border-risk/15 bg-risk-soft/40 p-3">
+                <div className="mb-1 text-sm font-medium text-risk">为什么谨慎</div>
+                <p className="text-sm leading-relaxed text-foreground/90">{stock.watchReason || "按T+1开盘条件执行"}</p>
+              </div>
+            </div>
+
             <div className="rounded-md border border-finance-blue/15 bg-finance-blue-soft/50 p-3">
-              <div className="mb-1 text-sm font-medium text-finance-blue">入场时机说明</div>
+              <div className="mb-1 text-sm font-medium text-finance-blue">明日买入触发 ({stock.buyAction || "轻仓观察"})</div>
               <p className="text-sm text-foreground/90">{stock.entryNote}</p>
+              <div className="mt-2 grid grid-cols-2 gap-2 sm:grid-cols-4">
+                <Metric label="最高追价" value={stock.maxBuyPrice?.toFixed(2) ?? "—"} hint={`高开≤${stock.maxOpenGapPct}%`} />
+                <Metric label="回踩观察" value={stock.pullbackBuyPrice?.toFixed(2) ?? "—"} />
+                <Metric label="跌破失效" value={stock.invalidBelowPrice?.toFixed(2) ?? "—"} />
+                <Metric label="明日动作" value={stock.buyAction || "轻仓观察"} />
+              </div>
+              <p className="mt-2 text-sm leading-relaxed text-foreground/90">{stock.buyTrigger || "等待T+1开盘确认。"}</p>
+              <p className="mt-1 text-xs leading-relaxed text-risk">{stock.buyAvoidRules || "涨停、停牌、高开过大或放量走弱不买。"}</p>
             </div>
             
             {stock.exitStrategy && (
