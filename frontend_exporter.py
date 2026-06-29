@@ -456,6 +456,40 @@ def _market_guard(date_key: str, day_dir: str) -> Dict[str, Any]:
     }
 
 
+def _data_quality(stocks: List[Dict[str, Any]], hot_sectors: List[Dict[str, Any]]) -> Dict[str, Any]:
+    count = len(stocks)
+    money_flow_ok = sum(1 for s in stocks if abs(_safe_num(s.get("moneyFlowRatio"))) > 0)
+    context_ok = sum(1 for s in stocks if _safe_str(s.get("contextNote")) and _safe_str(s.get("contextNote")) != "上下文数据中性")
+    industry_ok = sum(1 for s in stocks if _safe_str(s.get("sector")) not in {"", "未分类"})
+    hot_source = _safe_str(hot_sectors[0].get("dataSource")) if hot_sectors else "暂无板块数据"
+
+    money_pct = round(money_flow_ok / count * 100, 2) if count else 0
+    context_pct = round(context_ok / count * 100, 2) if count else 0
+    industry_pct = round(industry_ok / count * 100, 2) if count else 0
+    notes = []
+    if industry_pct < 60:
+        notes.append("行业字段覆盖不足，热门板块联动可能无法精确匹配入选股。")
+    if money_pct < 80:
+        notes.append("部分资金流来自估算或缺失，资金分需要谨慎解读。")
+    if context_pct < 50:
+        notes.append("大事件/两融/龙虎榜数据覆盖有限，未命中不代表没有事件。")
+    if not notes:
+        notes.append("主要数据字段覆盖较完整。")
+
+    return {
+        "klineStatus": "已同步最近K线",
+        "moneyFlowStatus": "资金流API+估算",
+        "contextStatus": "大事件/两融/龙虎榜缓存",
+        "industryStatus": "行业字段来自行情源",
+        "hotSectorSource": hot_source,
+        "stockCount": count,
+        "moneyFlowCoveragePct": money_pct,
+        "contextCoveragePct": context_pct,
+        "industryCoveragePct": industry_pct,
+        "notes": notes,
+    }
+
+
 def _build_daily_report(date_key: str, mode: str = "normal") -> Optional[Dict[str, Any]]:
     day_dir = os.path.join(cfg.OUTPUT_DIR, date_key)
     pick_path = _pick_path(date_key, day_dir, mode)
@@ -498,6 +532,7 @@ def _build_daily_report(date_key: str, mode: str = "normal") -> Optional[Dict[st
         f"当前最严格的技术条件是：{strictest['label']}。"
     )
 
+    hot_sectors = _hot_sectors(date_key, day_dir)
     return {
         "date": _date_label(date_key),
         "mode": mode,
@@ -518,6 +553,7 @@ def _build_daily_report(date_key: str, mode: str = "normal") -> Optional[Dict[st
             "passRate": pass_rate,
         },
         "marketGuard": market_guard,
+        "dataQuality": _data_quality(stocks, hot_sectors),
         "conclusion": {
             "selectedCount": selected_count,
             "top5": [{"name": s["name"], "code": s["code"]} for s in stocks[:5]],
@@ -530,7 +566,7 @@ def _build_daily_report(date_key: str, mode: str = "normal") -> Optional[Dict[st
         "diagnostics": diagnostics,
         "funnel": _funnel(date_key, day_dir, selected_count, mode),
         "industryDist": _industry_dist(stocks),
-        "hotSectors": _hot_sectors(date_key, day_dir),
+        "hotSectors": hot_sectors,
     }
 
 

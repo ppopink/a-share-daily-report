@@ -13804,6 +13804,21 @@
     "limitDownCount": 0,
     "totalAmount": 0
   },
+  "dataQuality": {
+    "klineStatus": "已同步最近K线",
+    "moneyFlowStatus": "资金流API+估算",
+    "contextStatus": "大事件/两融/龙虎榜缓存",
+    "industryStatus": "行业字段来自行情源",
+    "hotSectorSource": "东方财富行业板块",
+    "stockCount": 20,
+    "moneyFlowCoveragePct": 100.0,
+    "contextCoveragePct": 0.0,
+    "industryCoveragePct": 0.0,
+    "notes": [
+      "行业字段覆盖不足，热门板块联动可能无法精确匹配入选股。",
+      "大事件/两融/龙虎榜数据覆盖有限，未命中不代表没有事件。"
+    ]
+  },
   "conclusion": {
     "selectedCount": 20,
     "top5": [

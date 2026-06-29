@@ -26,6 +26,19 @@ export interface MarketGuard {
   totalAmount: number;
 }
 
+export interface DataQuality {
+  klineStatus: string;
+  moneyFlowStatus: string;
+  contextStatus: string;
+  industryStatus: string;
+  hotSectorSource: string;
+  stockCount: number;
+  moneyFlowCoveragePct: number;
+  contextCoveragePct: number;
+  industryCoveragePct: number;
+  notes: string[];
+}
+
 export interface KlinePoint {
   date: string;
   open: number;
@@ -182,6 +195,7 @@ export interface DailyReport {
     passRate: number; // 技术筛选通过率 %
   };
   marketGuard?: MarketGuard;
+  dataQuality?: DataQuality;
   conclusion: {
     selectedCount: number;
     top5: { name: string; code: string }[];

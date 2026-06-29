@@ -206,3 +206,74 @@ export function ModeComparePanel({
     </Card>
   );
 }
+
+export function ShareSnapshotCard({ report }: { report: DailyReport }) {
+  const top3 = report.stocks.slice(0, 3);
+  return (
+    <Card className="rounded-lg border-finance-blue/15 bg-finance-blue-soft/35 p-5 shadow-sm">
+      <div className="flex flex-wrap items-start justify-between gap-3">
+        <div>
+          <div className="text-sm text-neutral">手机分享摘要</div>
+          <h3 className="mt-1 text-foreground">
+            {report.date} · {report.mode} · {report.marketGuard?.tradePermission || "谨慎"}
+          </h3>
+          <p className="mt-1 text-sm leading-relaxed text-neutral">
+            {report.marketGuard?.marketNote || report.conclusion.narrative}
+          </p>
+        </div>
+        <div className="rounded-lg bg-card px-3 py-2 text-right">
+          <div className="text-xs text-neutral">入选</div>
+          <div className="text-2xl tabular-nums text-finance-blue">{report.summary.selectedCount}</div>
+        </div>
+      </div>
+      <div className="mt-4 grid gap-2 sm:grid-cols-3">
+        {top3.map((s) => (
+          <div key={s.code} className="rounded-md bg-card/80 p-3">
+            <div className="flex items-center justify-between gap-2">
+              <span className="truncate text-foreground">{s.name}</span>
+              <span className="tabular-nums text-finance-blue">{s.totalScore}</span>
+            </div>
+            <div className="mt-1 text-xs text-neutral">{s.code} · {s.buyAction || "观察"}</div>
+          </div>
+        ))}
+      </div>
+    </Card>
+  );
+}
+
+export function DataQualityPanel({ report }: { report: DailyReport }) {
+  const q = report.dataQuality;
+  if (!q) return null;
+
+  return (
+    <Card className="rounded-lg p-5 shadow-sm">
+      <div className="mb-3 flex flex-wrap items-center justify-between gap-2">
+        <div>
+          <h3 className="text-foreground">数据质量提示</h3>
+          <p className="mt-0.5 text-sm text-neutral">
+            这些提示用于判断哪些分数应谨慎解读。
+          </p>
+        </div>
+      </div>
+      <div className="grid gap-2 sm:grid-cols-4">
+        {[
+          ["资金流覆盖", `${q.moneyFlowCoveragePct}%`, q.moneyFlowStatus],
+          ["上下文覆盖", `${q.contextCoveragePct}%`, q.contextStatus],
+          ["行业覆盖", `${q.industryCoveragePct}%`, q.industryStatus],
+          ["板块来源", q.hotSectorSource || "-", "热门板块数据源"],
+        ].map(([label, value, sub]) => (
+          <div key={label} className="rounded-md bg-neutral-soft/60 p-3">
+            <div className="text-xs text-neutral">{label}</div>
+            <div className="mt-1 truncate text-foreground">{value}</div>
+            <div className="mt-0.5 truncate text-xs text-neutral">{sub}</div>
+          </div>
+        ))}
+      </div>
+      <ul className="mt-3 space-y-1 text-xs leading-relaxed text-neutral">
+        {q.notes.map((note) => (
+          <li key={note}>- {note}</li>
+        ))}
+      </ul>
+    </Card>
+  );
+}

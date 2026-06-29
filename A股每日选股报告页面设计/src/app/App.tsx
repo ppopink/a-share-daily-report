@@ -1,17 +1,12 @@
-import { useEffect, useState } from "react";
+import { lazy, Suspense, useEffect, useMemo, useState } from "react";
 import { toast, Toaster } from "sonner";
 import { BarChart3, CalendarRange, FileText, LineChart } from "lucide-react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "./components/ui/tabs";
 import { Header, DisclaimerBar } from "./components/report/Header";
-import { SummaryCards, ConclusionPanel, ModeComparePanel } from "./components/report/Summary";
+import { SummaryCards, ConclusionPanel, DataQualityPanel, ModeComparePanel, ShareSnapshotCard } from "./components/report/Summary";
 import { StockList } from "./components/report/StockList";
-import { StockDetailDialog } from "./components/report/StockDetailDialog";
-import { ChartsSection } from "./components/report/Charts";
 import { Diagnostics } from "./components/report/Diagnostics";
 import { ShareSummary, buildShareText } from "./components/report/ShareSummary";
-import { BacktestTab } from "./components/report/BacktestTab";
-import { HistoryTab } from "./components/report/HistoryTab";
-import { StrategyTab } from "./components/report/StrategyTab";
 import { SectionTitle } from "./components/report/shared";
 import { backtestData, historyList, todayReport } from "./data/mock";
 import type { BacktestData, DailyReport, FilterMode, HistoryEntry, ModeReportSummary, Stock } from "./data/types";
@@ -22,6 +17,22 @@ const tabs = [
   { id: "history", label: "历史报告", icon: CalendarRange },
   { id: "strategy", label: "策略说明", icon: LineChart },
 ];
+
+const StockDetailDialog = lazy(() =>
+  import("./components/report/StockDetailDialog").then((m) => ({ default: m.StockDetailDialog })),
+);
+const ChartsSection = lazy(() =>
+  import("./components/report/Charts").then((m) => ({ default: m.ChartsSection })),
+);
+const BacktestTab = lazy(() =>
+  import("./components/report/BacktestTab").then((m) => ({ default: m.BacktestTab })),
+);
+const HistoryTab = lazy(() =>
+  import("./components/report/HistoryTab").then((m) => ({ default: m.HistoryTab })),
+);
+const StrategyTab = lazy(() =>
+  import("./components/report/StrategyTab").then((m) => ({ default: m.StrategyTab })),
+);
 
 type ReportIndex = {
   latestDate?: string;
@@ -75,6 +86,91 @@ function toModeSummary(report: DailyReport): ModeReportSummary {
   };
 }
 
+function LoadingPanel({ label = "加载中..." }: { label?: string }) {
+  return (
+    <div className="rounded-lg border border-border bg-card p-5 text-sm text-neutral shadow-sm">
+      {label}
+    </div>
+  );
+}
+
+function StockFilterPanel({
+  query,
+  onQueryChange,
+  entryFilter,
+  onEntryFilterChange,
+  riskFilter,
+  onRiskFilterChange,
+  scoreFilter,
+  onScoreFilterChange,
+  actionFilter,
+  onActionFilterChange,
+  sectors,
+  selectedSector,
+  onSectorChange,
+  resultCount,
+}: {
+  query: string;
+  onQueryChange: (value: string) => void;
+  entryFilter: string;
+  onEntryFilterChange: (value: string) => void;
+  riskFilter: string;
+  onRiskFilterChange: (value: string) => void;
+  scoreFilter: string;
+  onScoreFilterChange: (value: string) => void;
+  actionFilter: string;
+  onActionFilterChange: (value: string) => void;
+  sectors: string[];
+  selectedSector: string;
+  onSectorChange: (value: string) => void;
+  resultCount: number;
+}) {
+  const controlClass = "h-9 rounded-md border border-border bg-card px-3 text-sm outline-none focus:ring-2 focus:ring-finance-blue/20";
+  return (
+    <div className="rounded-lg border border-border bg-card p-3 shadow-sm">
+      <div className="grid gap-2 md:grid-cols-[minmax(0,1.4fr)_repeat(5,minmax(0,1fr))]">
+        <input
+          value={query}
+          onChange={(event) => onQueryChange(event.target.value)}
+          placeholder="搜索名称 / 代码 / 入选原因"
+          className={controlClass}
+        />
+        <select value={scoreFilter} onChange={(event) => onScoreFilterChange(event.target.value)} className={controlClass}>
+          <option value="all">全部分数</option>
+          <option value="80">80分以上</option>
+          <option value="70">70分以上</option>
+        </select>
+        <select value={entryFilter} onChange={(event) => onEntryFilterChange(event.target.value)} className={controlClass}>
+          <option value="all">全部入场</option>
+          <option value="积极">积极</option>
+          <option value="观察">观察</option>
+          <option value="等待回踩">等待回踩</option>
+          <option value="追高谨慎">追高谨慎</option>
+        </select>
+        <select value={riskFilter} onChange={(event) => onRiskFilterChange(event.target.value)} className={controlClass}>
+          <option value="all">全部风险</option>
+          <option value="no-risk">无明显风险</option>
+          <option value="has-risk">有风险提示</option>
+          <option value="recent">近期重复入选</option>
+        </select>
+        <select value={actionFilter} onChange={(event) => onActionFilterChange(event.target.value)} className={controlClass}>
+          <option value="all">全部动作</option>
+          <option value="可积极观察">可积极观察</option>
+          <option value="轻仓观察">轻仓观察</option>
+          <option value="等回踩确认">等回踩确认</option>
+        </select>
+        <select value={selectedSector} onChange={(event) => onSectorChange(event.target.value)} className={controlClass}>
+          <option value="">全部板块</option>
+          {sectors.map((sector) => (
+            <option key={sector} value={sector}>{sector}</option>
+          ))}
+        </select>
+      </div>
+      <div className="mt-2 text-xs text-neutral">当前显示 {resultCount} 只。</div>
+    </div>
+  );
+}
+
 export default function App() {
   const [tab, setTab] = useState("today");
   const [date, setDate] = useState(todayReport.date);
@@ -88,6 +184,11 @@ export default function App() {
   const [dataError, setDataError] = useState("");
   const [selected, setSelected] = useState<Stock | null>(null);
   const [selectedSector, setSelectedSector] = useState("");
+  const [searchText, setSearchText] = useState("");
+  const [entryFilter, setEntryFilter] = useState("all");
+  const [riskFilter, setRiskFilter] = useState("all");
+  const [scoreFilter, setScoreFilter] = useState("all");
+  const [actionFilter, setActionFilter] = useState("all");
   const [dialogOpen, setDialogOpen] = useState(false);
 
   useEffect(() => {
@@ -208,12 +309,33 @@ export default function App() {
 
   const viewReport = { ...report, date, mode };
   const availableModesForDate = availableModesByDate[date] || ["normal"];
-  const displayedStocks = selectedSector
-    ? viewReport.stocks.filter((s) => s.sector === selectedSector)
-    : viewReport.stocks;
+  const sectors = useMemo(
+    () => Array.from(new Set(viewReport.stocks.map((s) => s.sector).filter(Boolean))).sort(),
+    [viewReport.stocks],
+  );
+  const displayedStocks = useMemo(() => {
+    const query = searchText.trim().toLowerCase();
+    return viewReport.stocks.filter((s) => {
+      if (selectedSector && s.sector !== selectedSector) return false;
+      if (entryFilter !== "all" && s.entryTiming !== entryFilter) return false;
+      if (riskFilter === "no-risk" && s.risks.length > 0) return false;
+      if (riskFilter === "has-risk" && s.risks.length === 0) return false;
+      if (riskFilter === "recent" && (s.recentPickCount ?? 1) <= 1) return false;
+      if (scoreFilter !== "all" && s.totalScore < Number(scoreFilter)) return false;
+      if (actionFilter !== "all" && s.buyAction !== actionFilter) return false;
+      if (!query) return true;
+      const haystack = `${s.name} ${s.code} ${s.sector} ${s.selectionReason || ""} ${s.watchReason || ""}`.toLowerCase();
+      return haystack.includes(query);
+    });
+  }, [actionFilter, entryFilter, riskFilter, scoreFilter, searchText, selectedSector, viewReport.stocks]);
 
   useEffect(() => {
     setSelectedSector("");
+    setSearchText("");
+    setEntryFilter("all");
+    setRiskFilter("all");
+    setScoreFilter("all");
+    setActionFilter("all");
   }, [date, mode]);
 
   const handleDateChange = (nextDate: string) => {
@@ -306,11 +428,13 @@ export default function App() {
           <TabsContent value="today" className="space-y-6">
             <SummaryCards report={viewReport} />
             <ConclusionPanel report={viewReport} />
+            <ShareSnapshotCard report={viewReport} />
             <ModeComparePanel
               summaries={modeSummaries}
               currentMode={mode}
               onModeChange={handleModeChange}
             />
+            <DataQualityPanel report={viewReport} />
             <section>
               <div className="flex flex-wrap items-end justify-between gap-2">
                 <SectionTitle
@@ -327,37 +451,61 @@ export default function App() {
                   </button>
                 )}
               </div>
+              <StockFilterPanel
+                query={searchText}
+                onQueryChange={setSearchText}
+                entryFilter={entryFilter}
+                onEntryFilterChange={setEntryFilter}
+                riskFilter={riskFilter}
+                onRiskFilterChange={setRiskFilter}
+                scoreFilter={scoreFilter}
+                onScoreFilterChange={setScoreFilter}
+                actionFilter={actionFilter}
+                onActionFilterChange={setActionFilter}
+                sectors={sectors}
+                selectedSector={selectedSector}
+                onSectorChange={setSelectedSector}
+                resultCount={displayedStocks.length}
+              />
               <StockList stocks={displayedStocks} onSelect={openStock} />
             </section>
             <section>
               <SectionTitle title="图表分析" />
-              <ChartsSection
-                report={viewReport}
-                backtest={backtest}
-                selectedSector={selectedSector}
-                onSectorSelect={setSelectedSector}
-              />
+              <Suspense fallback={<LoadingPanel label="图表加载中..." />}>
+                <ChartsSection
+                  report={viewReport}
+                  backtest={backtest}
+                  selectedSector={selectedSector}
+                  onSectorSelect={setSelectedSector}
+                />
+              </Suspense>
             </section>
             <Diagnostics items={viewReport.diagnostics} />
             <ShareSummary report={viewReport} />
           </TabsContent>
 
           <TabsContent value="backtest">
-            <BacktestTab data={backtest} />
+            <Suspense fallback={<LoadingPanel label="回测数据加载中..." />}>
+              <BacktestTab data={backtest} />
+            </Suspense>
           </TabsContent>
 
           <TabsContent value="history">
-            <HistoryTab
-              list={history}
-              onView={(d) => {
-                handleDateChange(d);
-                setTab("today");
-              }}
-            />
+            <Suspense fallback={<LoadingPanel label="历史报告加载中..." />}>
+              <HistoryTab
+                list={history}
+                onView={(d) => {
+                  handleDateChange(d);
+                  setTab("today");
+                }}
+              />
+            </Suspense>
           </TabsContent>
 
           <TabsContent value="strategy">
-            <StrategyTab />
+            <Suspense fallback={<LoadingPanel label="策略说明加载中..." />}>
+              <StrategyTab />
+            </Suspense>
           </TabsContent>
         </Tabs>
       </main>
@@ -368,11 +516,13 @@ export default function App() {
         </div>
       </footer>
 
-      <StockDetailDialog
-        stock={selected}
-        open={dialogOpen}
-        onClose={() => setDialogOpen(false)}
-      />
+      <Suspense fallback={null}>
+        <StockDetailDialog
+          stock={selected}
+          open={dialogOpen}
+          onClose={() => setDialogOpen(false)}
+        />
+      </Suspense>
     </div>
   );
 }
