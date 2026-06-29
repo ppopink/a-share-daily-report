@@ -37,6 +37,11 @@ function publicUrl(path: string) {
   return `${import.meta.env.BASE_URL}${path.replace(/^\/+/, "")}`;
 }
 
+function getDateFromUrl() {
+  if (typeof window === "undefined") return "";
+  return new URLSearchParams(window.location.search).get("date") || "";
+}
+
 async function fetchJson<T>(url: string): Promise<T> {
   const res = await fetch(`${publicUrl(url)}?v=${Date.now()}`);
   if (!res.ok) {
@@ -64,9 +69,11 @@ export default function App() {
       try {
         const index = await fetchJson<ReportIndex>("data/report_index.json");
         const nextDates = index.availableDates?.length ? index.availableDates : [todayReport.date];
+        const urlDate = getDateFromUrl();
         const latest = index.latestDate || nextDates[0] || todayReport.date;
+        const targetDate = nextDates.includes(urlDate) ? urlDate : latest;
         const [daily, bt] = await Promise.all([
-          fetchJson<DailyReport>(`data/reports/${dateToKey(latest)}.json`),
+          fetchJson<DailyReport>(`data/reports/${dateToKey(targetDate)}.json`),
           fetchJson<BacktestData>("data/backtest.json").catch(() => backtestData),
         ]);
 
@@ -74,7 +81,7 @@ export default function App() {
         setAvailableDates(nextDates);
         setHistory(index.history?.length ? index.history : historyList);
         setBacktest(bt);
-        setDate(latest);
+        setDate(targetDate);
         setMode(daily.mode);
         setReport(daily);
         setDataError("");
@@ -116,6 +123,17 @@ export default function App() {
 
   const viewReport = { ...report, date, mode };
 
+  const handleDateChange = (nextDate: string) => {
+    if (!nextDate || nextDate === date) return;
+    setDate(nextDate);
+
+    if (typeof window !== "undefined") {
+      const url = new URL(window.location.href);
+      url.searchParams.set("date", nextDate);
+      window.history.replaceState({}, "", url);
+    }
+  };
+
   const openStock = (s: Stock) => {
     setSelected(s);
     setDialogOpen(true);
@@ -138,7 +156,7 @@ export default function App() {
         date={date}
         mode={mode}
         generatedAt={report.generatedAt}
-        onDateChange={setDate}
+        onDateChange={handleDateChange}
         onModeChange={setMode}
         onShare={handleShare}
         onViewHistory={() => setTab("history")}
@@ -190,7 +208,7 @@ export default function App() {
             <HistoryTab
               list={history}
               onView={(d) => {
-                setDate(d);
+                handleDateChange(d);
                 setTab("today");
               }}
             />

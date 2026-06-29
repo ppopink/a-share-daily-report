@@ -1,6 +1,8 @@
 import {
   CalendarDays,
   ChevronDown,
+  ChevronLeft,
+  ChevronRight,
   Copy,
   FileDown,
   History,
@@ -42,6 +44,12 @@ export function Header({
   files?: ReportFiles;
 }) {
   const dates = availableDates.length ? availableDates : [date];
+  const currentDateIndex = Math.max(0, dates.indexOf(date));
+  const newerDate = currentDateIndex > 0 ? dates[currentDateIndex - 1] : "";
+  const olderDate =
+    currentDateIndex >= 0 && currentDateIndex < dates.length - 1
+      ? dates[currentDateIndex + 1]
+      : "";
 
   return (
     <div className="border-b border-border bg-finance-blue text-white">
@@ -60,24 +68,48 @@ export function Header({
           </div>
 
           <div className="flex flex-wrap items-center gap-2">
-            <label className="relative inline-flex h-9 items-center">
-              <span className="sr-only">切换报告日期</span>
-              <CalendarDays className="pointer-events-none absolute left-3 size-4 text-white" />
-              <select
-                aria-label="切换报告日期"
-                value={date}
-                onChange={(event) => onDateChange(event.target.value)}
-                className="h-9 cursor-pointer appearance-none rounded-md border-0 bg-white/15 pl-9 pr-8 text-sm font-medium text-white outline-none transition-colors hover:bg-white/25 focus:bg-white/25 focus:ring-2 focus:ring-white/50"
+            <div className="flex items-center overflow-hidden rounded-md bg-white/15">
+              <Button
+                type="button"
+                size="icon"
+                variant="secondary"
+                disabled={!olderDate}
+                aria-label="查看上一份报告"
+                onClick={() => olderDate && onDateChange(olderDate)}
+                className="h-9 w-9 rounded-none border-0 bg-transparent text-white hover:bg-white/20 disabled:text-white/40"
               >
-                {dates.map((d, index) => (
-                  <option key={d} value={d} style={{ color: "#172033" }}>
-                    {d}
-                    {index === 0 ? " 今天" : ""}
-                  </option>
-                ))}
-              </select>
-              <ChevronDown className="pointer-events-none absolute right-2 size-4 text-white/70" />
-            </label>
+                <ChevronLeft className="size-4" />
+              </Button>
+              <label className="relative inline-flex h-9 items-center border-x border-white/15">
+                <span className="sr-only">切换报告日期</span>
+                <CalendarDays className="pointer-events-none absolute left-3 size-4 text-white" />
+                <select
+                  aria-label="切换报告日期"
+                  value={date}
+                  onChange={(event) => onDateChange(event.target.value)}
+                  className="h-9 min-w-[10.5rem] cursor-pointer appearance-none border-0 bg-transparent pl-9 pr-8 text-sm font-medium text-white outline-none transition-colors hover:bg-white/10 focus:bg-white/10"
+                >
+                  {dates.map((d, index) => (
+                    <option key={d} value={d} style={{ color: "#172033" }}>
+                      {d}
+                      {index === 0 ? " 今天" : ""}
+                    </option>
+                  ))}
+                </select>
+                <ChevronDown className="pointer-events-none absolute right-2 size-4 text-white/70" />
+              </label>
+              <Button
+                type="button"
+                size="icon"
+                variant="secondary"
+                disabled={!newerDate}
+                aria-label="查看下一份报告"
+                onClick={() => newerDate && onDateChange(newerDate)}
+                className="h-9 w-9 rounded-none border-0 bg-transparent text-white hover:bg-white/20 disabled:text-white/40"
+              >
+                <ChevronRight className="size-4" />
+              </Button>
+            </div>
 
             <ToggleGroup
               type="single"
