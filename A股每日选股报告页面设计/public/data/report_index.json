@@ -1,7 +1,9 @@
 {
-  "generatedAt": "2026-06-25 18:29:14",
-  "latestDate": "2026-06-25",
+  "generatedAt": "2026-06-29 14:44:42",
+  "latestDate": "2026-06-29",
   "availableDates": [
+    "2026-06-29",
+    "2026-06-26",
     "2026-06-25",
     "2026-06-24",
     "2026-06-23",
@@ -9,6 +11,32 @@
     "2026-06-19"
   ],
   "history": [
+    {
+      "date": "2026-06-29",
+      "selectedCount": 20,
+      "topStock": "依依股份",
+      "avgScore": 80.94,
+      "files": {
+        "csv": "reports/20260629/stock_pick_20260629.csv",
+        "hotSectorsCsv": "reports/20260629/hot_sectors_20260629.csv",
+        "excel": "reports/20260629/stock_pick_20260629.xlsx",
+        "html": "reports/20260629/stock_pick_report_20260629.html",
+        "pdf": "reports/20260629/stock_pick_report_20260629.pdf"
+      }
+    },
+    {
+      "date": "2026-06-26",
+      "selectedCount": 1,
+      "topStock": "宏柏新材",
+      "avgScore": 58.65,
+      "files": {
+        "csv": "reports/20260626/stock_pick_20260626.csv",
+        "hotSectorsCsv": "reports/20260626/hot_sectors_20260626.csv",
+        "excel": "reports/20260626/stock_pick_20260626.xlsx",
+        "html": "reports/20260626/stock_pick_report_20260626.html",
+        "pdf": "reports/20260626/stock_pick_report_20260626.pdf"
+      }
+    },
     {
       "date": "2026-06-25",
       "selectedCount": 20,
@@ -72,6 +100,42 @@
     }
   ],
   "reports": [
+    {
+      "date": "2026-06-29",
+      "selectedCount": 20,
+      "topStock": {
+        "name": "依依股份",
+        "code": "001206",
+        "score": 91.16,
+        "price": 20.94
+      },
+      "avgScore": 80.94,
+      "files": {
+        "csv": "reports/20260629/stock_pick_20260629.csv",
+        "hotSectorsCsv": "reports/20260629/hot_sectors_20260629.csv",
+        "excel": "reports/20260629/stock_pick_20260629.xlsx",
+        "html": "reports/20260629/stock_pick_report_20260629.html",
+        "pdf": "reports/20260629/stock_pick_report_20260629.pdf"
+      }
+    },
+    {
+      "date": "2026-06-26",
+      "selectedCount": 1,
+      "topStock": {
+        "name": "宏柏新材",
+        "code": "605366",
+        "score": 58.65,
+        "price": 14.38
+      },
+      "avgScore": 58.65,
+      "files": {
+        "csv": "reports/20260626/stock_pick_20260626.csv",
+        "hotSectorsCsv": "reports/20260626/hot_sectors_20260626.csv",
+        "excel": "reports/20260626/stock_pick_20260626.xlsx",
+        "html": "reports/20260626/stock_pick_report_20260626.html",
+        "pdf": "reports/20260626/stock_pick_report_20260626.pdf"
+      }
+    },
     {
       "date": "2026-06-25",
       "selectedCount": 20,

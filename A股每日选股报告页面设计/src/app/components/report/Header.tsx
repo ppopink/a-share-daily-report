@@ -1,4 +1,3 @@
-import { useState } from "react";
 import {
   CalendarDays,
   ChevronDown,
@@ -8,11 +7,6 @@ import {
   Sheet,
 } from "lucide-react";
 import { Button } from "../ui/button";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "../ui/popover";
 import {
   ToggleGroup,
   ToggleGroupItem,
@@ -47,7 +41,6 @@ export function Header({
   availableDates: string[];
   files?: ReportFiles;
 }) {
-  const [open, setOpen] = useState(false);
   const dates = availableDates.length ? availableDates : [date];
 
   return (
@@ -67,37 +60,24 @@ export function Header({
           </div>
 
           <div className="flex flex-wrap items-center gap-2">
-            <Popover open={open} onOpenChange={setOpen}>
-              <PopoverTrigger asChild>
-                <Button
-                  variant="secondary"
-                  className="h-9 gap-2 bg-white/15 text-white hover:bg-white/25 border-0"
-                >
-                  <CalendarDays className="size-4" />
-                  {date}
-                  <ChevronDown className="size-4 opacity-70" />
-                </Button>
-              </PopoverTrigger>
-              <PopoverContent align="end" className="w-44 p-1">
-                {dates.map((d) => (
-                  <button
-                    key={d}
-                    onClick={() => {
-                      onDateChange(d);
-                      setOpen(false);
-                    }}
-                    className={`flex w-full items-center justify-between rounded-md px-3 py-2 text-sm hover:bg-accent ${
-                      d === date ? "bg-accent text-finance-blue" : ""
-                    }`}
-                  >
+            <label className="relative inline-flex h-9 items-center">
+              <span className="sr-only">切换报告日期</span>
+              <CalendarDays className="pointer-events-none absolute left-3 size-4 text-white" />
+              <select
+                aria-label="切换报告日期"
+                value={date}
+                onChange={(event) => onDateChange(event.target.value)}
+                className="h-9 cursor-pointer appearance-none rounded-md border-0 bg-white/15 pl-9 pr-8 text-sm font-medium text-white outline-none transition-colors hover:bg-white/25 focus:bg-white/25 focus:ring-2 focus:ring-white/50"
+              >
+                {dates.map((d, index) => (
+                  <option key={d} value={d} style={{ color: "#172033" }}>
                     {d}
-                    {d === dates[0] && (
-                      <span className="text-xs text-neutral">今天</span>
-                    )}
-                  </button>
+                    {index === 0 ? " 今天" : ""}
+                  </option>
                 ))}
-              </PopoverContent>
-            </Popover>
+              </select>
+              <ChevronDown className="pointer-events-none absolute right-2 size-4 text-white/70" />
+            </label>
 
             <ToggleGroup
               type="single"

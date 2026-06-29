@@ -1,0 +1,1072 @@
+{
+  "date": "2026-06-26",
+  "mode": "normal",
+  "generatedAt": "2026-06-28 18:28:11",
+  "files": {
+    "csv": "reports/20260626/stock_pick_20260626.csv",
+    "hotSectorsCsv": "reports/20260626/hot_sectors_20260626.csv",
+    "excel": "reports/20260626/stock_pick_20260626.xlsx",
+    "html": "reports/20260626/stock_pick_report_20260626.html",
+    "pdf": "reports/20260626/stock_pick_report_20260626.pdf"
+  },
+  "stocks": [
+    {
+      "rank": 1,
+      "name": "宏柏新材",
+      "code": "605366",
+      "price": 14.38,
+      "changePct": 10.02,
+      "totalScore": 58.65,
+      "trendScore": 3.9,
+      "volumeScore": 4.9,
+      "dmiScore": 12.55,
+      "macdScore": 8.0,
+      "expmaScore": 10.0,
+      "moneyFlowScore": 12.5,
+      "sectorScore": 20.0,
+      "contextScore": -3.2,
+      "eventScore": -1.4,
+      "eventCount": 9,
+      "eventNote": "公告偏风险(1个负面关键词, 3个异动/风险词)",
+      "eventTitles": "宏柏新材:江西宏柏新材料股份有限公司股票交易异常波动公告；宏柏新材:江西宏柏新材料股份有限公司实际控制人、董事减持股份结果公告；宏柏新材:江西宏柏新材料股份有限公司关于更换持续督导保荐代表人的公告",
+      "marginScore": -1.8,
+      "marginBalanceChangePct": -3.81,
+      "marginNetBuy": -4670354.0,
+      "marginNote": "融资余额下降-3.8%",
+      "lhbScore": 0.0,
+      "lhbCount": 0,
+      "lhbNetBuy": 0.0,
+      "lhbNote": "近期未上龙虎榜",
+      "contextNote": "公告偏风险(1个负面关键词, 3个异动/风险词)；融资余额下降-3.8%；近期未上龙虎榜",
+      "trendQualityScore": 3.9,
+      "entryTiming": "追高谨慎",
+      "entryNote": "🟠 连涨多日，等回调再入",
+      "risks": [
+        {
+          "level": "high",
+          "label": "偏离MA20较大"
+        },
+        {
+          "level": "medium",
+          "label": "短线涨幅偏高"
+        },
+        {
+          "level": "medium",
+          "label": "事件/两融/龙虎榜偏负"
+        }
+      ],
+      "riskNote": "偏离MA20较大；短线涨幅偏高；事件/两融/龙虎榜偏负。注意控制仓位。",
+      "plannedHoldingDays": 1,
+      "stopLossPrice": 13.37,
+      "takeProfit1Price": 15.99,
+      "takeProfit2Price": 17.1,
+      "trailingStopPrice": 13.37,
+      "riskRewardRatio": 1.6,
+      "exitStrategy": "1日快进快出，冲高先兑现",
+      "exitSignal": "1日短线计划；T+1看15.29/止损13.88；T+2看15.59/止损13.37；T+3看15.99/止损13.37",
+      "exitNote": "参考信号日收盘价14.38，若T+1买入价明显高于该价，止损/止盈需按实际成交价等比例上移；若放量跌破MA20，应优先退出。",
+      "day1StopLossPrice": 13.88,
+      "day1TakeProfitPrice": 15.29,
+      "day1ExitPlan": "T+1：冲到15.29先减仓，跌破13.88止损；若高开低走不恋战",
+      "day2StopLossPrice": 13.37,
+      "day2TakeProfitPrice": 15.59,
+      "day2ExitPlan": "T+2：未突破15.59且量能转弱则减仓，跌破13.37退出",
+      "day3StopLossPrice": 13.37,
+      "day3TakeProfitPrice": 15.99,
+      "day3ExitPlan": "T+3：到15.99分批止盈，跌破13.37或MA5失守退出",
+      "adx": 40.1,
+      "plusDI": 56.79,
+      "minusDI": 7.6,
+      "volRatio": 1.23,
+      "aboveMa20Days20": 3,
+      "ma20Slope10Pct": -3.48,
+      "ma20Slope20Pct": -11.24,
+      "closeMa20Ratio": 1.3074,
+      "macdDIF": 0.7217,
+      "macdDEA": 0.2771,
+      "macdHIST": 0.8892,
+      "moneyFlowRatio": 0.07,
+      "sectorRankPct": 100.0,
+      "sectorInnerRankPct": 100.0,
+      "sector": "未分类",
+      "kline": [
+        {
+          "date": "2026-03-30",
+          "open": 11.41,
+          "close": 11.34,
+          "high": 11.58,
+          "low": 11.07,
+          "volume": 32681950.0,
+          "ma5": null,
+          "ma20": null
+        },
+        {
+          "date": "2026-03-31",
+          "open": 11.49,
+          "close": 10.84,
+          "high": 11.6,
+          "low": 10.78,
+          "volume": 32529470.0,
+          "ma5": null,
+          "ma20": null
+        },
+        {
+          "date": "2026-04-01",
+          "open": 11.18,
+          "close": 11.53,
+          "high": 11.84,
+          "low": 11.0,
+          "volume": 43516016.0,
+          "ma5": null,
+          "ma20": null
+        },
+        {
+          "date": "2026-04-02",
+          "open": 11.31,
+          "close": 11.0,
+          "high": 11.68,
+          "low": 10.86,
+          "volume": 25593825.0,
+          "ma5": null,
+          "ma20": null
+        },
+        {
+          "date": "2026-04-03",
+          "open": 11.07,
+          "close": 10.63,
+          "high": 11.07,
+          "low": 10.56,
+          "volume": 24518643.0,
+          "ma5": 11.068,
+          "ma20": null
+        },
+        {
+          "date": "2026-04-07",
+          "open": 10.63,
+          "close": 10.96,
+          "high": 11.32,
+          "low": 10.5,
+          "volume": 26878245.0,
+          "ma5": 10.992,
+          "ma20": null
+        },
+        {
+          "date": "2026-04-08",
+          "open": 11.19,
+          "close": 11.64,
+          "high": 11.66,
+          "low": 10.96,
+          "volume": 33392595.0,
+          "ma5": 11.152,
+          "ma20": null
+        },
+        {
+          "date": "2026-04-09",
+          "open": 11.58,
+          "close": 12.07,
+          "high": 12.53,
+          "low": 11.36,
+          "volume": 45619180.0,
+          "ma5": 11.26,
+          "ma20": null
+        },
+        {
+          "date": "2026-04-10",
+          "open": 12.1,
+          "close": 12.3,
+          "high": 12.51,
+          "low": 12.05,
+          "volume": 36060471.0,
+          "ma5": 11.52,
+          "ma20": null
+        },
+        {
+          "date": "2026-04-13",
+          "open": 12.28,
+          "close": 12.23,
+          "high": 12.35,
+          "low": 11.98,
+          "volume": 26026081.0,
+          "ma5": 11.84,
+          "ma20": null
+        },
+        {
+          "date": "2026-04-14",
+          "open": 12.25,
+          "close": 12.19,
+          "high": 12.65,
+          "low": 12.14,
+          "volume": 23984577.0,
+          "ma5": 12.086,
+          "ma20": null
+        },
+        {
+          "date": "2026-04-15",
+          "open": 12.2,
+          "close": 13.41,
+          "high": 13.41,
+          "low": 12.08,
+          "volume": 41602515.0,
+          "ma5": 12.44,
+          "ma20": null
+        },
+        {
+          "date": "2026-04-16",
+          "open": 13.74,
+          "close": 14.0,
+          "high": 14.34,
+          "low": 13.18,
+          "volume": 57764845.0,
+          "ma5": 12.826,
+          "ma20": null
+        },
+        {
+          "date": "2026-04-17",
+          "open": 13.97,
+          "close": 13.45,
+          "high": 14.42,
+          "low": 12.8,
+          "volume": 56224981.0,
+          "ma5": 13.056,
+          "ma20": null
+        },
+        {
+          "date": "2026-04-20",
+          "open": 13.6,
+          "close": 13.46,
+          "high": 13.99,
+          "low": 13.2,
+          "volume": 42002477.0,
+          "ma5": 13.302,
+          "ma20": null
+        },
+        {
+          "date": "2026-04-21",
+          "open": 13.05,
+          "close": 13.96,
+          "high": 14.1,
+          "low": 12.75,
+          "volume": 46101889.0,
+          "ma5": 13.656,
+          "ma20": null
+        },
+        {
+          "date": "2026-04-22",
+          "open": 13.85,
+          "close": 14.24,
+          "high": 14.57,
+          "low": 13.43,
+          "volume": 37775150.0,
+          "ma5": 13.822,
+          "ma20": null
+        },
+        {
+          "date": "2026-04-23",
+          "open": 14.24,
+          "close": 13.51,
+          "high": 14.44,
+          "low": 13.41,
+          "volume": 35253195.0,
+          "ma5": 13.724,
+          "ma20": null
+        },
+        {
+          "date": "2026-04-24",
+          "open": 13.92,
+          "close": 13.47,
+          "high": 13.93,
+          "low": 13.11,
+          "volume": 26181382.0,
+          "ma5": 13.728,
+          "ma20": null
+        },
+        {
+          "date": "2026-04-27",
+          "open": 13.29,
+          "close": 13.19,
+          "high": 13.51,
+          "low": 12.66,
+          "volume": 30583644.0,
+          "ma5": 13.674,
+          "ma20": 12.471
+        },
+        {
+          "date": "2026-04-28",
+          "open": 13.2,
+          "close": 13.0,
+          "high": 13.38,
+          "low": 12.85,
+          "volume": 23580193.0,
+          "ma5": 13.482,
+          "ma20": 12.554
+        },
+        {
+          "date": "2026-04-29",
+          "open": 12.77,
+          "close": 12.94,
+          "high": 13.37,
+          "low": 12.77,
+          "volume": 24447391.0,
+          "ma5": 13.222,
+          "ma20": 12.659
+        },
+        {
+          "date": "2026-04-30",
+          "open": 12.82,
+          "close": 13.34,
+          "high": 13.78,
+          "low": 12.7,
+          "volume": 32969204.0,
+          "ma5": 13.188,
+          "ma20": 12.75
+        },
+        {
+          "date": "2026-05-06",
+          "open": 13.42,
+          "close": 13.54,
+          "high": 13.8,
+          "low": 13.18,
+          "volume": 25770332.0,
+          "ma5": 13.202,
+          "ma20": 12.876
+        },
+        {
+          "date": "2026-05-07",
+          "open": 13.59,
+          "close": 13.43,
+          "high": 13.79,
+          "low": 13.38,
+          "volume": 21839715.0,
+          "ma5": 13.25,
+          "ma20": 13.016
+        },
+        {
+          "date": "2026-05-08",
+          "open": 13.29,
+          "close": 13.2,
+          "high": 13.43,
+          "low": 12.99,
+          "volume": 24092058.0,
+          "ma5": 13.29,
+          "ma20": 13.128
+        },
+        {
+          "date": "2026-05-11",
+          "open": 13.19,
+          "close": 12.13,
+          "high": 13.19,
+          "low": 11.89,
+          "volume": 58625776.0,
+          "ma5": 13.128,
+          "ma20": 13.153
+        },
+        {
+          "date": "2026-05-12",
+          "open": 12.24,
+          "close": 12.09,
+          "high": 12.55,
+          "low": 12.0,
+          "volume": 29619331.0,
+          "ma5": 12.878,
+          "ma20": 13.154
+        },
+        {
+          "date": "2026-05-13",
+          "open": 12.19,
+          "close": 11.1,
+          "high": 12.19,
+          "low": 10.92,
+          "volume": 67827350.0,
+          "ma5": 12.39,
+          "ma20": 13.094
+        },
+        {
+          "date": "2026-05-14",
+          "open": 11.4,
+          "close": 12.21,
+          "high": 12.21,
+          "low": 11.4,
+          "volume": 33443319.0,
+          "ma5": 12.146,
+          "ma20": 13.093
+        },
+        {
+          "date": "2026-05-15",
+          "open": 12.58,
+          "close": 11.8,
+          "high": 13.23,
+          "low": 11.57,
+          "volume": 73266266.0,
+          "ma5": 11.866,
+          "ma20": 13.074
+        },
+        {
+          "date": "2026-05-18",
+          "open": 11.56,
+          "close": 11.9,
+          "high": 12.24,
+          "low": 11.22,
+          "volume": 44584430.0,
+          "ma5": 11.82,
+          "ma20": 12.998
+        },
+        {
+          "date": "2026-05-19",
+          "open": 11.88,
+          "close": 12.01,
+          "high": 12.05,
+          "low": 11.74,
+          "volume": 24796245.0,
+          "ma5": 11.804,
+          "ma20": 12.898
+        },
+        {
+          "date": "2026-05-20",
+          "open": 12.28,
+          "close": 12.25,
+          "high": 12.51,
+          "low": 11.55,
+          "volume": 38753397.0,
+          "ma5": 12.034,
+          "ma20": 12.838
+        },
+        {
+          "date": "2026-05-21",
+          "open": 12.3,
+          "close": 11.81,
+          "high": 12.83,
+          "low": 11.75,
+          "volume": 37214271.0,
+          "ma5": 11.954,
+          "ma20": 12.756
+        },
+        {
+          "date": "2026-05-22",
+          "open": 12.0,
+          "close": 12.99,
+          "high": 12.99,
+          "low": 11.8,
+          "volume": 40419993.0,
+          "ma5": 12.192,
+          "ma20": 12.707
+        },
+        {
+          "date": "2026-05-25",
+          "open": 12.99,
+          "close": 12.74,
+          "high": 13.04,
+          "low": 12.23,
+          "volume": 44895367.0,
+          "ma5": 12.36,
+          "ma20": 12.633
+        },
+        {
+          "date": "2026-05-26",
+          "open": 12.68,
+          "close": 12.19,
+          "high": 12.94,
+          "low": 12.16,
+          "volume": 24921157.0,
+          "ma5": 12.396,
+          "ma20": 12.567
+        },
+        {
+          "date": "2026-05-27",
+          "open": 12.18,
+          "close": 11.48,
+          "high": 12.18,
+          "low": 11.1,
+          "volume": 37812979.0,
+          "ma5": 12.242,
+          "ma20": 12.467
+        },
+        {
+          "date": "2026-05-28",
+          "open": 11.56,
+          "close": 11.7,
+          "high": 11.85,
+          "low": 11.19,
+          "volume": 26573085.0,
+          "ma5": 12.22,
+          "ma20": 12.393
+        },
+        {
+          "date": "2026-05-29",
+          "open": 11.67,
+          "close": 11.03,
+          "high": 12.08,
+          "low": 10.86,
+          "volume": 28645658.0,
+          "ma5": 11.828,
+          "ma20": 12.294
+        },
+        {
+          "date": "2026-06-01",
+          "open": 10.81,
+          "close": 10.68,
+          "high": 11.0,
+          "low": 10.25,
+          "volume": 25749628.0,
+          "ma5": 11.416,
+          "ma20": 12.181
+        },
+        {
+          "date": "2026-06-02",
+          "open": 10.78,
+          "close": 10.66,
+          "high": 10.87,
+          "low": 10.49,
+          "volume": 18557270.0,
+          "ma5": 11.11,
+          "ma20": 12.047
+        },
+        {
+          "date": "2026-06-03",
+          "open": 10.79,
+          "close": 10.71,
+          "high": 10.94,
+          "low": 10.47,
+          "volume": 20246068.0,
+          "ma5": 10.956,
+          "ma20": 11.905
+        },
+        {
+          "date": "2026-06-04",
+          "open": 10.68,
+          "close": 11.2,
+          "high": 11.36,
+          "low": 10.57,
+          "volume": 26152150.0,
+          "ma5": 10.856,
+          "ma20": 11.794
+        },
+        {
+          "date": "2026-06-05",
+          "open": 11.19,
+          "close": 10.84,
+          "high": 11.55,
+          "low": 10.81,
+          "volume": 30336563.0,
+          "ma5": 10.818,
+          "ma20": 11.676
+        },
+        {
+          "date": "2026-06-08",
+          "open": 10.37,
+          "close": 10.1,
+          "high": 10.6,
+          "low": 9.98,
+          "volume": 23441192.0,
+          "ma5": 10.702,
+          "ma20": 11.575
+        },
+        {
+          "date": "2026-06-09",
+          "open": 10.24,
+          "close": 10.57,
+          "high": 10.65,
+          "low": 9.96,
+          "volume": 17199797.0,
+          "ma5": 10.684,
+          "ma20": 11.498
+        },
+        {
+          "date": "2026-06-10",
+          "open": 10.35,
+          "close": 10.71,
+          "high": 11.18,
+          "low": 10.34,
+          "volume": 20523968.0,
+          "ma5": 10.684,
+          "ma20": 11.479
+        },
+        {
+          "date": "2026-06-11",
+          "open": 10.64,
+          "close": 10.55,
+          "high": 10.81,
+          "low": 10.19,
+          "volume": 16193074.0,
+          "ma5": 10.554,
+          "ma20": 11.396
+        },
+        {
+          "date": "2026-06-12",
+          "open": 10.6,
+          "close": 10.15,
+          "high": 10.82,
+          "low": 10.07,
+          "volume": 20749182.0,
+          "ma5": 10.416,
+          "ma20": 11.314
+        },
+        {
+          "date": "2026-06-15",
+          "open": 10.16,
+          "close": 10.35,
+          "high": 10.42,
+          "low": 9.99,
+          "volume": 23265537.0,
+          "ma5": 10.466,
+          "ma20": 11.236
+        },
+        {
+          "date": "2026-06-16",
+          "open": 10.35,
+          "close": 11.0,
+          "high": 11.29,
+          "low": 10.21,
+          "volume": 29135434.0,
+          "ma5": 10.552,
+          "ma20": 11.185
+        },
+        {
+          "date": "2026-06-17",
+          "open": 10.95,
+          "close": 10.77,
+          "high": 11.03,
+          "low": 10.66,
+          "volume": 20052021.0,
+          "ma5": 10.564,
+          "ma20": 11.111
+        },
+        {
+          "date": "2026-06-18",
+          "open": 10.65,
+          "close": 10.71,
+          "high": 10.75,
+          "low": 10.2,
+          "volume": 22417201.0,
+          "ma5": 10.596,
+          "ma20": 11.056
+        },
+        {
+          "date": "2026-06-22",
+          "open": 10.9,
+          "close": 9.82,
+          "high": 11.43,
+          "low": 9.64,
+          "volume": 46480196.0,
+          "ma5": 10.53,
+          "ma20": 10.898
+        },
+        {
+          "date": "2026-06-23",
+          "open": 10.02,
+          "close": 10.8,
+          "high": 10.8,
+          "low": 9.67,
+          "volume": 23344244.0,
+          "ma5": 10.62,
+          "ma20": 10.801
+        },
+        {
+          "date": "2026-06-24",
+          "open": 11.23,
+          "close": 11.88,
+          "high": 11.88,
+          "low": 10.82,
+          "volume": 68328102.0,
+          "ma5": 10.796,
+          "ma20": 10.786
+        },
+        {
+          "date": "2026-06-25",
+          "open": 13.07,
+          "close": 13.07,
+          "high": 13.07,
+          "low": 13.07,
+          "volume": 14954836.0,
+          "ma5": 11.256,
+          "ma20": 10.865
+        },
+        {
+          "date": "2026-06-26",
+          "open": 13.59,
+          "close": 14.38,
+          "high": 14.38,
+          "low": 13.13,
+          "volume": 43042154.0,
+          "ma5": 11.99,
+          "ma20": 10.999
+        }
+      ]
+    }
+  ],
+  "summary": {
+    "selectedCount": 1,
+    "topStock": {
+      "name": "宏柏新材",
+      "code": "605366",
+      "score": 58.65,
+      "price": 14.38
+    },
+    "avgScore": 58.65,
+    "riskCount": 1,
+    "above80Count": 0,
+    "passRate": 0.05
+  },
+  "conclusion": {
+    "selectedCount": 1,
+    "top5": [
+      {
+        "name": "宏柏新材",
+        "code": "605366"
+      }
+    ],
+    "strictestCondition": "volume / previous_5day_avg_volume >= VOL_MULT",
+    "chaseRisk": true,
+    "status": "一般",
+    "narrative": "2026-06-26 共选出 1 只候选股，最高分为 宏柏新材(605366)，平均分 58.65。当前最严格的技术条件是：volume / previous_5day_avg_volume >= VOL_MULT。"
+  },
+  "diagnostics": [
+    {
+      "id": "close_>_ma3_>_ma5_>_ma21",
+      "label": "close > MA3 > MA5 > MA21",
+      "passed": 163,
+      "total": 2123
+    },
+    {
+      "id": "close_>_ma20_today",
+      "label": "close > MA20 today",
+      "passed": 427,
+      "total": 2123
+    },
+    {
+      "id": "ma20_persistence_days_within_20",
+      "label": "MA20 persistence days within 20",
+      "passed": 138,
+      "total": 2123
+    },
+    {
+      "id": "ma20_slope_up",
+      "label": "MA20 slope up",
+      "passed": 285,
+      "total": 2123
+    },
+    {
+      "id": "close_not_overheated_vs_ma20",
+      "label": "close not overheated vs MA20",
+      "passed": 2032,
+      "total": 2123
+    },
+    {
+      "id": "ma20_trend_quality",
+      "label": "MA20 trend quality",
+      "passed": 65,
+      "total": 2123
+    },
+    {
+      "id": "+di_>_-di",
+      "label": "+DI > -DI",
+      "passed": 490,
+      "total": 2123
+    },
+    {
+      "id": "adx_>_adx_threshold",
+      "label": "ADX > ADX_THRESHOLD",
+      "passed": 1849,
+      "total": 2123
+    },
+    {
+      "id": "volume___previous_5day_avg_volume_>=_vol_mult",
+      "label": "volume / previous_5day_avg_volume >= VOL_MULT",
+      "passed": 1,
+      "total": 2123
+    },
+    {
+      "id": "expma7_>_expma21",
+      "label": "EXPMA7 > EXPMA21",
+      "passed": 421,
+      "total": 2123
+    },
+    {
+      "id": "expma7_recent_golden_cross_within_n_days",
+      "label": "EXPMA7 recent golden cross within N days",
+      "passed": 113,
+      "total": 2123
+    },
+    {
+      "id": "dif_>_0_and_dea_>_0",
+      "label": "DIF > 0 and DEA > 0",
+      "passed": 410,
+      "total": 2123
+    },
+    {
+      "id": "dif_>_dea",
+      "label": "DIF > DEA",
+      "passed": 622,
+      "total": 2123
+    },
+    {
+      "id": "macd_golden_cross_above_zero",
+      "label": "MACD golden cross above zero",
+      "passed": 2,
+      "total": 2123
+    },
+    {
+      "id": "macd_second_golden_cross_above_zero",
+      "label": "MACD second golden cross above zero",
+      "passed": 266,
+      "total": 2123
+    },
+    {
+      "id": "macd_second_golden_cross_within_n_days",
+      "label": "MACD second golden cross within N days",
+      "passed": 20,
+      "total": 2123
+    },
+    {
+      "id": "最终技术面通过",
+      "label": "最终技术面通过",
+      "passed": 1,
+      "total": 2123
+    }
+  ],
+  "funnel": [
+    {
+      "stage": "初始股票池",
+      "count": 5527
+    },
+    {
+      "stage": "去除 ST",
+      "count": 5302
+    },
+    {
+      "stage": "去除北交所",
+      "count": 4985
+    },
+    {
+      "stage": "去除停牌",
+      "count": 4977
+    },
+    {
+      "stage": "保留沪深主板",
+      "count": 2126
+    },
+    {
+      "stage": "MA 条件",
+      "count": 163
+    },
+    {
+      "stage": "MA20 趋势持续性",
+      "count": 65
+    },
+    {
+      "stage": "DMI 条件",
+      "count": 410
+    },
+    {
+      "stage": "成交量条件",
+      "count": 1
+    },
+    {
+      "stage": "EXPMA 条件",
+      "count": 421
+    },
+    {
+      "stage": "MACD 二次金叉条件",
+      "count": 286
+    },
+    {
+      "stage": "技术条件合计",
+      "count": 1
+    },
+    {
+      "stage": "成交额过滤",
+      "count": 1
+    },
+    {
+      "stage": "资金净流入条件",
+      "count": 1
+    },
+    {
+      "stage": "板块热度条件",
+      "count": 0
+    },
+    {
+      "stage": "板块内领涨条件",
+      "count": 0
+    },
+    {
+      "stage": "最终股票池",
+      "count": 1
+    }
+  ],
+  "industryDist": [
+    {
+      "sector": "未分类",
+      "count": 1
+    }
+  ],
+  "hotSectors": [
+    {
+      "rank": 1,
+      "code": "BK1314",
+      "name": "风电整机",
+      "heatScore": 82.34,
+      "pctChange": 4.95,
+      "amount": 1035281815.0,
+      "turnover": 0.61,
+      "upCount": 5,
+      "downCount": 0,
+      "flatCount": 0,
+      "stockCount": 5,
+      "upRatio": 100.0,
+      "selectedCount": 0,
+      "leaderName": "三一重能",
+      "leaderCode": "688349",
+      "leaderPctChange": 12.47,
+      "leadingStocks": "",
+      "quantNote": "热度82.3 = 涨幅4.95%、上涨占比100.0%、成交额10.4亿、领涨股三一重能 12.47%",
+      "dataSource": "东方财富行业板块"
+    },
+    {
+      "rank": 2,
+      "code": "BK1443",
+      "name": "橡胶助剂",
+      "heatScore": 68.3,
+      "pctChange": 4.06,
+      "amount": 335569440.0,
+      "turnover": 0.56,
+      "upCount": 2,
+      "downCount": 0,
+      "flatCount": 0,
+      "stockCount": 2,
+      "upRatio": 100.0,
+      "selectedCount": 0,
+      "leaderName": "彤程新材",
+      "leaderCode": "603650",
+      "leaderPctChange": 7.37,
+      "leadingStocks": "",
+      "quantNote": "热度68.3 = 涨幅4.06%、上涨占比100.0%、成交额3.4亿、领涨股彤程新材 7.37%",
+      "dataSource": "东方财富行业板块"
+    },
+    {
+      "rank": 3,
+      "code": "BK1325",
+      "name": "半导体材料",
+      "heatScore": 55.77,
+      "pctChange": 1.54,
+      "amount": 9211802857.0,
+      "turnover": 1.02,
+      "upCount": 22,
+      "downCount": 9,
+      "flatCount": 0,
+      "stockCount": 31,
+      "upRatio": 70.97,
+      "selectedCount": 0,
+      "leaderName": "上海合晶",
+      "leaderCode": "688584",
+      "leaderPctChange": 12.87,
+      "leadingStocks": "",
+      "quantNote": "热度55.8 = 涨幅1.54%、上涨占比71.0%、成交额92.1亿、领涨股上海合晶 12.87%",
+      "dataSource": "东方财富行业板块"
+    },
+    {
+      "rank": 4,
+      "code": "BK1032",
+      "name": "风电设备",
+      "heatScore": 48.85,
+      "pctChange": 2.15,
+      "amount": 2011502977.0,
+      "turnover": 0.52,
+      "upCount": 23,
+      "downCount": 8,
+      "flatCount": 0,
+      "stockCount": 31,
+      "upRatio": 74.19,
+      "selectedCount": 0,
+      "leaderName": "三一重能",
+      "leaderCode": "688349",
+      "leaderPctChange": 12.4,
+      "leadingStocks": "",
+      "quantNote": "热度48.9 = 涨幅2.15%、上涨占比74.2%、成交额20.1亿、领涨股三一重能 12.40%",
+      "dataSource": "东方财富行业板块"
+    },
+    {
+      "rank": 5,
+      "code": "BK1319",
+      "name": "硅料硅片",
+      "heatScore": 48.21,
+      "pctChange": 2.45,
+      "amount": 709443917.0,
+      "turnover": 0.79,
+      "upCount": 4,
+      "downCount": 1,
+      "flatCount": 0,
+      "stockCount": 5,
+      "upRatio": 80.0,
+      "selectedCount": 0,
+      "leaderName": "TCL中环",
+      "leaderCode": "002129",
+      "leaderPctChange": 6.98,
+      "leadingStocks": "",
+      "quantNote": "热度48.2 = 涨幅2.45%、上涨占比80.0%、成交额7.1亿、领涨股TCL中环 6.98%",
+      "dataSource": "东方财富行业板块"
+    },
+    {
+      "rank": 6,
+      "code": "BK1462",
+      "name": "玻纤制造",
+      "heatScore": 48.13,
+      "pctChange": 2.16,
+      "amount": 4434655760.0,
+      "turnover": 0.77,
+      "upCount": 5,
+      "downCount": 3,
+      "flatCount": 0,
+      "stockCount": 8,
+      "upRatio": 62.5,
+      "selectedCount": 0,
+      "leaderName": "中材科技",
+      "leaderCode": "002080",
+      "leaderPctChange": 8.64,
+      "leadingStocks": "",
+      "quantNote": "热度48.1 = 涨幅2.16%、上涨占比62.5%、成交额44.3亿、领涨股中材科技 8.64%",
+      "dataSource": "东方财富行业板块"
+    },
+    {
+      "rank": 7,
+      "code": "BK1318",
+      "name": "光伏主材",
+      "heatScore": 46.77,
+      "pctChange": 2.32,
+      "amount": 425314909.0,
+      "turnover": 0.27,
+      "upCount": 2,
+      "downCount": 0,
+      "flatCount": 0,
+      "stockCount": 2,
+      "upRatio": 100.0,
+      "selectedCount": 0,
+      "leaderName": "隆基绿能",
+      "leaderCode": "601012",
+      "leaderPctChange": 3.17,
+      "leadingStocks": "",
+      "quantNote": "热度46.8 = 涨幅2.32%、上涨占比100.0%、成交额4.3亿、领涨股隆基绿能 3.17%",
+      "dataSource": "东方财富行业板块"
+    },
+    {
+      "rank": 8,
+      "code": "BK1326",
+      "name": "半导体设备",
+      "heatScore": 45.09,
+      "pctChange": 1.71,
+      "amount": 5581605540.0,
+      "turnover": 0.51,
+      "upCount": 16,
+      "downCount": 6,
+      "flatCount": 1,
+      "stockCount": 23,
+      "upRatio": 69.57,
+      "selectedCount": 0,
+      "leaderName": "京仪装备",
+      "leaderCode": "688652",
+      "leaderPctChange": 7.01,
+      "leadingStocks": "",
+      "quantNote": "热度45.1 = 涨幅1.71%、上涨占比69.6%、成交额55.8亿、领涨股京仪装备 7.01%",
+      "dataSource": "东方财富行业板块"
+    }
+  ]
+}

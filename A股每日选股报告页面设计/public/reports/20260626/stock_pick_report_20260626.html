@@ -1,0 +1,137 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<title>K线选股日报 2026-06-26</title>
+<style>
+:root { --blue:#1f4e78; --light:#f5f8fb; --green:#16794c; --red:#b42318; --line:#e5e7eb; }
+body { margin:0; background:#f4f6f8; color:#172033; font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Microsoft YaHei",Arial,sans-serif; }
+.wrap { max-width:1180px; margin:0 auto; padding:28px; }
+.hero { background:linear-gradient(135deg,#173b5f,#286da8); color:white; padding:28px 32px; border-radius:10px; }
+.hero h1 { margin:0 0 8px; font-size:28px; }
+.hero p { margin:0; opacity:.9; }
+.disclaimer { margin-top:16px; background:#fff7ed; color:#9a3412; border:1px solid #fed7aa; border-radius:8px; padding:12px 14px; font-weight:700; }
+.meta { display:flex; flex-wrap:wrap; gap:10px; margin-top:14px; }
+.pill { display:inline-block; background:rgba(255,255,255,.14); border:1px solid rgba(255,255,255,.26); border-radius:999px; padding:6px 10px; font-size:13px; }
+.cards { display:grid; grid-template-columns:repeat(4,1fr); gap:14px; margin:18px 0; }
+.card { background:white; border:1px solid var(--line); border-radius:8px; padding:16px; }
+.card .label { color:#667085; font-size:13px; }
+.card .value { margin-top:8px; font-size:24px; font-weight:700; }
+.grid { display:grid; grid-template-columns:1fr 1fr; gap:16px; }
+.panel { background:white; border:1px solid var(--line); border-radius:8px; padding:18px; margin-bottom:16px; }
+.panel h2 { margin:0 0 14px; font-size:18px; color:#1f4e78; }
+.conclusion-list,.risk-list { margin:0; padding-left:20px; line-height:1.8; }
+.share-box { display:grid; grid-template-columns:1fr auto; gap:12px; align-items:start; }
+.share-text { width:100%; min-height:118px; resize:vertical; border:1px solid var(--line); border-radius:8px; padding:12px; font:13px/1.6 inherit; box-sizing:border-box; background:#f8fafc; }
+.copy-btn { border:0; border-radius:8px; background:#1f4e78; color:white; padding:11px 16px; font-weight:700; cursor:pointer; }
+.copy-btn:active { transform:translateY(1px); }
+.copy-status { color:#16794c; font-size:13px; margin-top:8px; min-height:18px; }
+.bar-row { display:grid; grid-template-columns:160px 1fr 62px; align-items:center; gap:10px; margin:7px 0; font-size:13px; }
+.bar-label { overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+.bar-track { height:14px; background:#eef2f6; border-radius:999px; overflow:hidden; }
+.bar-fill { display:block; height:100%; border-radius:999px; }
+table { width:100%; border-collapse:collapse; font-size:13px; }
+.table-scroll { overflow:auto; border-radius:8px; }
+th { background:#1f4e78; color:white; text-align:left; padding:10px; position:sticky; top:0; }
+td { border-bottom:1px solid var(--line); padding:9px 10px; vertical-align:middle; }
+tr:nth-child(even) td { background:#fafafa; }
+.up { color:var(--red); font-weight:700; }
+.down { color:var(--green); font-weight:700; }
+.stack { display:flex; height:12px; width:150px; border-radius:999px; overflow:hidden; background:#eef2f6; }
+.stack span { display:block; height:100%; }
+.scatter { width:100%; height:330px; }
+.scatter line { stroke:#98a2b3; stroke-width:1; }
+.scatter circle { fill:#2f80ed; fill-opacity:.68; stroke:white; stroke-width:1.5; }
+.scatter text { fill:#667085; font-size:13px; }
+.empty { color:#667085; background:#f8fafc; border:1px dashed #cbd5e1; padding:18px; border-radius:8px; }
+.note { color:#667085; font-size:13px; line-height:1.7; }
+@media (max-width: 860px) { .cards,.grid,.share-box { grid-template-columns:1fr; } .wrap { padding:16px; } .hero { padding:22px 18px; } .card .value { font-size:20px; } }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <section class="hero">
+    <h1>K线选股日报</h1>
+    <p>2026-06-26 | 筛选模式：normal | Top 20</p>
+    <div class="meta">
+      <span class="pill">生成时间：2026-06-28 18:28:08</span>
+      <span class="pill">信号口径：收盘后数据</span>
+      <span class="pill">交易假设：T+1 开盘观察</span>
+    </div>
+  </section>
+  <section class="disclaimer">仅为量化规则跟踪和学习交流，不构成投资建议；历史表现不代表未来收益。</section>
+  <section class="cards">
+    <div class="card"><div class="label">入选数量</div><div class="value">1只</div></div>
+    <div class="card"><div class="label">最高分股票</div><div class="value">宏柏新材(605366)</div></div>
+    <div class="card"><div class="label">平均分</div><div class="value">58.6</div></div>
+    <div class="card"><div class="label">风险提示</div><div class="value">1只</div></div>
+  </section>
+  <section class="grid">
+    <div class="panel"><h2>今日结论</h2><ul class='conclusion-list'><li>今日入选 1 只，最高分为 58.6。</li><li>Top5：宏柏新材(605366)。</li><li>80分以上股票 0 只，平均分 58.6。</li><li>技术筛选最严格条件：volume / previous_5day_avg_volume &gt;= VOL_MULT，通过率 0.1%。</li><li>风险提示股票 1 只，需重点看入场时机。</li></ul></div>
+    <div class="panel"><h2>风险提示</h2><ul class='risk-list'><li>宏柏新材(🟠 连涨多日，等回调再入)</li></ul></div>
+  </section>
+  <section class="panel">
+    <h2>微信/聊天摘要</h2>
+    <div class="share-box">
+      <textarea id="shareText" class="share-text" readonly>2026-06-26 K线规则选股观察
+入选：1只；最高分：宏柏新材(605366) 58.6分
+Top5：宏柏新材(605366)
+技术最严格条件：volume / previous_5day_avg_volume &gt;= VOL_MULT，通过率 0.1%
+仅供规则跟踪和学习交流，不构成投资建议；历史表现不代表未来收益。</textarea>
+      <div>
+        <button class="copy-btn" onclick="copyShareText()">复制摘要</button>
+        <div id="copyStatus" class="copy-status"></div>
+      </div>
+    </div>
+  </section>
+  <section class="grid">
+    <div class="panel"><h2>Top20 综合评分</h2><div class='bar-row'><span class='bar-label'>1. 宏柏新材</span><span class='bar-track'><span class='bar-fill' style='width:100.0%;background:#2E7D32'></span></span><span class='bar-value'>58.65</span></div></div>
+    <div class="panel"><h2>ADX 与量比散点</h2><svg class='scatter' viewBox='0 0 520 320' role='img'><line x1='45' y1='285' x2='495' y2='285'/><line x1='45' y1='20' x2='45' y2='285'/><text x='260.0' y='312'>量比</text><text x='8' y='20'>ADX</text><circle cx='485.0' cy='35.0' r='5.4'><title>宏柏新材 ADX 40.1 量比 1.23</title></circle></svg></div>
+  </section>
+  <section class="panel"><h2>技术筛选漏斗</h2><div class='bar-row'><span class='bar-label'>close &gt; MA3 &gt; MA5 &gt; MA21</span><span class='bar-track'><span class='bar-fill' style='width:8.0%;background:#2E7D32'></span></span><span class='bar-value'>163.00</span></div>
+<div class='bar-row'><span class='bar-label'>close &gt; MA20 today</span><span class='bar-track'><span class='bar-fill' style='width:21.0%;background:#2E7D32'></span></span><span class='bar-value'>427.00</span></div>
+<div class='bar-row'><span class='bar-label'>MA20 persistence days within 20</span><span class='bar-track'><span class='bar-fill' style='width:6.8%;background:#2E7D32'></span></span><span class='bar-value'>138.00</span></div>
+<div class='bar-row'><span class='bar-label'>MA20 slope up</span><span class='bar-track'><span class='bar-fill' style='width:14.0%;background:#2E7D32'></span></span><span class='bar-value'>285.00</span></div>
+<div class='bar-row'><span class='bar-label'>close not overheated vs MA20</span><span class='bar-track'><span class='bar-fill' style='width:100.0%;background:#2E7D32'></span></span><span class='bar-value'>2032.00</span></div>
+<div class='bar-row'><span class='bar-label'>MA20 trend quality</span><span class='bar-track'><span class='bar-fill' style='width:3.2%;background:#2E7D32'></span></span><span class='bar-value'>65.00</span></div>
+<div class='bar-row'><span class='bar-label'>+DI &gt; -DI</span><span class='bar-track'><span class='bar-fill' style='width:24.1%;background:#2E7D32'></span></span><span class='bar-value'>490.00</span></div>
+<div class='bar-row'><span class='bar-label'>ADX &gt; ADX_THRESHOLD</span><span class='bar-track'><span class='bar-fill' style='width:91.0%;background:#2E7D32'></span></span><span class='bar-value'>1849.00</span></div>
+<div class='bar-row'><span class='bar-label'>volume / previous_5day_avg_volume &gt;= VOL_MULT</span><span class='bar-track'><span class='bar-fill' style='width:0.0%;background:#2E7D32'></span></span><span class='bar-value'>1.00</span></div>
+<div class='bar-row'><span class='bar-label'>EXPMA7 &gt; EXPMA21</span><span class='bar-track'><span class='bar-fill' style='width:20.7%;background:#2E7D32'></span></span><span class='bar-value'>421.00</span></div>
+<div class='bar-row'><span class='bar-label'>EXPMA7 recent golden cross within N days</span><span class='bar-track'><span class='bar-fill' style='width:5.6%;background:#2E7D32'></span></span><span class='bar-value'>113.00</span></div>
+<div class='bar-row'><span class='bar-label'>DIF &gt; 0 and DEA &gt; 0</span><span class='bar-track'><span class='bar-fill' style='width:20.2%;background:#2E7D32'></span></span><span class='bar-value'>410.00</span></div>
+<div class='bar-row'><span class='bar-label'>DIF &gt; DEA</span><span class='bar-track'><span class='bar-fill' style='width:30.6%;background:#2E7D32'></span></span><span class='bar-value'>622.00</span></div>
+<div class='bar-row'><span class='bar-label'>MACD golden cross above zero</span><span class='bar-track'><span class='bar-fill' style='width:0.1%;background:#2E7D32'></span></span><span class='bar-value'>2.00</span></div>
+<div class='bar-row'><span class='bar-label'>MACD second golden cross above zero</span><span class='bar-track'><span class='bar-fill' style='width:13.1%;background:#2E7D32'></span></span><span class='bar-value'>266.00</span></div>
+<div class='bar-row'><span class='bar-label'>MACD second golden cross within N days</span><span class='bar-track'><span class='bar-fill' style='width:1.0%;background:#2E7D32'></span></span><span class='bar-value'>20.00</span></div>
+<div class='bar-row'><span class='bar-label'>最终技术面通过</span><span class='bar-track'><span class='bar-fill' style='width:0.0%;background:#2E7D32'></span></span><span class='bar-value'>1.00</span></div></section>
+  <section class="panel"><h2>候选股详情</h2><div class="table-scroll"><table><thead><tr><th>排名</th><th>代码</th><th>名称</th><th>现价</th><th>行业</th><th>总分</th><th>20日线上</th><th>MA20斜率</th><th>涨跌幅</th><th>ADX</th><th>量比</th><th>评分拆解</th><th>上下文分</th><th>上下文说明</th><th>入场时机</th><th>退出计划</th><th>第1日计划</th><th>第2日计划</th><th>第3日计划</th></tr></thead><tbody><tr><td>1</td><td>605366</td><td>宏柏新材</td><td>14.38</td><td></td><td>58.65</td><td>3</td><td>-3.48%</td><td class='up'>+10.02%</td><td>40.1</td><td>1.23</td><td><div class='stack'><span title='趋势 3.9' style='width:5.4%;background:#2F80ED'></span><span title='量能 4.9' style='width:6.8%;background:#27AE60'></span><span title='DMI 12.6' style='width:17.5%;background:#9B51E0'></span><span title='MACD 8.0' style='width:11.1%;background:#F2994A'></span><span title='EXPMA 10.0' style='width:13.9%;background:#56CCF2'></span><span title='资金 12.5' style='width:17.4%;background:#EB5757'></span><span title='板块 20.0' style='width:27.8%;background:#6FCF97'></span></div></td><td>-3.20</td><td>公告偏风险(1个负面关键词, 3个异动/风险词)；融资余额下降-3.8%；近期未上龙虎榜</td><td>🟠 连涨多日，等回调再入</td><td>1日短线计划；T+1看15.29/止损13.88；T+2看15.59/止损13.37；T+3看15.99/止损13.37</td><td>T+1：冲到15.29先减仓，跌破13.88止损；若高开低走不恋战</td><td>T+2：未突破15.59且量能转弱则减仓，跌破13.37退出</td><td>T+3：到15.99分批止盈，跌破13.37或MA5失守退出</td></tr></tbody></table></div></section>
+  <section class="panel"><h2>准确性评估</h2><div class='empty'>暂无成熟准确性样本</div></section>
+  <section class="panel note"><strong>说明：</strong>本报告仅用于规则选股跟踪，不构成投资建议。信号基于收盘后数据，实盘需考虑涨跌停、停牌、滑点、手续费和成交量约束。</section>
+</div>
+<script>
+function copyShareText() {
+  const text = document.getElementById('shareText');
+  const status = document.getElementById('copyStatus');
+  text.focus();
+  text.select();
+  const value = text.value;
+  if (navigator.clipboard && window.isSecureContext) {
+    navigator.clipboard.writeText(value).then(() => {
+      status.textContent = '已复制，可以直接粘贴发送。';
+    }).catch(() => fallbackCopy(text, status));
+  } else {
+    fallbackCopy(text, status);
+  }
+}
+function fallbackCopy(text, status) {
+  try {
+    document.execCommand('copy');
+    status.textContent = '已复制，可以直接粘贴发送。';
+  } catch (e) {
+    status.textContent = '如果浏览器拦截复制，请手动选中文本复制。';
+  }
+}
+</script>
+</body>
+</html>
