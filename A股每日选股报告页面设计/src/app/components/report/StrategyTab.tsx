@@ -1,5 +1,6 @@
 import { Card } from "../ui/card";
 import { SectionTitle } from "./shared";
+import type { BacktestData, DeploymentStatus, StrategyInsight } from "../../data/types";
 
 const conditions = [
   "close > MA3 > MA5 > MA21（均线多头排列）",
@@ -17,7 +18,30 @@ const conditions = [
   "MACD 二次金叉（更强的确认信号）",
 ];
 
-export function StrategyTab() {
+function insightTone(level: StrategyInsight["level"]) {
+  if (level === "good") return "border-up/20 bg-up-soft/40 text-up";
+  if (level === "risk") return "border-risk/20 bg-risk-soft/40 text-risk";
+  return "border-finance-blue/20 bg-finance-blue-soft/45 text-finance-blue";
+}
+
+export function StrategyTab({
+  backtest,
+  deploymentStatus,
+}: {
+  backtest?: BacktestData;
+  deploymentStatus?: DeploymentStatus | null;
+}) {
+  const insights = backtest?.strategyInsights?.length
+    ? backtest.strategyInsights
+    : [
+        {
+          title: "策略建议",
+          value: "等待样本累计",
+          note: "当前尚未读取到准确率回测洞察。跑完 prediction_evaluator 后会自动补充持有期、因子和样本可信度建议。",
+          level: "neutral" as const,
+        },
+      ];
+
   return (
     <div className="space-y-4">
       <Card className="rounded-lg p-5 shadow-sm">
@@ -25,6 +49,37 @@ export function StrategyTab() {
         <p className="text-sm leading-relaxed text-foreground/90">
           系统每个交易日收盘后运行一次，对全市场股票进行技术面打分，从趋势、量能、DMI、MACD、EXPMA、资金流向、板块等多个维度综合评分，筛选出当日符合规则的候选股票，并给出入场时机与风险提示。
         </p>
+      </Card>
+
+      <Card className="rounded-lg p-5 shadow-sm">
+        <SectionTitle title="策略建议" desc="根据已落地的预测准确率回测自动生成" />
+        <div className="grid gap-3 lg:grid-cols-3">
+          {insights.map((item) => (
+            <div key={`${item.title}-${item.value}`} className={`rounded-lg border p-3 ${insightTone(item.level)}`}>
+              <div className="text-xs opacity-80">{item.title}</div>
+              <div className="mt-1 text-lg font-medium">{item.value}</div>
+              <p className="mt-1 text-xs leading-relaxed text-foreground/75">{item.note}</p>
+            </div>
+          ))}
+        </div>
+      </Card>
+
+      <Card className="rounded-lg p-5 shadow-sm">
+        <SectionTitle title="预测阶段" desc="当前是规则校准预测，后续可替换为机器学习模型" />
+        <div className="grid gap-3 md:grid-cols-3">
+          <div className="rounded-md border border-border p-3">
+            <div className="text-sm text-foreground">当前模型</div>
+            <div className="mt-1 text-xs text-neutral">rule_calibrated_v1</div>
+          </div>
+          <div className="rounded-md border border-border p-3">
+            <div className="text-sm text-foreground">输出字段</div>
+            <div className="mt-1 text-xs text-neutral">1日 / 2日 / 3日预测胜率、置信度、说明</div>
+          </div>
+          <div className="rounded-md border border-border p-3">
+            <div className="text-sm text-foreground">下一步</div>
+            <div className="mt-1 text-xs text-neutral">继续累计真实入选与未来收益后，再训练预测模型。</div>
+          </div>
+        </div>
       </Card>
 
       <Card className="rounded-lg p-5 shadow-sm">
@@ -64,6 +119,27 @@ export function StrategyTab() {
         <p className="text-sm leading-relaxed text-risk">
           本策略与报告仅用于量化规则跟踪和学习交流，不构成任何投资建议。所有信号基于历史与收盘后数据计算，历史表现不代表未来收益，实际交易还需考虑手续费、滑点、涨跌停、停牌及流动性等约束。请独立判断并自负盈亏。
         </p>
+      </Card>
+
+      <Card className="rounded-lg p-5 shadow-sm">
+        <SectionTitle title="部署状态" desc="用于确认朋友看到的是不是最新版本" />
+        <div className="grid gap-2 text-sm text-neutral md:grid-cols-2">
+          <div>生成时间：{deploymentStatus?.generatedAt || "未读取"}</div>
+          <div>分支：{deploymentStatus?.branch || "未知"}</div>
+          <div>Commit：{deploymentStatus?.commitSha || "unknown"}</div>
+          <div className="flex gap-3">
+            {deploymentStatus?.githubPagesUrl && (
+              <a className="text-finance-blue hover:underline" href={deploymentStatus.githubPagesUrl} target="_blank" rel="noreferrer">
+                打开网站
+              </a>
+            )}
+            {deploymentStatus?.actionsUrl && (
+              <a className="text-finance-blue hover:underline" href={deploymentStatus.actionsUrl} target="_blank" rel="noreferrer">
+                查看部署
+              </a>
+            )}
+          </div>
+        </div>
       </Card>
     </div>
   );

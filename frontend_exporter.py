@@ -11,6 +11,7 @@ import json
 import math
 import os
 import shutil
+import subprocess
 from typing import Any, Dict, List, Optional
 
 import pandas as pd
@@ -56,6 +57,30 @@ def _safe_str(value: Any, default: str = "") -> str:
         return default
     text = str(value).strip()
     return text if text and text.lower() != "nan" else default
+
+
+def _clip(value: float, low: float, high: float) -> float:
+    return max(low, min(high, value))
+
+
+def _git_value(args: List[str], default: str = "") -> str:
+    try:
+        return subprocess.check_output(args, cwd=cfg.BASE_DIR, text=True, stderr=subprocess.DEVNULL).strip()
+    except Exception:
+        return default
+
+
+def _deployment_status() -> Dict[str, Any]:
+    commit = _git_value(["git", "rev-parse", "--short", "HEAD"], "unknown")
+    branch = _git_value(["git", "branch", "--show-current"], "main")
+    repo = "a-share-daily-report"
+    return {
+        "generatedAt": datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+        "commitSha": commit,
+        "branch": branch,
+        "githubPagesUrl": f"https://ppopink.github.io/{repo}/",
+        "actionsUrl": f"https://github.com/ppopink/{repo}/actions",
+    }
 
 
 def _read_csv(path: str, **kwargs) -> pd.DataFrame:
@@ -206,6 +231,7 @@ def _stock_from_row(row: pd.Series, kline_df: pd.DataFrame = None, recent_stats:
     code = _safe_str(row.get("code")).zfill(6)
     sector = _safe_str(row.get("industry"), "未分类")
     recent = (recent_stats or {}).get(code, {})
+    prediction = _prediction_from_stock(row, risks)
 
     return {
         "rank": int(_safe_num(row.get("rank"), 0)),
@@ -248,6 +274,7 @@ def _stock_from_row(row: pd.Series, kline_df: pd.DataFrame = None, recent_stats:
         "consecutivePickDays": int(_safe_num(recent.get("consecutivePickDays"), 1)),
         "firstSeenDate": _safe_str(recent.get("firstSeenDate"), _date_label(_safe_str(row.get("trade_date"), "")) if row.get("trade_date") else ""),
         "recentPickNote": _safe_str(recent.get("recentPickNote"), "首次或近期入选次数较少"),
+        **prediction,
         "trendQualityScore": _round(row.get("trend_quality_score"), 2),
         "entryTiming": entry_timing,
         "entryNote": _safe_str(row.get("entry_label"), "信号成立，建议结合T+1开盘与成交情况观察。"),
@@ -419,6 +446,52 @@ def _build_recent_pick_stats(date_key: str, mode: str = "normal", window: int = 
     return stats
 
 
+def _prediction_from_stock(row: pd.Series, risks: List[Dict[str, str]]) -> Dict[str, Any]:
+    """轻量规则校准预测，用于前端展示未来模型字段的形态。"""
+    score = _safe_num(row.get("total_score"), 60)
+    vol_ratio = _safe_num(row.get("vol_ratio"), 1)
+    trend_quality = _safe_num(row.get("trend_quality_score"), 0)
+    context_score = _safe_num(row.get("context_score"), 0)
+    action = _safe_str(row.get("buy_action"), "轻仓观察")
+    pct_change = _safe_num(row.get("pct_change"), 0)
+
+    base = 48 + (score - 70) * 0.55
+    base += _clip((vol_ratio - 1.2) * 3, -3, 5)
+    base += _clip((trend_quality - 8) * 0.6, -3, 4)
+    base += _clip(context_score * 0.6, -4, 4)
+    if action == "可积极观察":
+        base += 3
+    elif action == "等回踩确认":
+        base -= 3
+    if pct_change >= 8:
+        base -= 4
+    if risks:
+        base -= min(6, len(risks) * 2)
+
+    p1 = _clip(base, 35, 72)
+    p2 = _clip(p1 + 1.5 - max(0, pct_change - 5) * 0.25, 35, 74)
+    p3 = _clip(p2 + 1.0 + min(context_score, 4) * 0.2, 35, 76)
+    avg = (p1 + p2 + p3) / 3
+    if avg >= 62 and score >= 80 and len(risks) <= 1:
+        confidence = "高"
+    elif avg >= 54:
+        confidence = "中"
+    else:
+        confidence = "低"
+
+    return {
+        "predictedWinProb1d": round(p1, 2),
+        "predictedWinProb2d": round(p2, 2),
+        "predictedWinProb3d": round(p3, 2),
+        "predictionConfidence": confidence,
+        "predictionNote": (
+            f"规则校准预测：1日{p1:.1f}%、2日{p2:.1f}%、3日{p3:.1f}%。"
+            "该概率来自规则分、趋势质量和上下文风险的轻量校准，尚非机器学习模型。"
+        ),
+        "modelVersion": "rule_calibrated_v1",
+    }
+
+
 def _market_guard(date_key: str, day_dir: str) -> Dict[str, Any]:
     path = os.path.join(day_dir, f"market_guard_{date_key}.csv")
     df = _read_csv(path)
@@ -578,6 +651,62 @@ def _sample_status(valid_count: int) -> str:
     return "样本不足"
 
 
+def _strategy_insights(
+    holding_perf: List[Dict[str, Any]],
+    factor_ic: List[Dict[str, Any]],
+    valid_count: int,
+) -> List[Dict[str, str]]:
+    insights: List[Dict[str, str]] = []
+
+    if holding_perf:
+        best_period = max(
+            holding_perf,
+            key=lambda item: (
+                _safe_num(item.get("avgExcess")),
+                _safe_num(item.get("winRate")),
+                _safe_num(item.get("avgReturn")),
+            ),
+        )
+        win_rate = _safe_num(best_period.get("winRate"))
+        avg_excess = _safe_num(best_period.get("avgExcess"))
+        level = "good" if avg_excess > 0 and win_rate >= 50 else "neutral" if win_rate >= 45 else "risk"
+        insights.append({
+            "title": "当前更优持有期",
+            "value": _safe_str(best_period.get("period"), "待观察"),
+            "note": f"胜率 {win_rate:.2f}%，平均超额 {avg_excess:.2f}%。短线执行优先参考该周期，但仍需结合T+1开盘。",
+            "level": level,
+        })
+
+    if factor_ic:
+        best_factor = max(factor_ic, key=lambda item: _safe_num(item.get("returnRankIC")))
+        rank_ic = _safe_num(best_factor.get("returnRankIC"))
+        insights.append({
+            "title": "近期较强因子",
+            "value": _safe_str(best_factor.get("factor"), "暂无"),
+            "note": f"return_rank_ic {rank_ic:.2f}。正值说明该因子近期排序与收益方向更一致。",
+            "level": "good" if rank_ic > 0.05 else "neutral" if rank_ic >= 0 else "risk",
+        })
+
+    status = _sample_status(valid_count)
+    if valid_count < 30:
+        sample_note = "已评估样本少，不能据此判断策略稳定性，建议继续累计每日预测结果。"
+        level = "risk"
+    elif valid_count < 100:
+        sample_note = "样本开始可读，但仍容易受单日行情影响，适合做方向性参考。"
+        level = "neutral"
+    else:
+        sample_note = "样本量较充分，可以更认真比较持有期、分层收益和因子有效性。"
+        level = "good"
+    insights.append({
+        "title": "样本可信度",
+        "value": status,
+        "note": f"当前有效样本 {valid_count} 条。{sample_note}",
+        "level": level,
+    })
+
+    return insights
+
+
 def _build_backtest_data(latest_date_key: str) -> Optional[Dict[str, Any]]:
     day_dir = os.path.join(cfg.OUTPUT_DIR, latest_date_key)
     report_json = _read_json(os.path.join(day_dir, f"prediction_accuracy_report_{latest_date_key}.json"))
@@ -664,6 +793,7 @@ def _build_backtest_data(latest_date_key: str) -> Optional[Dict[str, Any]]:
 
     avg_return = _round(overview_row.get("average_return_pct"), 2)
     avg_excess = _round(overview_row.get("average_excess_return_pct"), 2)
+    strategy_insights = _strategy_insights(holding_perf, factor_ic, valid_count)
     return {
         "rangeStart": range_start,
         "rangeEnd": range_end,
@@ -683,7 +813,18 @@ def _build_backtest_data(latest_date_key: str) -> Optional[Dict[str, Any]]:
         "layers": layer_rows,
         "factorIC": factor_ic,
         "details": detail_rows,
+        "strategyInsights": strategy_insights,
     }
+
+
+def _latest_backtest_date(date_keys: List[str]) -> Optional[str]:
+    for date_key in date_keys:
+        day_dir = os.path.join(cfg.OUTPUT_DIR, date_key)
+        has_summary = os.path.exists(os.path.join(day_dir, f"prediction_accuracy_summary_{date_key}.csv"))
+        has_report = os.path.exists(os.path.join(day_dir, f"prediction_accuracy_report_{date_key}.json"))
+        if has_summary or has_report:
+            return date_key
+    return None
 
 
 def export_frontend_data() -> Dict[str, Any]:
@@ -717,8 +858,8 @@ def export_frontend_data() -> Dict[str, Any]:
         reports.append(report)
 
     latest = reports[0] if reports else None
-    latest_key = latest["date"].replace("-", "") if latest else None
-    backtest = _build_backtest_data(latest_key) if latest_key else None
+    latest_backtest_key = _latest_backtest_date(date_keys)
+    backtest = _build_backtest_data(latest_backtest_key) if latest_backtest_key else None
     if backtest:
         _write_json(os.path.join(DATA_DIR, "backtest.json"), backtest)
 
@@ -732,8 +873,10 @@ def export_frontend_data() -> Dict[str, Any]:
         }
         for report in reports
     ]
+    deployment = _deployment_status()
     index = {
         "generatedAt": datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+        "deploymentStatus": deployment,
         "latestDate": latest["date"] if latest else None,
         "availableDates": [report["date"] for report in reports],
         "availableModesByDate": available_modes_by_date,
@@ -749,12 +892,14 @@ def export_frontend_data() -> Dict[str, Any]:
             for report in reports
         ],
         "hasBacktest": backtest is not None,
+        "backtestDate": _date_label(latest_backtest_key) if latest_backtest_key else None,
     }
     _write_json(os.path.join(DATA_DIR, "report_index.json"), index)
     return {
         "index": os.path.join(DATA_DIR, "report_index.json"),
         "report_count": len(reports),
         "latest_date": index["latestDate"],
+        "deployment_status": deployment,
         "backtest": os.path.join(DATA_DIR, "backtest.json") if backtest else None,
     }
 

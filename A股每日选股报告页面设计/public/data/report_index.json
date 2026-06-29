@@ -1,5 +1,12 @@
 {
-  "generatedAt": "2026-06-29 16:00:30",
+  "generatedAt": "2026-06-29 16:10:41",
+  "deploymentStatus": {
+    "generatedAt": "2026-06-29 16:10:41",
+    "commitSha": "cb42eee",
+    "branch": "main",
+    "githubPagesUrl": "https://ppopink.github.io/a-share-daily-report/",
+    "actionsUrl": "https://github.com/ppopink/a-share-daily-report/actions"
+  },
   "latestDate": "2026-06-29",
   "availableDates": [
     "2026-06-29",
@@ -248,5 +255,6 @@
       }
     }
   ],
-  "hasBacktest": false
+  "hasBacktest": true,
+  "backtestDate": "2026-06-24"
 }

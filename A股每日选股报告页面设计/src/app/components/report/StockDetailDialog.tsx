@@ -179,6 +179,17 @@ export function StockDetailDialog({
               <p className="mt-2 text-sm leading-relaxed text-foreground/90">{stock.buyTrigger || "等待T+1开盘确认。"}</p>
               <p className="mt-1 text-xs leading-relaxed text-risk">{stock.buyAvoidRules || "涨停、停牌、高开过大或放量走弱不买。"}</p>
             </div>
+
+            <div className="rounded-md border border-up/15 bg-up-soft/40 p-3">
+              <div className="mb-1 text-sm font-medium text-up">1/2/3日预测胜率 ({stock.predictionConfidence || "待校准"}置信度)</div>
+              <div className="grid grid-cols-3 gap-2">
+                <Metric label="第1日" value={`${stock.predictedWinProb1d?.toFixed(1) ?? "-"}%`} hint="T+1收盘后表现" />
+                <Metric label="第2日" value={`${stock.predictedWinProb2d?.toFixed(1) ?? "-"}%`} hint="T+2累计表现" />
+                <Metric label="第3日" value={`${stock.predictedWinProb3d?.toFixed(1) ?? "-"}%`} hint="T+3累计表现" />
+              </div>
+              <p className="mt-2 text-xs leading-relaxed text-foreground/80">{stock.predictionNote || "当前暂无预测校准说明。"}</p>
+              <p className="mt-1 text-[11px] text-neutral/80">模型版本：{stock.modelVersion || "未标注"}。该字段用于辅助排序，不构成买卖建议。</p>
+            </div>
             
             {stock.exitStrategy && (
               <div className="rounded-md border border-purple-500/20 bg-purple-500/5 p-3">

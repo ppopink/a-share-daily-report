@@ -39,6 +39,21 @@ export interface DataQuality {
   notes: string[];
 }
 
+export interface DeploymentStatus {
+  generatedAt: string;
+  commitSha: string;
+  branch: string;
+  githubPagesUrl: string;
+  actionsUrl: string;
+}
+
+export interface StrategyInsight {
+  title: string;
+  value: string;
+  note: string;
+  level: "good" | "neutral" | "risk";
+}
+
 export interface KlinePoint {
   date: string;
   open: number;
@@ -92,6 +107,12 @@ export interface Stock {
   consecutivePickDays?: number;
   firstSeenDate?: string;
   recentPickNote?: string;
+  predictedWinProb1d?: number;
+  predictedWinProb2d?: number;
+  predictedWinProb3d?: number;
+  predictionConfidence?: string;
+  predictionNote?: string;
+  modelVersion?: string;
   trendQualityScore: number;
   // 入场 / 风险
   entryTiming: EntryTiming;
@@ -306,4 +327,5 @@ export interface BacktestData {
   layers: LayerPerf[];
   factorIC: FactorIC[];
   details: BacktestDetail[];
+  strategyInsights?: StrategyInsight[];
 }

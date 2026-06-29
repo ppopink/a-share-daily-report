@@ -9,7 +9,7 @@ import { Diagnostics } from "./components/report/Diagnostics";
 import { ShareSummary, buildShareText } from "./components/report/ShareSummary";
 import { SectionTitle } from "./components/report/shared";
 import { backtestData, historyList, todayReport } from "./data/mock";
-import type { BacktestData, DailyReport, FilterMode, HistoryEntry, ModeReportSummary, Stock } from "./data/types";
+import type { BacktestData, DailyReport, DeploymentStatus, FilterMode, HistoryEntry, ModeReportSummary, Stock } from "./data/types";
 
 const tabs = [
   { id: "today", label: "今日选股", icon: FileText },
@@ -39,6 +39,7 @@ type ReportIndex = {
   availableDates?: string[];
   availableModesByDate?: Record<string, FilterMode[]>;
   history?: HistoryEntry[];
+  deploymentStatus?: DeploymentStatus;
 };
 
 function dateToKey(date: string) {
@@ -180,6 +181,7 @@ export default function App() {
   const [availableModesByDate, setAvailableModesByDate] = useState<Record<string, FilterMode[]>>({});
   const [history, setHistory] = useState<HistoryEntry[]>(historyList);
   const [backtest, setBacktest] = useState<BacktestData>(backtestData);
+  const [deploymentStatus, setDeploymentStatus] = useState<DeploymentStatus | null>(null);
   const [modeSummaries, setModeSummaries] = useState<ModeReportSummary[]>([]);
   const [dataError, setDataError] = useState("");
   const [selected, setSelected] = useState<Stock | null>(null);
@@ -219,6 +221,7 @@ export default function App() {
         if (cancelled) return;
         setAvailableDates(nextDates);
         setAvailableModesByDate(nextModesByDate);
+        setDeploymentStatus(index.deploymentStatus || null);
         setHistory(
           index.history?.length
             ? index.history.map((item) => ({
@@ -305,7 +308,7 @@ export default function App() {
     return () => {
       cancelled = true;
     };
-  }, [date, availableModesByDate]);
+  }, [date, mode, availableModesByDate]);
 
   const viewReport = { ...report, date, mode };
   const availableModesForDate = availableModesByDate[date] || ["normal"];
@@ -504,7 +507,7 @@ export default function App() {
 
           <TabsContent value="strategy">
             <Suspense fallback={<LoadingPanel label="策略说明加载中..." />}>
-              <StrategyTab />
+              <StrategyTab backtest={backtest} deploymentStatus={deploymentStatus} />
             </Suspense>
           </TabsContent>
         </Tabs>

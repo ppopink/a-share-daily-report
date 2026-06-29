@@ -2220,5 +2220,25 @@
       "beatBenchmark": false,
       "status": "ok"
     }
+  ],
+  "strategyInsights": [
+    {
+      "title": "当前更优持有期",
+      "value": "持有2日",
+      "note": "胜率 60.00%，平均超额 0.00%。短线执行优先参考该周期，但仍需结合T+1开盘。",
+      "level": "neutral"
+    },
+    {
+      "title": "近期较强因子",
+      "value": "vol_ratio",
+      "note": "return_rank_ic 0.36。正值说明该因子近期排序与收益方向更一致。",
+      "level": "good"
+    },
+    {
+      "title": "样本可信度",
+      "value": "需要继续观察",
+      "note": "当前有效样本 40 条。样本开始可读，但仍容易受单日行情影响，适合做方向性参考。",
+      "level": "neutral"
+    }
   ]
 }
