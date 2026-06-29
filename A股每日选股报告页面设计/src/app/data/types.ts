@@ -171,6 +171,7 @@ export interface HistoryEntry {
   selectedCount: number;
   topStock: string;
   avgScore: number;
+  availableModes?: FilterMode[];
   files?: ReportFiles;
 }
 

@@ -23,6 +23,7 @@ PUBLIC_DIR = os.path.join(FRONTEND_DIR, "public")
 DATA_DIR = os.path.join(PUBLIC_DIR, "data")
 REPORT_DATA_DIR = os.path.join(DATA_DIR, "reports")
 PUBLIC_REPORT_DIR = os.path.join(PUBLIC_DIR, "reports")
+SCREEN_MODES = ["normal", "strict", "loose"]
 
 
 def _is_date_dir(name: str) -> bool:
@@ -76,19 +77,38 @@ def _write_json(path: str, data: Dict[str, Any]) -> None:
         json.dump(data, f, ensure_ascii=False, indent=2, allow_nan=False)
 
 
-def _copy_artifacts(date_key: str, day_dir: str) -> Dict[str, str]:
+def _mode_pick_filename(date_key: str, mode: str) -> str:
+    return f"stock_pick_{mode}_{date_key}.csv"
+
+
+def _pick_path(date_key: str, day_dir: str, mode: str) -> str:
+    mode_path = os.path.join(day_dir, _mode_pick_filename(date_key, mode))
+    if os.path.exists(mode_path):
+        return mode_path
+    if mode == "normal":
+        legacy_path = os.path.join(day_dir, f"stock_pick_{date_key}.csv")
+        if os.path.exists(legacy_path):
+            return legacy_path
+    return mode_path
+
+
+def _copy_artifacts(date_key: str, day_dir: str, mode: str = "normal") -> Dict[str, str]:
     """复制当日报告附件到前端 public/reports/YYYYMMDD。"""
     target_dir = os.path.join(PUBLIC_REPORT_DIR, date_key)
     os.makedirs(target_dir, exist_ok=True)
 
     files: Dict[str, str] = {}
+    csv_name = os.path.basename(_pick_path(date_key, day_dir, mode))
     patterns = {
-        "csv": f"stock_pick_{date_key}.csv",
+        "csv": csv_name,
         "hotSectorsCsv": f"hot_sectors_{date_key}.csv",
-        "excel": f"stock_pick_{date_key}.xlsx",
-        "html": f"stock_pick_report_{date_key}.html",
-        "pdf": f"stock_pick_report_{date_key}.pdf",
     }
+    if mode == "normal":
+        patterns.update({
+            "excel": f"stock_pick_{date_key}.xlsx",
+            "html": f"stock_pick_report_{date_key}.html",
+            "pdf": f"stock_pick_report_{date_key}.pdf",
+        })
     for key, filename in patterns.items():
         src = os.path.join(day_dir, filename)
         if os.path.exists(src):
@@ -256,8 +276,9 @@ def _stock_from_row(row: pd.Series, kline_df: pd.DataFrame = None) -> Dict[str, 
     }
 
 
-def _diagnostics(date_key: str, day_dir: str) -> List[Dict[str, Any]]:
-    path = os.path.join(day_dir, f"tech_diagnostic_{date_key}.csv")
+def _diagnostics(date_key: str, day_dir: str, mode: str = "normal") -> List[Dict[str, Any]]:
+    mode_path = os.path.join(day_dir, f"tech_diagnostic_{mode}_{date_key}.csv")
+    path = mode_path if os.path.exists(mode_path) else os.path.join(day_dir, f"tech_diagnostic_{date_key}.csv")
     df = _read_csv(path)
     items: List[Dict[str, Any]] = []
     if df.empty:
@@ -276,8 +297,9 @@ def _diagnostics(date_key: str, day_dir: str) -> List[Dict[str, Any]]:
     return items
 
 
-def _funnel(date_key: str, day_dir: str, selected_count: int) -> List[Dict[str, Any]]:
-    path = os.path.join(day_dir, f"filter_log_{date_key}.csv")
+def _funnel(date_key: str, day_dir: str, selected_count: int, mode: str = "normal") -> List[Dict[str, Any]]:
+    mode_path = os.path.join(day_dir, f"filter_log_{mode}_{date_key}.csv")
+    path = mode_path if os.path.exists(mode_path) else os.path.join(day_dir, f"filter_log_{date_key}.csv")
     df = _read_csv(path)
     if not df.empty:
         result = []
@@ -336,14 +358,15 @@ def _hot_sectors(date_key: str, day_dir: str) -> List[Dict[str, Any]]:
     return sectors
 
 
-def _build_daily_report(date_key: str) -> Optional[Dict[str, Any]]:
+def _build_daily_report(date_key: str, mode: str = "normal") -> Optional[Dict[str, Any]]:
     day_dir = os.path.join(cfg.OUTPUT_DIR, date_key)
-    pick_path = os.path.join(day_dir, f"stock_pick_{date_key}.csv")
-    df = _read_csv(pick_path, dtype={"code": str})
-    if df.empty:
+    pick_path = _pick_path(date_key, day_dir, mode)
+    if not os.path.exists(pick_path):
         return None
+    df = _read_csv(pick_path, dtype={"code": str})
 
-    df = df.sort_values("total_score", ascending=False).head(cfg.TOP_N)
+    if not df.empty and "total_score" in df.columns:
+        df = df.sort_values("total_score", ascending=False).head(cfg.TOP_N)
     kline_df = _load_kline_cache(date_key)
     stocks = [_stock_from_row(row, kline_df) for _, row in df.iterrows()]
     for idx, stock in enumerate(stocks, start=1):
@@ -353,7 +376,7 @@ def _build_daily_report(date_key: str) -> Optional[Dict[str, Any]]:
     avg_score = _round(sum(s["totalScore"] for s in stocks) / selected_count if selected_count else 0, 2)
     risk_count = sum(1 for s in stocks if s["risks"])
     above80 = sum(1 for s in stocks if s["totalScore"] >= 80)
-    diagnostics = _diagnostics(date_key, day_dir)
+    diagnostics = _diagnostics(date_key, day_dir, mode)
     final_diag = next((d for d in diagnostics if "最终" in d["label"]), None)
     pass_rate = _round((final_diag["passed"] / final_diag["total"] * 100) if final_diag and final_diag["total"] else 0, 2)
     strictest = min(
@@ -362,7 +385,7 @@ def _build_daily_report(date_key: str) -> Optional[Dict[str, Any]]:
         default={"label": "暂无诊断数据"},
     )
     top = stocks[0] if stocks else {"name": "-", "code": "-", "totalScore": 0, "price": 0}
-    files = _copy_artifacts(date_key, day_dir)
+    files = _copy_artifacts(date_key, day_dir, mode)
     generated_at = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
     manifest = _read_json(os.path.join(day_dir, f"stock_pick_report_{date_key}.json"))
     if manifest.get("created_at"):
@@ -370,14 +393,14 @@ def _build_daily_report(date_key: str) -> Optional[Dict[str, Any]]:
 
     status = "偏强" if selected_count >= 20 and avg_score >= 80 else "一般" if selected_count else "谨慎"
     narrative = (
-        f"{_date_label(date_key)} 共选出 {selected_count} 只候选股，"
+        f"{_date_label(date_key)} {mode} 模式共选出 {selected_count} 只候选股，"
         f"最高分为 {top['name']}({top['code']})，平均分 {avg_score}。"
         f"当前最严格的技术条件是：{strictest['label']}。"
     )
 
     return {
         "date": _date_label(date_key),
-        "mode": cfg.SCREEN_MODE,
+        "mode": mode,
         "generatedAt": generated_at,
         "files": files,
         "stocks": stocks,
@@ -403,7 +426,7 @@ def _build_daily_report(date_key: str) -> Optional[Dict[str, Any]]:
             "narrative": narrative,
         },
         "diagnostics": diagnostics,
-        "funnel": _funnel(date_key, day_dir, selected_count),
+        "funnel": _funnel(date_key, day_dir, selected_count, mode),
         "industryDist": _industry_dist(stocks),
         "hotSectors": _hot_sectors(date_key, day_dir),
     }
@@ -537,11 +560,22 @@ def export_frontend_data() -> Dict[str, Any]:
     )
 
     reports: List[Dict[str, Any]] = []
+    available_modes_by_date: Dict[str, List[str]] = {}
     for date_key in date_keys:
-        report = _build_daily_report(date_key)
-        if not report:
+        mode_reports: Dict[str, Dict[str, Any]] = {}
+        for mode in SCREEN_MODES:
+            report = _build_daily_report(date_key, mode)
+            if not report:
+                continue
+            _write_json(os.path.join(REPORT_DATA_DIR, f"{date_key}_{mode}.json"), report)
+            mode_reports[mode] = report
+
+        if not mode_reports:
             continue
+
+        report = mode_reports.get("normal") or next(iter(mode_reports.values()))
         _write_json(os.path.join(REPORT_DATA_DIR, f"{date_key}.json"), report)
+        available_modes_by_date[report["date"]] = list(mode_reports.keys())
         reports.append(report)
 
     latest = reports[0] if reports else None
@@ -564,6 +598,7 @@ def export_frontend_data() -> Dict[str, Any]:
         "generatedAt": datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
         "latestDate": latest["date"] if latest else None,
         "availableDates": [report["date"] for report in reports],
+        "availableModesByDate": available_modes_by_date,
         "history": history,
         "reports": [
             {

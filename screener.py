@@ -37,11 +37,16 @@ def _filter_log_row(step_name: str, before_count: int, after_count: int) -> dict
     }
 
 
-def _save_filter_log(rows: list, trade_date: datetime.date = None) -> str:
+def _save_filter_log(rows: list, trade_date: datetime.date = None, mode: str = None) -> str:
     if trade_date is None:
         trade_date = datetime.date.today()
-    path = output_path(f"filter_log_{trade_date.strftime('%Y%m%d')}.csv", trade_date)
+    mode = mode or cfg.SCREEN_MODE
+    date_str = trade_date.strftime("%Y%m%d")
+    path = output_path(f"filter_log_{mode}_{date_str}.csv", trade_date)
     pd.DataFrame(rows).to_csv(path, index=False, encoding="utf-8-sig")
+    if mode == "normal":
+        legacy_path = output_path(f"filter_log_{date_str}.csv", trade_date)
+        pd.DataFrame(rows).to_csv(legacy_path, index=False, encoding="utf-8-sig")
     return path
 
 
@@ -208,9 +213,10 @@ FAIL_REASON_MAP = {
 }
 
 
-def _save_tech_diagnostics(rows: list, verbose: bool = True, trade_date: datetime.date = None) -> tuple[str, str]:
+def _save_tech_diagnostics(rows: list, verbose: bool = True, trade_date: datetime.date = None, mode: str = None) -> tuple[str, str]:
     if trade_date is None:
         trade_date = datetime.date.today()
+    mode = mode or cfg.SCREEN_MODE
     date_str = trade_date.strftime("%Y%m%d")
     total = len(rows)
 
@@ -227,8 +233,11 @@ def _save_tech_diagnostics(rows: list, verbose: bool = True, trade_date: datetim
             "fail_rate": round(fail_count / total, 4) if total else 0,
         })
 
-    diag_path = output_path(f"tech_diagnostic_{date_str}.csv", trade_date)
+    diag_path = output_path(f"tech_diagnostic_{mode}_{date_str}.csv", trade_date)
     pd.DataFrame(diag_rows).to_csv(diag_path, index=False, encoding="utf-8-sig")
+    if mode == "normal":
+        legacy_diag_path = output_path(f"tech_diagnostic_{date_str}.csv", trade_date)
+        pd.DataFrame(diag_rows).to_csv(legacy_diag_path, index=False, encoding="utf-8-sig")
 
     fail_rows = []
     for r in rows:
@@ -256,8 +265,11 @@ def _save_tech_diagnostics(rows: list, verbose: bool = True, trade_date: datetim
             "macd_hist": r.get("macd_hist", np.nan),
             "failed_conditions": ";".join(failed),
         })
-    fail_path = output_path(f"tech_fail_reasons_{date_str}.csv", trade_date)
+    fail_path = output_path(f"tech_fail_reasons_{mode}_{date_str}.csv", trade_date)
     pd.DataFrame(fail_rows).to_csv(fail_path, index=False, encoding="utf-8-sig")
+    if mode == "normal":
+        legacy_fail_path = output_path(f"tech_fail_reasons_{date_str}.csv", trade_date)
+        pd.DataFrame(fail_rows).to_csv(legacy_fail_path, index=False, encoding="utf-8-sig")
 
     if verbose:
         print("[诊断] 技术条件通过数量:")

@@ -26,6 +26,7 @@ const tabs = [
 type ReportIndex = {
   latestDate?: string;
   availableDates?: string[];
+  availableModesByDate?: Record<string, FilterMode[]>;
   history?: HistoryEntry[];
 };
 
@@ -42,6 +43,19 @@ function getDateFromUrl() {
   return new URLSearchParams(window.location.search).get("date") || "";
 }
 
+function getModeFromUrl(): FilterMode | "" {
+  if (typeof window === "undefined") return "";
+  const mode = new URLSearchParams(window.location.search).get("mode");
+  return mode === "strict" || mode === "normal" || mode === "loose" ? mode : "";
+}
+
+function reportPath(date: string, mode: FilterMode) {
+  const key = dateToKey(date);
+  return mode === "normal"
+    ? `data/reports/${key}_normal.json`
+    : `data/reports/${key}_${mode}.json`;
+}
+
 async function fetchJson<T>(url: string): Promise<T> {
   const res = await fetch(`${publicUrl(url)}?v=${Date.now()}`);
   if (!res.ok) {
@@ -56,6 +70,7 @@ export default function App() {
   const [mode, setMode] = useState<FilterMode>(todayReport.mode);
   const [report, setReport] = useState<DailyReport>(todayReport);
   const [availableDates, setAvailableDates] = useState<string[]>(historyList.map((h) => h.date));
+  const [availableModesByDate, setAvailableModesByDate] = useState<Record<string, FilterMode[]>>({});
   const [history, setHistory] = useState<HistoryEntry[]>(historyList);
   const [backtest, setBacktest] = useState<BacktestData>(backtestData);
   const [dataError, setDataError] = useState("");
@@ -69,20 +84,38 @@ export default function App() {
       try {
         const index = await fetchJson<ReportIndex>("data/report_index.json");
         const nextDates = index.availableDates?.length ? index.availableDates : [todayReport.date];
+        const nextModesByDate = index.availableModesByDate || {};
         const urlDate = getDateFromUrl();
+        const urlMode = getModeFromUrl();
         const latest = index.latestDate || nextDates[0] || todayReport.date;
         const targetDate = nextDates.includes(urlDate) ? urlDate : latest;
+        const modesForDate = nextModesByDate[targetDate] || ["normal"];
+        const targetMode = urlMode && modesForDate.includes(urlMode)
+          ? urlMode
+          : modesForDate.includes("normal")
+            ? "normal"
+            : modesForDate[0];
         const [daily, bt] = await Promise.all([
-          fetchJson<DailyReport>(`data/reports/${dateToKey(targetDate)}.json`),
+          fetchJson<DailyReport>(reportPath(targetDate, targetMode)).catch(() =>
+            fetchJson<DailyReport>(`data/reports/${dateToKey(targetDate)}.json`),
+          ),
           fetchJson<BacktestData>("data/backtest.json").catch(() => backtestData),
         ]);
 
         if (cancelled) return;
         setAvailableDates(nextDates);
-        setHistory(index.history?.length ? index.history : historyList);
+        setAvailableModesByDate(nextModesByDate);
+        setHistory(
+          index.history?.length
+            ? index.history.map((item) => ({
+                ...item,
+                availableModes: nextModesByDate[item.date] || ["normal"],
+              }))
+            : historyList,
+        );
         setBacktest(bt);
         setDate(targetDate);
-        setMode(daily.mode);
+        setMode(daily.mode || targetMode);
         setReport(daily);
         setDataError("");
       } catch {
@@ -102,15 +135,27 @@ export default function App() {
 
     async function loadDailyReport() {
       if (!availableDates.includes(date)) return;
+      const modesForDate = availableModesByDate[date] || ["normal"];
+      if (!modesForDate.includes(mode)) {
+        const fallbackMode = modesForDate.includes("normal") ? "normal" : modesForDate[0];
+        if (fallbackMode && fallbackMode !== mode) {
+          setMode(fallbackMode);
+        }
+        return;
+      }
       try {
-        const daily = await fetchJson<DailyReport>(`data/reports/${dateToKey(date)}.json`);
+        const daily = await fetchJson<DailyReport>(reportPath(date, mode)).catch(() => {
+          if (mode === "normal") {
+            return fetchJson<DailyReport>(`data/reports/${dateToKey(date)}.json`);
+          }
+          throw new Error(`missing ${mode} report`);
+        });
         if (cancelled) return;
         setReport(daily);
-        setMode(daily.mode);
         setDataError("");
       } catch {
         if (!cancelled) {
-          setDataError(`未找到 ${date} 的真实报告数据。`);
+          setDataError(`未找到 ${date} 的 ${mode} 模式报告数据。请重新运行 python main.py 生成三种模式数据。`);
         }
       }
     }
@@ -119,17 +164,42 @@ export default function App() {
     return () => {
       cancelled = true;
     };
-  }, [date, availableDates]);
+  }, [date, mode, availableDates, availableModesByDate]);
 
   const viewReport = { ...report, date, mode };
+  const availableModesForDate = availableModesByDate[date] || ["normal"];
 
   const handleDateChange = (nextDate: string) => {
     if (!nextDate || nextDate === date) return;
+    const modesForNextDate = availableModesByDate[nextDate] || ["normal"];
+    const nextMode = modesForNextDate.includes(mode)
+      ? mode
+      : modesForNextDate.includes("normal")
+        ? "normal"
+        : modesForNextDate[0];
     setDate(nextDate);
+    setMode(nextMode);
 
     if (typeof window !== "undefined") {
       const url = new URL(window.location.href);
       url.searchParams.set("date", nextDate);
+      url.searchParams.set("mode", nextMode);
+      window.history.replaceState({}, "", url);
+    }
+  };
+
+  const handleModeChange = (nextMode: FilterMode) => {
+    if (nextMode === mode) return;
+    if (!availableModesForDate.includes(nextMode)) {
+      toast.info(`${date} 暂无 ${nextMode} 模式数据，请重新运行 python main.py 生成。`);
+      return;
+    }
+    setMode(nextMode);
+
+    if (typeof window !== "undefined") {
+      const url = new URL(window.location.href);
+      url.searchParams.set("date", date);
+      url.searchParams.set("mode", nextMode);
       window.history.replaceState({}, "", url);
     }
   };
@@ -157,10 +227,11 @@ export default function App() {
         mode={mode}
         generatedAt={report.generatedAt}
         onDateChange={handleDateChange}
-        onModeChange={setMode}
+        onModeChange={handleModeChange}
         onShare={handleShare}
         onViewHistory={() => setTab("history")}
         availableDates={availableDates}
+        availableModes={availableModesForDate}
         files={report.files}
       />
       <DisclaimerBar />

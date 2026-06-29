@@ -31,6 +31,7 @@ export function Header({
   onShare,
   onViewHistory,
   availableDates,
+  availableModes = ["normal"],
   files,
 }: {
   date: string;
@@ -41,6 +42,7 @@ export function Header({
   onShare: () => void;
   onViewHistory: () => void;
   availableDates: string[];
+  availableModes?: FilterMode[];
   files?: ReportFiles;
 }) {
   const dates = availableDates.length ? availableDates : [date];
@@ -121,6 +123,8 @@ export function Header({
                 <ToggleGroupItem
                   key={m}
                   value={m}
+                  disabled={!availableModes.includes(m)}
+                  title={availableModes.includes(m) ? modeLabels[m] : `当前日期暂无 ${m} 数据`}
                   className="h-8 px-2.5 text-xs text-white/80 data-[state=on]:bg-white data-[state=on]:text-finance-blue"
                 >
                   {m}

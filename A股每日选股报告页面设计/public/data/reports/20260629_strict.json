@@ -1,0 +1,344 @@
+{
+  "date": "2026-06-29",
+  "mode": "strict",
+  "generatedAt": "2026-06-29 14:44:40",
+  "files": {
+    "csv": "reports/20260629/stock_pick_strict_20260629.csv",
+    "hotSectorsCsv": "reports/20260629/hot_sectors_20260629.csv"
+  },
+  "stocks": [],
+  "summary": {
+    "selectedCount": 0,
+    "topStock": {
+      "name": "-",
+      "code": "-",
+      "score": 0,
+      "price": 0
+    },
+    "avgScore": 0.0,
+    "riskCount": 0,
+    "above80Count": 0,
+    "passRate": 0.0
+  },
+  "conclusion": {
+    "selectedCount": 0,
+    "top5": [],
+    "strictestCondition": "MACD golden cross above zero",
+    "chaseRisk": false,
+    "status": "谨慎",
+    "narrative": "2026-06-29 strict 模式共选出 0 只候选股，最高分为 -(-)，平均分 0.0。当前最严格的技术条件是：MACD golden cross above zero。"
+  },
+  "diagnostics": [
+    {
+      "id": "close_>_ma3_>_ma5_>_ma21",
+      "label": "close > MA3 > MA5 > MA21",
+      "passed": 106,
+      "total": 2125
+    },
+    {
+      "id": "close_>_ma20_today",
+      "label": "close > MA20 today",
+      "passed": 386,
+      "total": 2125
+    },
+    {
+      "id": "ma20_persistence_days_within_20",
+      "label": "MA20 persistence days within 20",
+      "passed": 117,
+      "total": 2125
+    },
+    {
+      "id": "ma20_slope_up",
+      "label": "MA20 slope up",
+      "passed": 262,
+      "total": 2125
+    },
+    {
+      "id": "close_not_overheated_vs_ma20",
+      "label": "close not overheated vs MA20",
+      "passed": 2044,
+      "total": 2125
+    },
+    {
+      "id": "ma20_trend_quality",
+      "label": "MA20 trend quality",
+      "passed": 57,
+      "total": 2125
+    },
+    {
+      "id": "+di_>_-di",
+      "label": "+DI > -DI",
+      "passed": 338,
+      "total": 2125
+    },
+    {
+      "id": "adx_>_adx_threshold",
+      "label": "ADX > ADX_THRESHOLD",
+      "passed": 1825,
+      "total": 2125
+    },
+    {
+      "id": "volume___previous_5day_avg_volume_>=_vol_mult",
+      "label": "volume / previous_5day_avg_volume >= VOL_MULT",
+      "passed": 643,
+      "total": 2125
+    },
+    {
+      "id": "expma7_>_expma21",
+      "label": "EXPMA7 > EXPMA21",
+      "passed": 380,
+      "total": 2125
+    },
+    {
+      "id": "expma7_recent_golden_cross_within_n_days",
+      "label": "EXPMA7 recent golden cross within N days",
+      "passed": 81,
+      "total": 2125
+    },
+    {
+      "id": "dif_>_0_and_dea_>_0",
+      "label": "DIF > 0 and DEA > 0",
+      "passed": 376,
+      "total": 2125
+    },
+    {
+      "id": "dif_>_dea",
+      "label": "DIF > DEA",
+      "passed": 529,
+      "total": 2125
+    },
+    {
+      "id": "macd_golden_cross_above_zero",
+      "label": "MACD golden cross above zero",
+      "passed": 16,
+      "total": 2125
+    },
+    {
+      "id": "macd_second_golden_cross_above_zero",
+      "label": "MACD second golden cross above zero",
+      "passed": 282,
+      "total": 2125
+    },
+    {
+      "id": "macd_second_golden_cross_within_n_days",
+      "label": "MACD second golden cross within N days",
+      "passed": 21,
+      "total": 2125
+    },
+    {
+      "id": "最终技术面通过",
+      "label": "最终技术面通过",
+      "passed": 0,
+      "total": 2125
+    }
+  ],
+  "funnel": [
+    {
+      "stage": "初始股票池（当日缓存）",
+      "count": 2126
+    },
+    {
+      "stage": "最终股票池（当日缓存）",
+      "count": 2126
+    },
+    {
+      "stage": "MA 条件",
+      "count": 106
+    },
+    {
+      "stage": "MA20 趋势持续性",
+      "count": 57
+    },
+    {
+      "stage": "DMI 条件",
+      "count": 282
+    },
+    {
+      "stage": "成交量条件",
+      "count": 643
+    },
+    {
+      "stage": "EXPMA 条件",
+      "count": 60
+    },
+    {
+      "stage": "MACD 二次金叉条件",
+      "count": 16
+    },
+    {
+      "stage": "技术条件合计",
+      "count": 0
+    }
+  ],
+  "industryDist": [],
+  "hotSectors": [
+    {
+      "rank": 1,
+      "code": "BK1596",
+      "name": "其他生物制品",
+      "heatScore": 81.62,
+      "pctChange": 8.59,
+      "amount": 13953226913.0,
+      "turnover": 3.2,
+      "upCount": 37,
+      "downCount": 0,
+      "flatCount": 1,
+      "stockCount": 38,
+      "upRatio": 97.37,
+      "selectedCount": 0,
+      "leaderName": "三生国健",
+      "leaderCode": "688336",
+      "leaderPctChange": 20.0,
+      "leadingStocks": "",
+      "quantNote": "热度81.6 = 涨幅8.59%、上涨占比97.4%、成交额139.5亿、领涨股三生国健 20.00%",
+      "dataSource": "东方财富行业板块"
+    },
+    {
+      "rank": 2,
+      "code": "BK1600",
+      "name": "医疗研发外包",
+      "heatScore": 80.04,
+      "pctChange": 8.11,
+      "amount": 28961536221.0,
+      "turnover": 5.66,
+      "upCount": 28,
+      "downCount": 1,
+      "flatCount": 0,
+      "stockCount": 29,
+      "upRatio": 96.55,
+      "selectedCount": 0,
+      "leaderName": "万邦医药",
+      "leaderCode": "301520",
+      "leaderPctChange": 20.0,
+      "leadingStocks": "",
+      "quantNote": "热度80.0 = 涨幅8.11%、上涨占比96.6%、成交额289.6亿、领涨股万邦医药 20.00%",
+      "dataSource": "东方财富行业板块"
+    },
+    {
+      "rank": 3,
+      "code": "BK1044",
+      "name": "生物制品",
+      "heatScore": 70.21,
+      "pctChange": 7.23,
+      "amount": 18587678418.0,
+      "turnover": 2.37,
+      "upCount": 56,
+      "downCount": 1,
+      "flatCount": 1,
+      "stockCount": 58,
+      "upRatio": 96.55,
+      "selectedCount": 0,
+      "leaderName": "三生国健",
+      "leaderCode": "688336",
+      "leaderPctChange": 20.0,
+      "leadingStocks": "",
+      "quantNote": "热度70.2 = 涨幅7.23%、上涨占比96.6%、成交额185.9亿、领涨股三生国健 20.00%",
+      "dataSource": "东方财富行业板块"
+    },
+    {
+      "rank": 4,
+      "code": "BK1216",
+      "name": "医药生物",
+      "heatScore": 62.76,
+      "pctChange": 4.84,
+      "amount": 150342964111.0,
+      "turnover": 2.56,
+      "upCount": 473,
+      "downCount": 33,
+      "flatCount": 2,
+      "stockCount": 508,
+      "upRatio": 93.11,
+      "selectedCount": 0,
+      "leaderName": "万邦医药",
+      "leaderCode": "301520",
+      "leaderPctChange": 20.0,
+      "leadingStocks": "",
+      "quantNote": "热度62.8 = 涨幅4.84%、上涨占比93.1%、成交额1503.4亿、领涨股万邦医药 20.00%",
+      "dataSource": "东方财富行业板块"
+    },
+    {
+      "rank": 5,
+      "code": "BK1325",
+      "name": "半导体材料",
+      "heatScore": 61.62,
+      "pctChange": 5.92,
+      "amount": 105719103294.0,
+      "turnover": 12.27,
+      "upCount": 24,
+      "downCount": 7,
+      "flatCount": 0,
+      "stockCount": 31,
+      "upRatio": 77.42,
+      "selectedCount": 0,
+      "leaderName": "雅克科技",
+      "leaderCode": "002409",
+      "leaderPctChange": 10.0,
+      "leadingStocks": "",
+      "quantNote": "热度61.6 = 涨幅5.92%、上涨占比77.4%、成交额1057.2亿、领涨股雅克科技 10.00%",
+      "dataSource": "东方财富行业板块"
+    },
+    {
+      "rank": 6,
+      "code": "BK0727",
+      "name": "医疗服务",
+      "heatScore": 59.98,
+      "pctChange": 5.76,
+      "amount": 34995245187.0,
+      "turnover": 3.26,
+      "upCount": 52,
+      "downCount": 2,
+      "flatCount": 0,
+      "stockCount": 54,
+      "upRatio": 96.3,
+      "selectedCount": 0,
+      "leaderName": "万邦医药",
+      "leaderCode": "301520",
+      "leaderPctChange": 20.0,
+      "leadingStocks": "",
+      "quantNote": "热度60.0 = 涨幅5.76%、上涨占比96.3%、成交额350.0亿、领涨股万邦医药 20.00%",
+      "dataSource": "东方财富行业板块"
+    },
+    {
+      "rank": 7,
+      "code": "BK1594",
+      "name": "化学制剂",
+      "heatScore": 57.16,
+      "pctChange": 6.17,
+      "amount": 44990200293.0,
+      "turnover": 3.09,
+      "upCount": 105,
+      "downCount": 9,
+      "flatCount": 0,
+      "stockCount": 114,
+      "upRatio": 92.11,
+      "selectedCount": 0,
+      "leaderName": "海思科",
+      "leaderCode": "002653",
+      "leaderPctChange": 10.0,
+      "leadingStocks": "",
+      "quantNote": "热度57.2 = 涨幅6.17%、上涨占比92.1%、成交额449.9亿、领涨股海思科 10.00%",
+      "dataSource": "东方财富行业板块"
+    },
+    {
+      "rank": 8,
+      "code": "BK0465",
+      "name": "化学制药",
+      "heatScore": 55.27,
+      "pctChange": 5.8,
+      "amount": 55659375248.0,
+      "turnover": 3.13,
+      "upCount": 148,
+      "downCount": 12,
+      "flatCount": 0,
+      "stockCount": 160,
+      "upRatio": 92.5,
+      "selectedCount": 0,
+      "leaderName": "海思科",
+      "leaderCode": "002653",
+      "leaderPctChange": 10.0,
+      "leadingStocks": "",
+      "quantNote": "热度55.3 = 涨幅5.80%、上涨占比92.5%、成交额556.6亿、领涨股海思科 10.00%",
+      "dataSource": "东方财富行业板块"
+    }
+  ]
+}

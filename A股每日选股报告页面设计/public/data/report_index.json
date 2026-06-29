@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-06-29 14:44:42",
+  "generatedAt": "2026-06-29 15:29:25",
   "latestDate": "2026-06-29",
   "availableDates": [
     "2026-06-29",
@@ -10,6 +10,31 @@
     "2026-06-22",
     "2026-06-19"
   ],
+  "availableModesByDate": {
+    "2026-06-29": [
+      "normal",
+      "strict",
+      "loose"
+    ],
+    "2026-06-26": [
+      "normal"
+    ],
+    "2026-06-25": [
+      "normal"
+    ],
+    "2026-06-24": [
+      "normal"
+    ],
+    "2026-06-23": [
+      "normal"
+    ],
+    "2026-06-22": [
+      "normal"
+    ],
+    "2026-06-19": [
+      "normal"
+    ]
+  },
   "history": [
     {
       "date": "2026-06-29",
@@ -17,7 +42,7 @@
       "topStock": "依依股份",
       "avgScore": 80.94,
       "files": {
-        "csv": "reports/20260629/stock_pick_20260629.csv",
+        "csv": "reports/20260629/stock_pick_normal_20260629.csv",
         "hotSectorsCsv": "reports/20260629/hot_sectors_20260629.csv",
         "excel": "reports/20260629/stock_pick_20260629.xlsx",
         "html": "reports/20260629/stock_pick_report_20260629.html",
@@ -111,7 +136,7 @@
       },
       "avgScore": 80.94,
       "files": {
-        "csv": "reports/20260629/stock_pick_20260629.csv",
+        "csv": "reports/20260629/stock_pick_normal_20260629.csv",
         "hotSectorsCsv": "reports/20260629/hot_sectors_20260629.csv",
         "excel": "reports/20260629/stock_pick_20260629.xlsx",
         "html": "reports/20260629/stock_pick_report_20260629.html",

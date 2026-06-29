@@ -173,14 +173,15 @@ def print_results(df, trade_date=None, status="closed"):
     print()
 
 
-def save_results(df, trade_date=None):
+def save_results(df, trade_date=None, mode=None, write_legacy=True, update_history=True):
     """保存结果到CSV + 追加到历史汇总文件"""
     if trade_date is None:
         trade_date = datetime.date.today()
     date_str = trade_date.strftime("%Y%m%d")
+    mode = mode or cfg.SCREEN_MODE
 
     # ---- 1. 保存唯一当日结果CSV（最终筛选股票详情） ----
-    filename = output_path(f"stock_pick_{date_str}.csv", trade_date)
+    filename = output_path(f"stock_pick_{mode}_{date_str}.csv", trade_date)
     save_cols = [
         "code", "name", "industry", "price", "pct_change", "amount",
         "total_score", "raw_score", "entry_bonus",
@@ -215,9 +216,17 @@ def save_results(df, trade_date=None):
     result_df = df[available].copy()
     result_df.insert(0, "rank", range(1, len(result_df) + 1))
     result_df.to_csv(filename, index=False, encoding="utf-8-sig")
-    print(f"💾 当日筛选结果: {filename}")
+    print(f"💾 {mode} 模式筛选结果: {filename}")
+
+    if write_legacy:
+        legacy_filename = output_path(f"stock_pick_{date_str}.csv", trade_date)
+        result_df.to_csv(legacy_filename, index=False, encoding="utf-8-sig")
+        print(f"💾 当日默认筛选结果: {legacy_filename}")
 
     # ---- 2. 追加到历史汇总（回测直接读这个文件） ----
+    if not update_history:
+        return filename
+
     history_file = history_output_path("daily_picks_history.csv")
     # 加入交易日字段
     df_save = df[available].copy()
@@ -235,6 +244,34 @@ def save_results(df, trade_date=None):
         df_save.to_csv(history_file, index=False, encoding="utf-8-sig")
 
     return filename
+
+
+def generate_all_mode_results(current_df, current_mode, trade_date, max_stocks=None):
+    """为前端模式切换生成 strict/normal/loose 三套选股数据。"""
+    modes = ["strict", "normal", "loose"]
+    generated = {}
+    old_mode = cfg.SCREEN_MODE
+
+    for mode in modes:
+        cfg.SCREEN_MODE = mode
+        if mode == current_mode:
+            df = current_df
+        else:
+            print()
+            print(f"===== 生成 {mode} 模式前端数据 =====")
+            df = run_screening(verbose=True, max_stocks=max_stocks)
+
+        path = save_results(
+            df,
+            trade_date,
+            mode=mode,
+            write_legacy=(mode == "normal"),
+            update_history=(mode == "normal"),
+        )
+        generated[mode] = path
+
+    cfg.SCREEN_MODE = old_mode
+    return generated
 
 
 def sync_frontend_data():
@@ -332,6 +369,10 @@ def main():
     parser.add_argument(
         "--compare-modes", action="store_true",
         help="一次性比较 strict/normal/loose 三种模式的技术通过数量"
+    )
+    parser.add_argument(
+        "--single-mode", action="store_true",
+        help="只生成当前 --mode 一种模式；默认会为前端生成 strict/normal/loose 三种模式数据"
     )
     parser.add_argument(
         "--refresh-cache", action="store_true",
@@ -441,9 +482,25 @@ def main():
     print_results(df.head(cfg.TOP_N), trade_date, status)
 
     # 保存结果（文件名用实际交易日）
-    if not args.no_save and not df.empty:
-        csv_path = save_results(df, trade_date)
-        if not args.no_report:
+    if not args.no_save:
+        if args.single_mode:
+            csv_path = save_results(
+                df,
+                trade_date,
+                mode=cfg.SCREEN_MODE,
+                write_legacy=(cfg.SCREEN_MODE == "normal"),
+                update_history=(cfg.SCREEN_MODE == "normal"),
+            )
+        else:
+            generated = generate_all_mode_results(
+                df,
+                cfg.SCREEN_MODE,
+                trade_date,
+                max_stocks=args.test,
+            )
+            csv_path = generated.get("normal") or generated.get(cfg.SCREEN_MODE) or ""
+
+        if not args.no_report and not df.empty and csv_path:
             manifest = generate_pick_reports(df, trade_date=trade_date, picks_path=csv_path)
             print("💾 可视化报告:")
             for label in ["excel", "html", "pdf"]:
