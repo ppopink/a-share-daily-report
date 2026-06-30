@@ -1,0 +1,376 @@
+{
+  "date": "2026-06-30",
+  "mode": "strict",
+  "generatedAt": "2026-06-30 22:43:05",
+  "files": {
+    "csv": "reports/20260630/stock_pick_strict_20260630.csv",
+    "hotSectorsCsv": "reports/20260630/hot_sectors_20260630.csv"
+  },
+  "stocks": [],
+  "summary": {
+    "selectedCount": 0,
+    "topStock": {
+      "name": "-",
+      "code": "-",
+      "score": 0,
+      "price": 0
+    },
+    "avgScore": 0.0,
+    "riskCount": 0,
+    "above80Count": 0,
+    "passRate": 0.0
+  },
+  "marketGuard": {
+    "marketStatus": "防守优先",
+    "riskLevel": "high",
+    "positionAdvice": "轻仓或观望",
+    "tradePermission": "谨慎观望",
+    "marketNote": "上涨864/2126只，上涨占比40.6%，平均涨跌幅0.11%，涨停约74只，跌停约6只；建议：轻仓或观望。",
+    "totalCount": 2126,
+    "upCount": 864,
+    "downCount": 1231,
+    "upRatio": 40.64,
+    "avgPctChange": 0.11,
+    "limitUpCount": 74,
+    "limitDownCount": 6,
+    "totalAmount": 1247462882447.0
+  },
+  "dataQuality": {
+    "klineStatus": "已同步最近K线",
+    "moneyFlowStatus": "资金流API+估算",
+    "contextStatus": "大事件/两融/龙虎榜缓存",
+    "industryStatus": "行业字段来自行情源",
+    "hotSectorSource": "东方财富行业板块",
+    "stockCount": 0,
+    "moneyFlowCoveragePct": 0,
+    "contextCoveragePct": 0,
+    "industryCoveragePct": 0,
+    "notes": [
+      "行业字段覆盖不足，热门板块联动可能无法精确匹配入选股。",
+      "部分资金流来自估算或缺失，资金分需要谨慎解读。",
+      "大事件/两融/龙虎榜数据覆盖有限，未命中不代表没有事件。"
+    ]
+  },
+  "conclusion": {
+    "selectedCount": 0,
+    "top5": [],
+    "strictestCondition": "MACD golden cross above zero",
+    "chaseRisk": false,
+    "status": "谨慎",
+    "narrative": "2026-06-30 strict 模式共选出 0 只候选股，最高分为 -(-)，平均分 0.0。当前最严格的技术条件是：MACD golden cross above zero。",
+    "marketAdvice": "上涨864/2126只，上涨占比40.6%，平均涨跌幅0.11%，涨停约74只，跌停约6只；建议：轻仓或观望。"
+  },
+  "diagnostics": [
+    {
+      "id": "close_>_ma3_>_ma5_>_ma21",
+      "label": "close > MA3 > MA5 > MA21",
+      "passed": 147,
+      "total": 2125
+    },
+    {
+      "id": "close_>_ma20_today",
+      "label": "close > MA20 today",
+      "passed": 419,
+      "total": 2125
+    },
+    {
+      "id": "ma20_persistence_days_within_20",
+      "label": "MA20 persistence days within 20",
+      "passed": 118,
+      "total": 2125
+    },
+    {
+      "id": "ma20_slope_up",
+      "label": "MA20 slope up",
+      "passed": 262,
+      "total": 2125
+    },
+    {
+      "id": "close_not_overheated_vs_ma20",
+      "label": "close not overheated vs MA20",
+      "passed": 2019,
+      "total": 2125
+    },
+    {
+      "id": "ma20_trend_quality",
+      "label": "MA20 trend quality",
+      "passed": 56,
+      "total": 2125
+    },
+    {
+      "id": "+di_>_-di",
+      "label": "+DI > -DI",
+      "passed": 372,
+      "total": 2125
+    },
+    {
+      "id": "adx_>_adx_threshold",
+      "label": "ADX > ADX_THRESHOLD",
+      "passed": 1868,
+      "total": 2125
+    },
+    {
+      "id": "volume___previous_5day_avg_volume_>=_vol_mult",
+      "label": "volume / previous_5day_avg_volume >= VOL_MULT",
+      "passed": 479,
+      "total": 2125
+    },
+    {
+      "id": "expma7_>_expma21",
+      "label": "EXPMA7 > EXPMA21",
+      "passed": 373,
+      "total": 2125
+    },
+    {
+      "id": "expma7_recent_golden_cross_within_n_days",
+      "label": "EXPMA7 recent golden cross within N days",
+      "passed": 70,
+      "total": 2125
+    },
+    {
+      "id": "dif_>_0_and_dea_>_0",
+      "label": "DIF > 0 and DEA > 0",
+      "passed": 360,
+      "total": 2125
+    },
+    {
+      "id": "dif_>_dea",
+      "label": "DIF > DEA",
+      "passed": 564,
+      "total": 2125
+    },
+    {
+      "id": "macd_golden_cross_above_zero",
+      "label": "MACD golden cross above zero",
+      "passed": 20,
+      "total": 2125
+    },
+    {
+      "id": "macd_second_golden_cross_above_zero",
+      "label": "MACD second golden cross above zero",
+      "passed": 298,
+      "total": 2125
+    },
+    {
+      "id": "macd_second_golden_cross_within_n_days",
+      "label": "MACD second golden cross within N days",
+      "passed": 21,
+      "total": 2125
+    },
+    {
+      "id": "最终技术面通过",
+      "label": "最终技术面通过",
+      "passed": 0,
+      "total": 2125
+    }
+  ],
+  "funnel": [
+    {
+      "stage": "初始股票池（当日缓存）",
+      "count": 2126
+    },
+    {
+      "stage": "最终股票池（当日缓存）",
+      "count": 2126
+    },
+    {
+      "stage": "MA 条件",
+      "count": 147
+    },
+    {
+      "stage": "MA20 趋势持续性",
+      "count": 56
+    },
+    {
+      "stage": "DMI 条件",
+      "count": 301
+    },
+    {
+      "stage": "成交量条件",
+      "count": 479
+    },
+    {
+      "stage": "EXPMA 条件",
+      "count": 52
+    },
+    {
+      "stage": "MACD 二次金叉条件",
+      "count": 17
+    },
+    {
+      "stage": "技术条件合计",
+      "count": 0
+    }
+  ],
+  "industryDist": [],
+  "hotSectors": [
+    {
+      "rank": 1,
+      "code": "BK1330",
+      "name": "模拟芯片设计",
+      "heatScore": 80.77,
+      "pctChange": 8.97,
+      "amount": 34599622137.0,
+      "turnover": 5.58,
+      "upCount": 34,
+      "downCount": 1,
+      "flatCount": 0,
+      "stockCount": 35,
+      "upRatio": 97.14,
+      "selectedCount": 0,
+      "leaderName": "敏芯股份",
+      "leaderCode": "688286",
+      "leaderPctChange": 20.0,
+      "leadingStocks": "",
+      "quantNote": "热度80.8 = 涨幅8.97%、上涨占比97.1%、成交额346.0亿、领涨股敏芯股份 20.00%",
+      "dataSource": "东方财富行业板块"
+    },
+    {
+      "rank": 2,
+      "code": "BK1334",
+      "name": "光学元件",
+      "heatScore": 64.24,
+      "pctChange": 7.93,
+      "amount": 32345350456.0,
+      "turnover": 6.5,
+      "upCount": 26,
+      "downCount": 0,
+      "flatCount": 0,
+      "stockCount": 26,
+      "upRatio": 100.0,
+      "selectedCount": 0,
+      "leaderName": "水晶光电",
+      "leaderCode": "002273",
+      "leaderPctChange": 10.02,
+      "leadingStocks": "",
+      "quantNote": "热度64.2 = 涨幅7.93%、上涨占比100.0%、成交额323.5亿、领涨股水晶光电 10.02%",
+      "dataSource": "东方财富行业板块"
+    },
+    {
+      "rank": 3,
+      "code": "BK1331",
+      "name": "数字芯片设计",
+      "heatScore": 61.46,
+      "pctChange": 6.85,
+      "amount": 240026090884.0,
+      "turnover": 5.73,
+      "upCount": 47,
+      "downCount": 4,
+      "flatCount": 0,
+      "stockCount": 51,
+      "upRatio": 92.16,
+      "selectedCount": 0,
+      "leaderName": "格科微",
+      "leaderCode": "688728",
+      "leaderPctChange": 20.02,
+      "leadingStocks": "",
+      "quantNote": "热度61.5 = 涨幅6.85%、上涨占比92.2%、成交额2400.3亿、领涨股格科微 20.02%",
+      "dataSource": "东方财富行业板块"
+    },
+    {
+      "rank": 4,
+      "code": "BK1036",
+      "name": "半导体",
+      "heatScore": 60.62,
+      "pctChange": 6.31,
+      "amount": 623972411010.0,
+      "turnover": 7.46,
+      "upCount": 155,
+      "downCount": 22,
+      "flatCount": 2,
+      "stockCount": 179,
+      "upRatio": 86.59,
+      "selectedCount": 0,
+      "leaderName": "格科微",
+      "leaderCode": "688728",
+      "leaderPctChange": 20.02,
+      "leadingStocks": "",
+      "quantNote": "热度60.6 = 涨幅6.31%、上涨占比86.6%、成交额6239.7亿、领涨股格科微 20.02%",
+      "dataSource": "东方财富行业板块"
+    },
+    {
+      "rank": 5,
+      "code": "BK1335",
+      "name": "面板",
+      "heatScore": 56.0,
+      "pctChange": 6.27,
+      "amount": 91137075502.0,
+      "turnover": 8.99,
+      "upCount": 39,
+      "downCount": 3,
+      "flatCount": 0,
+      "stockCount": 42,
+      "upRatio": 92.86,
+      "selectedCount": 0,
+      "leaderName": "联得装备",
+      "leaderCode": "300545",
+      "leaderPctChange": 20.0,
+      "leadingStocks": "",
+      "quantNote": "热度56.0 = 涨幅6.27%、上涨占比92.9%、成交额911.4亿、领涨股联得装备 20.00%",
+      "dataSource": "东方财富行业板块"
+    },
+    {
+      "rank": 6,
+      "code": "BK1201",
+      "name": "电子",
+      "heatScore": 51.14,
+      "pctChange": 5.36,
+      "amount": 1198278685441.0,
+      "turnover": 7.02,
+      "upCount": 452,
+      "downCount": 54,
+      "flatCount": 5,
+      "stockCount": 511,
+      "upRatio": 88.45,
+      "selectedCount": 0,
+      "leaderName": "水晶光电",
+      "leaderCode": "002273",
+      "leaderPctChange": 10.02,
+      "leadingStocks": "",
+      "quantNote": "热度51.1 = 涨幅5.36%、上涨占比88.5%、成交额11982.8亿、领涨股水晶光电 10.02%",
+      "dataSource": "东方财富行业板块"
+    },
+    {
+      "rank": 7,
+      "code": "BK1038",
+      "name": "光学光电子",
+      "heatScore": 50.74,
+      "pctChange": 6.42,
+      "amount": 151088389830.0,
+      "turnover": 8.73,
+      "upCount": 92,
+      "downCount": 6,
+      "flatCount": 0,
+      "stockCount": 98,
+      "upRatio": 93.88,
+      "selectedCount": 0,
+      "leaderName": "水晶光电",
+      "leaderCode": "002273",
+      "leaderPctChange": 10.02,
+      "leadingStocks": "",
+      "quantNote": "热度50.7 = 涨幅6.42%、上涨占比93.9%、成交额1510.9亿、领涨股水晶光电 10.02%",
+      "dataSource": "东方财富行业板块"
+    },
+    {
+      "rank": 8,
+      "code": "BK1327",
+      "name": "分立器件",
+      "heatScore": 50.3,
+      "pctChange": 6.61,
+      "amount": 60052608929.0,
+      "turnover": 8.91,
+      "upCount": 16,
+      "downCount": 2,
+      "flatCount": 0,
+      "stockCount": 18,
+      "upRatio": 88.89,
+      "selectedCount": 0,
+      "leaderName": "新洁能",
+      "leaderCode": "605111",
+      "leaderPctChange": 10.0,
+      "leadingStocks": "",
+      "quantNote": "热度50.3 = 涨幅6.61%、上涨占比88.9%、成交额600.5亿、领涨股新洁能 10.00%",
+      "dataSource": "东方财富行业板块"
+    }
+  ]
+}

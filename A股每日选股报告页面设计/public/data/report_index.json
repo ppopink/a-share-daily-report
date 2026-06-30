@@ -1,14 +1,15 @@
 {
-  "generatedAt": "2026-06-29 16:10:41",
+  "generatedAt": "2026-06-30 22:43:08",
   "deploymentStatus": {
-    "generatedAt": "2026-06-29 16:10:41",
-    "commitSha": "cb42eee",
+    "generatedAt": "2026-06-30 22:43:08",
+    "commitSha": "873229b",
     "branch": "main",
     "githubPagesUrl": "https://ppopink.github.io/a-share-daily-report/",
     "actionsUrl": "https://github.com/ppopink/a-share-daily-report/actions"
   },
-  "latestDate": "2026-06-29",
+  "latestDate": "2026-06-30",
   "availableDates": [
+    "2026-06-30",
     "2026-06-29",
     "2026-06-26",
     "2026-06-25",
@@ -18,6 +19,11 @@
     "2026-06-19"
   ],
   "availableModesByDate": {
+    "2026-06-30": [
+      "normal",
+      "strict",
+      "loose"
+    ],
     "2026-06-29": [
       "normal",
       "strict",
@@ -43,6 +49,19 @@
     ]
   },
   "history": [
+    {
+      "date": "2026-06-30",
+      "selectedCount": 20,
+      "topStock": "铜峰电子",
+      "avgScore": 80.22,
+      "files": {
+        "csv": "reports/20260630/stock_pick_normal_20260630.csv",
+        "hotSectorsCsv": "reports/20260630/hot_sectors_20260630.csv",
+        "excel": "reports/20260630/stock_pick_20260630.xlsx",
+        "html": "reports/20260630/stock_pick_report_20260630.html",
+        "pdf": "reports/20260630/stock_pick_report_20260630.pdf"
+      }
+    },
     {
       "date": "2026-06-29",
       "selectedCount": 20,
@@ -132,6 +151,24 @@
     }
   ],
   "reports": [
+    {
+      "date": "2026-06-30",
+      "selectedCount": 20,
+      "topStock": {
+        "name": "铜峰电子",
+        "code": "600237",
+        "score": 89.74,
+        "price": 13.95
+      },
+      "avgScore": 80.22,
+      "files": {
+        "csv": "reports/20260630/stock_pick_normal_20260630.csv",
+        "hotSectorsCsv": "reports/20260630/hot_sectors_20260630.csv",
+        "excel": "reports/20260630/stock_pick_20260630.xlsx",
+        "html": "reports/20260630/stock_pick_report_20260630.html",
+        "pdf": "reports/20260630/stock_pick_report_20260630.pdf"
+      }
+    },
     {
       "date": "2026-06-29",
       "selectedCount": 20,

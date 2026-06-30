@@ -1,0 +1,8 @@
+{
+  "lastRunAt": "",
+  "runType": "",
+  "status": "waiting",
+  "reason": "",
+  "note": "本地自动任务已配置后，会在每个开盘日 14:30 生成盘中预览版，16:00 生成收盘正式版。",
+  "command": ""
+}
