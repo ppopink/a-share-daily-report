@@ -1,14 +1,15 @@
 {
-  "generatedAt": "2026-06-30 22:43:08",
+  "generatedAt": "2026-07-01 21:07:13",
   "deploymentStatus": {
-    "generatedAt": "2026-06-30 22:43:08",
-    "commitSha": "873229b",
+    "generatedAt": "2026-07-01 21:07:13",
+    "commitSha": "3aa9607",
     "branch": "main",
     "githubPagesUrl": "https://ppopink.github.io/a-share-daily-report/",
     "actionsUrl": "https://github.com/ppopink/a-share-daily-report/actions"
   },
-  "latestDate": "2026-06-30",
+  "latestDate": "2026-07-01",
   "availableDates": [
+    "2026-07-01",
     "2026-06-30",
     "2026-06-29",
     "2026-06-26",
@@ -19,6 +20,11 @@
     "2026-06-19"
   ],
   "availableModesByDate": {
+    "2026-07-01": [
+      "normal",
+      "strict",
+      "loose"
+    ],
     "2026-06-30": [
       "normal",
       "strict",
@@ -49,6 +55,19 @@
     ]
   },
   "history": [
+    {
+      "date": "2026-07-01",
+      "selectedCount": 20,
+      "topStock": "三美股份",
+      "avgScore": 83.19,
+      "files": {
+        "csv": "reports/20260701/stock_pick_normal_20260701.csv",
+        "hotSectorsCsv": "reports/20260701/hot_sectors_20260701.csv",
+        "excel": "reports/20260701/stock_pick_20260701.xlsx",
+        "html": "reports/20260701/stock_pick_report_20260701.html",
+        "pdf": "reports/20260701/stock_pick_report_20260701.pdf"
+      }
+    },
     {
       "date": "2026-06-30",
       "selectedCount": 20,
@@ -151,6 +170,24 @@
     }
   ],
   "reports": [
+    {
+      "date": "2026-07-01",
+      "selectedCount": 20,
+      "topStock": {
+        "name": "三美股份",
+        "code": "603379",
+        "score": 89.98,
+        "price": 83.48
+      },
+      "avgScore": 83.19,
+      "files": {
+        "csv": "reports/20260701/stock_pick_normal_20260701.csv",
+        "hotSectorsCsv": "reports/20260701/hot_sectors_20260701.csv",
+        "excel": "reports/20260701/stock_pick_20260701.xlsx",
+        "html": "reports/20260701/stock_pick_report_20260701.html",
+        "pdf": "reports/20260701/stock_pick_report_20260701.pdf"
+      }
+    },
     {
       "date": "2026-06-30",
       "selectedCount": 20,

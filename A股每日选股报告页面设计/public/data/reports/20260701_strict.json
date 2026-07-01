@@ -1,0 +1,376 @@
+{
+  "date": "2026-07-01",
+  "mode": "strict",
+  "generatedAt": "2026-07-01 21:07:10",
+  "files": {
+    "csv": "reports/20260701/stock_pick_strict_20260701.csv",
+    "hotSectorsCsv": "reports/20260701/hot_sectors_20260701.csv"
+  },
+  "stocks": [],
+  "summary": {
+    "selectedCount": 0,
+    "topStock": {
+      "name": "-",
+      "code": "-",
+      "score": 0,
+      "price": 0
+    },
+    "avgScore": 0.0,
+    "riskCount": 0,
+    "above80Count": 0,
+    "passRate": 0.0
+  },
+  "marketGuard": {
+    "marketStatus": "适合交易",
+    "riskLevel": "low",
+    "positionAdvice": "正常仓位",
+    "tradePermission": "可参与",
+    "marketNote": "上涨1740/2130只，上涨占比81.7%，平均涨跌幅2.10%，涨停约86只，跌停约8只；建议：正常仓位。",
+    "totalCount": 2130,
+    "upCount": 1740,
+    "downCount": 375,
+    "upRatio": 81.69,
+    "avgPctChange": 2.1,
+    "limitUpCount": 86,
+    "limitDownCount": 8,
+    "totalAmount": 1423555504733.0
+  },
+  "dataQuality": {
+    "klineStatus": "已同步最近K线",
+    "moneyFlowStatus": "资金流API+估算",
+    "contextStatus": "大事件/两融/龙虎榜缓存",
+    "industryStatus": "行业字段来自行情源",
+    "hotSectorSource": "东方财富行业板块",
+    "stockCount": 0,
+    "moneyFlowCoveragePct": 0,
+    "contextCoveragePct": 0,
+    "industryCoveragePct": 0,
+    "notes": [
+      "行业字段覆盖不足，热门板块联动可能无法精确匹配入选股。",
+      "部分资金流来自估算或缺失，资金分需要谨慎解读。",
+      "大事件/两融/龙虎榜数据覆盖有限，未命中不代表没有事件。"
+    ]
+  },
+  "conclusion": {
+    "selectedCount": 0,
+    "top5": [],
+    "strictestCondition": "MACD second golden cross within N days",
+    "chaseRisk": false,
+    "status": "谨慎",
+    "narrative": "2026-07-01 strict 模式共选出 0 只候选股，最高分为 -(-)，平均分 0.0。当前最严格的技术条件是：MACD second golden cross within N days。",
+    "marketAdvice": "上涨1740/2130只，上涨占比81.7%，平均涨跌幅2.10%，涨停约86只，跌停约8只；建议：正常仓位。"
+  },
+  "diagnostics": [
+    {
+      "id": "close_>_ma3_>_ma5_>_ma21",
+      "label": "close > MA3 > MA5 > MA21",
+      "passed": 152,
+      "total": 2129
+    },
+    {
+      "id": "close_>_ma20_today",
+      "label": "close > MA20 today",
+      "passed": 530,
+      "total": 2129
+    },
+    {
+      "id": "ma20_persistence_days_within_20",
+      "label": "MA20 persistence days within 20",
+      "passed": 123,
+      "total": 2129
+    },
+    {
+      "id": "ma20_slope_up",
+      "label": "MA20 slope up",
+      "passed": 280,
+      "total": 2129
+    },
+    {
+      "id": "close_not_overheated_vs_ma20",
+      "label": "close not overheated vs MA20",
+      "passed": 2029,
+      "total": 2129
+    },
+    {
+      "id": "ma20_trend_quality",
+      "label": "MA20 trend quality",
+      "passed": 64,
+      "total": 2129
+    },
+    {
+      "id": "+di_>_-di",
+      "label": "+DI > -DI",
+      "passed": 567,
+      "total": 2129
+    },
+    {
+      "id": "adx_>_adx_threshold",
+      "label": "ADX > ADX_THRESHOLD",
+      "passed": 1828,
+      "total": 2129
+    },
+    {
+      "id": "volume___previous_5day_avg_volume_>=_vol_mult",
+      "label": "volume / previous_5day_avg_volume >= VOL_MULT",
+      "passed": 1141,
+      "total": 2129
+    },
+    {
+      "id": "expma7_>_expma21",
+      "label": "EXPMA7 > EXPMA21",
+      "passed": 387,
+      "total": 2129
+    },
+    {
+      "id": "expma7_recent_golden_cross_within_n_days",
+      "label": "EXPMA7 recent golden cross within N days",
+      "passed": 75,
+      "total": 2129
+    },
+    {
+      "id": "dif_>_0_and_dea_>_0",
+      "label": "DIF > 0 and DEA > 0",
+      "passed": 369,
+      "total": 2129
+    },
+    {
+      "id": "dif_>_dea",
+      "label": "DIF > DEA",
+      "passed": 1198,
+      "total": 2129
+    },
+    {
+      "id": "macd_golden_cross_above_zero",
+      "label": "MACD golden cross above zero",
+      "passed": 46,
+      "total": 2129
+    },
+    {
+      "id": "macd_second_golden_cross_above_zero",
+      "label": "MACD second golden cross above zero",
+      "passed": 299,
+      "total": 2129
+    },
+    {
+      "id": "macd_second_golden_cross_within_n_days",
+      "label": "MACD second golden cross within N days",
+      "passed": 22,
+      "total": 2129
+    },
+    {
+      "id": "最终技术面通过",
+      "label": "最终技术面通过",
+      "passed": 0,
+      "total": 2129
+    }
+  ],
+  "funnel": [
+    {
+      "stage": "初始股票池（当日缓存）",
+      "count": 2130
+    },
+    {
+      "stage": "最终股票池（当日缓存）",
+      "count": 2130
+    },
+    {
+      "stage": "MA 条件",
+      "count": 152
+    },
+    {
+      "stage": "MA20 趋势持续性",
+      "count": 64
+    },
+    {
+      "stage": "DMI 条件",
+      "count": 401
+    },
+    {
+      "stage": "成交量条件",
+      "count": 1141
+    },
+    {
+      "stage": "EXPMA 条件",
+      "count": 65
+    },
+    {
+      "stage": "MACD 二次金叉条件",
+      "count": 19
+    },
+    {
+      "stage": "技术条件合计",
+      "count": 0
+    }
+  ],
+  "industryDist": [],
+  "hotSectors": [
+    {
+      "rank": 1,
+      "code": "BK1424",
+      "name": "氟化工",
+      "heatScore": 82.93,
+      "pctChange": 9.38,
+      "amount": 32161225054.0,
+      "turnover": 7.4,
+      "upCount": 10,
+      "downCount": 0,
+      "flatCount": 0,
+      "stockCount": 10,
+      "upRatio": 100.0,
+      "selectedCount": 0,
+      "leaderName": "多氟多",
+      "leaderCode": "002407",
+      "leaderPctChange": 9.99,
+      "leadingStocks": "",
+      "quantNote": "热度82.9 = 涨幅9.38%、上涨占比100.0%、成交额321.6亿、领涨股多氟多 9.99%",
+      "dataSource": "东方财富行业板块"
+    },
+    {
+      "rank": 2,
+      "code": "BK1489",
+      "name": "快递",
+      "heatScore": 57.69,
+      "pctChange": 7.81,
+      "amount": 2960085869.0,
+      "turnover": 1.61,
+      "upCount": 4,
+      "downCount": 0,
+      "flatCount": 0,
+      "stockCount": 4,
+      "upRatio": 100.0,
+      "selectedCount": 0,
+      "leaderName": "圆通速递",
+      "leaderCode": "600233",
+      "leaderPctChange": 10.03,
+      "leadingStocks": "",
+      "quantNote": "热度57.7 = 涨幅7.81%、上涨占比100.0%、成交额29.6亿、领涨股圆通速递 10.03%",
+      "dataSource": "东方财富行业板块"
+    },
+    {
+      "rank": 3,
+      "code": "BK1491",
+      "name": "端到端供应链服务",
+      "heatScore": 55.96,
+      "pctChange": 6.86,
+      "amount": 2018312733.0,
+      "turnover": 5.91,
+      "upCount": 7,
+      "downCount": 0,
+      "flatCount": 0,
+      "stockCount": 7,
+      "upRatio": 100.0,
+      "selectedCount": 0,
+      "leaderName": "海晨股份",
+      "leaderCode": "300873",
+      "leaderPctChange": 20.02,
+      "leadingStocks": "",
+      "quantNote": "热度56.0 = 涨幅6.86%、上涨占比100.0%、成交额20.2亿、领涨股海晨股份 20.02%",
+      "dataSource": "东方财富行业板块"
+    },
+    {
+      "rank": 4,
+      "code": "BK1511",
+      "name": "肉鸡养殖",
+      "heatScore": 55.82,
+      "pctChange": 7.56,
+      "amount": 2013132301.0,
+      "turnover": 4.19,
+      "upCount": 8,
+      "downCount": 0,
+      "flatCount": 0,
+      "stockCount": 8,
+      "upRatio": 100.0,
+      "selectedCount": 0,
+      "leaderName": "益生股份",
+      "leaderCode": "002458",
+      "leaderPctChange": 10.04,
+      "leadingStocks": "",
+      "quantNote": "热度55.8 = 涨幅7.56%、上涨占比100.0%、成交额20.1亿、领涨股益生股份 10.04%",
+      "dataSource": "东方财富行业板块"
+    },
+    {
+      "rank": 5,
+      "code": "BK1503",
+      "name": "果蔬加工",
+      "heatScore": 54.86,
+      "pctChange": 7.24,
+      "amount": 1532029777.0,
+      "turnover": 3.63,
+      "upCount": 5,
+      "downCount": 1,
+      "flatCount": 0,
+      "stockCount": 6,
+      "upRatio": 83.33,
+      "selectedCount": 0,
+      "leaderName": "朗源股份",
+      "leaderCode": "300175",
+      "leaderPctChange": 20.09,
+      "leadingStocks": "",
+      "quantNote": "热度54.9 = 涨幅7.24%、上涨占比83.3%、成交额15.3亿、领涨股朗源股份 20.09%",
+      "dataSource": "东方财富行业板块"
+    },
+    {
+      "rank": 6,
+      "code": "BK1594",
+      "name": "化学制剂",
+      "heatScore": 54.82,
+      "pctChange": 5.78,
+      "amount": 53483400382.0,
+      "turnover": 3.66,
+      "upCount": 110,
+      "downCount": 3,
+      "flatCount": 1,
+      "stockCount": 114,
+      "upRatio": 96.49,
+      "selectedCount": 0,
+      "leaderName": "宣泰医药",
+      "leaderCode": "688247",
+      "leaderPctChange": 19.95,
+      "leadingStocks": "",
+      "quantNote": "热度54.8 = 涨幅5.78%、上涨占比96.5%、成交额534.8亿、领涨股宣泰医药 19.95%",
+      "dataSource": "东方财富行业板块"
+    },
+    {
+      "rank": 7,
+      "code": "BK1358",
+      "name": "保险Ⅲ",
+      "heatScore": 53.27,
+      "pctChange": 7.09,
+      "amount": 18631442901.0,
+      "turnover": 0.81,
+      "upCount": 5,
+      "downCount": 0,
+      "flatCount": 0,
+      "stockCount": 5,
+      "upRatio": 100.0,
+      "selectedCount": 0,
+      "leaderName": "中国人寿",
+      "leaderCode": "601628",
+      "leaderPctChange": 9.7,
+      "leadingStocks": "",
+      "quantNote": "热度53.3 = 涨幅7.09%、上涨占比100.0%、成交额186.3亿、领涨股中国人寿 9.70%",
+      "dataSource": "东方财富行业板块"
+    },
+    {
+      "rank": 8,
+      "code": "BK0474",
+      "name": "保险Ⅱ",
+      "heatScore": 53.27,
+      "pctChange": 7.09,
+      "amount": 18631442901.0,
+      "turnover": 0.81,
+      "upCount": 5,
+      "downCount": 0,
+      "flatCount": 0,
+      "stockCount": 5,
+      "upRatio": 100.0,
+      "selectedCount": 0,
+      "leaderName": "中国人寿",
+      "leaderCode": "601628",
+      "leaderPctChange": 9.7,
+      "leadingStocks": "",
+      "quantNote": "热度53.3 = 涨幅7.09%、上涨占比100.0%、成交额186.3亿、领涨股中国人寿 9.70%",
+      "dataSource": "东方财富行业板块"
+    }
+  ]
+}
